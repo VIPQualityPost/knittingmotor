@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<RootMenu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Config IdPrefix="mnuCmd" VarPrefix="knittingMenu" UseNumbering="false" IncludeNumberHierarchy="false"
+          MaxNameLen="16" MenuBackFirstItem="false" BackText="Back" ExitText="Exit" AvrProgMem="true"/>
+  <MenuItems>
+    <Item Id="SetRowCount"  Name="Set row count"/>
+    <Item Id="BoundariesRoot" Name="Boundaries">
+      <MenuItems>
+        <Item Id="LeftBnd"  Name="Left boundary"/>
+        <Item Id="RightBnd"  Name="Right boundary"/>
+        <Item Id="ClearBnd"  Name="Clear boundaries"/>
+      </MenuItems>
+    </Item>
+    <Item Id="KnitConti"    Name="Knit continuous"/>
+    <Item Id="ToolsRoot"        Name="Tools">
+      <MenuItems>
+        <Item Id="Homeing"  Name="Home carriage"/>
+        <Item Id="MoveToStart"  Name="Move to start"/>
+        <Item Id="MoveToEnd"    Name="Move to end"/>
+      </MenuItems>
+    </Item>
+    <Item Id="SettingsRoot" Name="Settings">
+      <MenuItems>
+        <Item Id="CarSpeed"   Name="Carriage speed"/>
+        <Item Id="Yarnsensor" Name="Yarn sensor"/>
+        <Item Id="ButtonBeep" Name="Button Beep"/>
+        <Item Id="AlarmDuration" Name="Alarm Duration"/>
+        <Item Id="DisplayBrightness" Name="LCD backlight"/>
+      </MenuItems>
+    </Item>
+    <Item Id="ResetToDefaults" Name="Reset all"/>
+  </MenuItems>
+</RootMenu>
