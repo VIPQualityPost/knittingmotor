@@ -21,10 +21,10 @@ enum knittingMenuCommandId
   mnuCmdLeftBnd,
   mnuCmdRightBnd,
   mnuCmdClearBnd,
-  mnuCmdKnitConti,
   mnuCmdToolsRoot,
   mnuCmdHomeing,
   mnuCmdMoveToStart,
+  mnuCmdMoveToMid,
   mnuCmdMoveToEnd,
   mnuCmdSettingsRoot,
   mnuCmdCarSpeed,
@@ -32,6 +32,7 @@ enum knittingMenuCommandId
   mnuCmdButtonBeep,
   mnuCmdAlarmDuration,
   mnuCmdDisplayBrightness,
+  mnuCmdInfo,
   mnuCmdResetToDefaults
 };
 
@@ -43,25 +44,26 @@ PROGMEM const char knittingMenu_2_2[] = "Right boundary";
 PROGMEM const char knittingMenu_2_3[] = "Clear boundaries";
 PROGMEM const MenuItem knittingMenu_List_2[] = {{mnuCmdLeftBnd, knittingMenu_2_1}, {mnuCmdRightBnd, knittingMenu_2_2}, {mnuCmdClearBnd, knittingMenu_2_3}, {mnuCmdBack, knittingMenu_back}};
 
-PROGMEM const char knittingMenu_4_1[] = "Home carriage";
-PROGMEM const char knittingMenu_4_2[] = "Move to start";
-PROGMEM const char knittingMenu_4_3[] = "Move to end";
-PROGMEM const MenuItem knittingMenu_List_4[] = {{mnuCmdHomeing, knittingMenu_4_1}, {mnuCmdMoveToStart, knittingMenu_4_2}, {mnuCmdMoveToEnd, knittingMenu_4_3}, {mnuCmdBack, knittingMenu_back}};
+PROGMEM const char knittingMenu_3_1[] = "Home carriage";
+PROGMEM const char knittingMenu_3_2[] = "Move to start";
+PROGMEM const char knittingMenu_3_3[] = "Move to middle";
+PROGMEM const char knittingMenu_3_4[] = "Move to end";
+PROGMEM const MenuItem knittingMenu_List_3[] = {{mnuCmdHomeing, knittingMenu_3_1}, {mnuCmdMoveToStart, knittingMenu_3_2}, {mnuCmdMoveToMid, knittingMenu_3_3}, {mnuCmdMoveToEnd, knittingMenu_3_4}, {mnuCmdBack, knittingMenu_back}};
 
-PROGMEM const char knittingMenu_5_1[] = "Carriage speed";
-PROGMEM const char knittingMenu_5_2[] = "Yarn sensor";
-PROGMEM const char knittingMenu_5_3[] = "Button Beep";
-PROGMEM const char knittingMenu_5_4[] = "Alarm Duration";
-PROGMEM const char knittingMenu_5_5[] = "LCD backlight";
-PROGMEM const MenuItem knittingMenu_List_5[] = {{mnuCmdCarSpeed, knittingMenu_5_1}, {mnuCmdYarnsensor, knittingMenu_5_2}, {mnuCmdButtonBeep, knittingMenu_5_3}, {mnuCmdAlarmDuration, knittingMenu_5_4}, {mnuCmdDisplayBrightness, knittingMenu_5_5}, {mnuCmdBack, knittingMenu_back}};
+PROGMEM const char knittingMenu_4_1[] = "Carriage speed";
+PROGMEM const char knittingMenu_4_2[] = "Yarn sensor";
+PROGMEM const char knittingMenu_4_3[] = "Button Beep";
+PROGMEM const char knittingMenu_4_4[] = "Alarm Duration";
+PROGMEM const char knittingMenu_4_5[] = "LCD backlight";
+PROGMEM const MenuItem knittingMenu_List_4[] = {{mnuCmdCarSpeed, knittingMenu_4_1}, {mnuCmdYarnsensor, knittingMenu_4_2}, {mnuCmdButtonBeep, knittingMenu_4_3}, {mnuCmdAlarmDuration, knittingMenu_4_4}, {mnuCmdDisplayBrightness, knittingMenu_4_5}, {mnuCmdBack, knittingMenu_back}};
 
 PROGMEM const char knittingMenu_1[] = "Set row count";
 PROGMEM const char knittingMenu_2[] = "Boundaries";
-PROGMEM const char knittingMenu_3[] = "Knit continuous";
-PROGMEM const char knittingMenu_4[] = "Tools";
-PROGMEM const char knittingMenu_5[] = "Settings";
+PROGMEM const char knittingMenu_3[] = "Tools";
+PROGMEM const char knittingMenu_4[] = "Settings";
+PROGMEM const char knittingMenu_5[] = "Info";
 PROGMEM const char knittingMenu_6[] = "Reset all";
-PROGMEM const MenuItem knittingMenu_Root[] = {{mnuCmdSetRowCount, knittingMenu_1}, {mnuCmdBoundariesRoot, knittingMenu_2, knittingMenu_List_2, menuCount(knittingMenu_List_2)}, {mnuCmdKnitConti, knittingMenu_3}, {mnuCmdToolsRoot, knittingMenu_4, knittingMenu_List_4, menuCount(knittingMenu_List_4)}, {mnuCmdSettingsRoot, knittingMenu_5, knittingMenu_List_5, menuCount(knittingMenu_List_5)}, {mnuCmdResetToDefaults, knittingMenu_6}, {mnuCmdBack, knittingMenu_exit}};
+PROGMEM const MenuItem knittingMenu_Root[] = {{mnuCmdSetRowCount, knittingMenu_1}, {mnuCmdBoundariesRoot, knittingMenu_2, knittingMenu_List_2, menuCount(knittingMenu_List_2)}, {mnuCmdToolsRoot, knittingMenu_3, knittingMenu_List_3, menuCount(knittingMenu_List_3)}, {mnuCmdSettingsRoot, knittingMenu_4, knittingMenu_List_4, menuCount(knittingMenu_List_4)}, {mnuCmdInfo, knittingMenu_5}, {mnuCmdResetToDefaults, knittingMenu_6}, {mnuCmdBack, knittingMenu_exit}};
 
 /*
 case mnuCmdSetRowCount :
@@ -72,11 +74,11 @@ case mnuCmdRightBnd :
 	break;
 case mnuCmdClearBnd :
 	break;
-case mnuCmdKnitConti :
-	break;
 case mnuCmdHomeing :
 	break;
 case mnuCmdMoveToStart :
+	break;
+case mnuCmdMoveToMid :
 	break;
 case mnuCmdMoveToEnd :
 	break;
@@ -89,6 +91,8 @@ case mnuCmdButtonBeep :
 case mnuCmdAlarmDuration :
 	break;
 case mnuCmdDisplayBrightness :
+	break;
+case mnuCmdInfo :
 	break;
 case mnuCmdResetToDefaults :
 	break;
@@ -108,11 +112,11 @@ case mnuCmdResetToDefaults :
         <Item Id="ClearBnd"  Name="Clear boundaries"/>
       </MenuItems>
     </Item>
-    <Item Id="KnitConti"    Name="Knit continuous"/>
     <Item Id="ToolsRoot"        Name="Tools">
       <MenuItems>
         <Item Id="Homeing"  Name="Home carriage"/>
         <Item Id="MoveToStart"  Name="Move to start"/>
+        <Item Id="MoveToMid"  Name="Move to middle"/>
         <Item Id="MoveToEnd"    Name="Move to end"/>
       </MenuItems>
     </Item>
@@ -125,6 +129,7 @@ case mnuCmdResetToDefaults :
         <Item Id="DisplayBrightness" Name="LCD backlight"/>
       </MenuItems>
     </Item>
+    <Item Id="Info" Name="Info"/>
     <Item Id="ResetToDefaults" Name="Reset all"/>
   </MenuItems>
 </RootMenu>

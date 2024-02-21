@@ -3,7 +3,7 @@
 #include "MenuData.h"
 #include <avr/eeprom.h>
 
-const char NotImp[] = " right=>execute";
+char NotImp[] = " Hold SELECT";
 static char strbuf[LCD_COLS+1];
 
 
@@ -24,9 +24,12 @@ char *Config::getFormattedStr(byte cmdId)
   
   switch (cmdId)
   {
-    case mnuCmdResetToDefaults:
+    /* case mnuCmdResetToDefaults:
       strbuf[0] = 0;
       break;
+    case mnuCmdClearBnd:
+      strbuf[0] = 0;
+      break; */
     case mnuCmdSetRowCount:
       fmt(strbuf, 2, inttostr(intbuf, rowCount), " row(s)");
       break;
@@ -40,7 +43,7 @@ char *Config::getFormattedStr(byte cmdId)
       fmt(strbuf, 2, inttostr(intbuf, alarmDuration), " seconds");
       break;
     case mnuCmdCarSpeed:
-      fmt(strbuf, 2, inttostr(intbuf, carriageSpeed/10), " rpm/sec");
+      fmt(strbuf, 2, inttostr(intbuf, carriageSpeed), " rpm");
       break;
     case mnuCmdButtonBeep :
       if (buttonBeep)
@@ -70,6 +73,7 @@ char *Config::getFormattedStr(byte cmdId)
       break;
     }
     default:
+      NotImp[0] = 0b01111110; // forward arrow representing input prompt.
       strcpy(strbuf, NotImp);
       break;
   }
@@ -109,7 +113,7 @@ void Config::setDefaults()
   buttonBeep = true;
   displayBrightness = 3;
   yarnsensorEnable = true;
-  carriageSpeed = 600;
+  carriageSpeed = 80;
 }
 
 

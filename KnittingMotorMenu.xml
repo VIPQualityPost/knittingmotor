@@ -11,11 +11,11 @@
         <Item Id="ClearBnd"  Name="Clear boundaries"/>
       </MenuItems>
     </Item>
-    <Item Id="KnitConti"    Name="Knit continuous"/>
     <Item Id="ToolsRoot"        Name="Tools">
       <MenuItems>
         <Item Id="Homeing"  Name="Home carriage"/>
         <Item Id="MoveToStart"  Name="Move to start"/>
+        <Item Id="MoveToMid"  Name="Move to middle"/>
         <Item Id="MoveToEnd"    Name="Move to end"/>
       </MenuItems>
     </Item>
@@ -28,6 +28,7 @@
         <Item Id="DisplayBrightness" Name="LCD backlight"/>
       </MenuItems>
     </Item>
+    <Item Id="Info" Name="Info"/>
     <Item Id="ResetToDefaults" Name="Reset all"/>
   </MenuItems>
 </RootMenu>
