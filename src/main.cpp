@@ -116,8 +116,8 @@ enum AppModeValues : byte
     APP_PROCESS_MENU_CMD    // 7
 };
 
-AppModeValues appMode = APP_PRE_CHECK;
-AppModeValues mainAppMode = APP_PRE_CHECK;
+AppModeValues currentAppMode = APP_PRE_CHECK;
+AppModeValues nextAppMode = APP_PRE_CHECK;
 
 MenuManager Menu1(knittingMenu_Root, menuCount(knittingMenu_Root));
 
@@ -467,7 +467,7 @@ void printRowCount(unsigned int rowCount, bool withTopic) {
   char intbuf[3];
   byte bdPad = 0; 
 
-  if (updLcd == 1 && appMode == APP_DISP_UPD) 
+  if (updLcd == 1 && currentAppMode == APP_DISP_UPD) 
   {
     if (withTopic == true)
     {
@@ -480,8 +480,8 @@ void printRowCount(unsigned int rowCount, bool withTopic) {
 
     inttostr(intbuf, rowCount);
 
-    if (mainAppMode == APP_ALARM) {
-      rpad(strbuf,"Knitting ready.");
+    if (nextAppMode == APP_ALARM) {
+      rpad(strbuf,"Done.");
     } else {
       if (rowCount == 1)
       {
@@ -943,7 +943,7 @@ void homing()
 void displaySteps() 
 {
   // first display line
-  if (updLcd == 1 && appMode == APP_DISP_UPD) 
+  if (updLcd == 1 && currentAppMode == APP_DISP_UPD) 
   {
     lcd.print(rpad(strbuf, EmptyStr));
     lcd.setCursor(0, 0);
@@ -1032,7 +1032,7 @@ void errorStateHandling()
           break;
         }
         lcd.setCursor(0, 1);
-        lcd.print(F("SEL TO RESUME"));
+        lcd.print(F("SELECT TO RESUME"));
       } else 
       {
         lcdClear();
@@ -1043,14 +1043,20 @@ void errorStateHandling()
 
     if (btn==BUTTON_SELECT_SHORT_RELEASE) 
     {
-      if (appMode == APP_PRE_CHECK && digitalRead(footswitchPin) != HIGH) 
+      if (currentAppMode == APP_PRE_CHECK && digitalRead(footswitchPin) != HIGH) 
       { // foot switch installed
-        appMode = APP_PGMSTART;
+        currentAppMode = APP_PGMSTART;
         nok = 0;
-      } else if (appMode != APP_PRE_CHECK) 
+      } if (currentAppMode != APP_PRE_CHECK) 
       {
-        mainAppMode = appMode;
-        appMode = APP_DISP_UPD;
+        if (currentAppMode == APP_CARRIAGE_RUNNING) 
+        {
+          nextAppMode = APP_NORMAL_MODE;
+        } else 
+        {
+          nextAppMode = currentAppMode;
+        }
+        currentAppMode = APP_DISP_UPD;
         screenToShow = ROWS_WITH_HEADER;
         nok = 0;
       }
@@ -1119,7 +1125,7 @@ void loop()
   btn = getButton();
   readEncoder();
 
-  if (btn && currentConfig.buttonBeep && appMode != APP_ALARM)
+  if (btn && currentConfig.buttonBeep && currentAppMode != APP_ALARM)
   {
     byte btnFlags = btn & 192;
 
@@ -1132,16 +1138,16 @@ void loop()
   }
 
   // footswitch installed?
-  if (appMode == APP_PRE_CHECK && digitalRead(footswitchPin) == HIGH) 
+  if (currentAppMode == APP_PRE_CHECK && digitalRead(footswitchPin) == HIGH) 
   {
     cli();
     errorState = MISS_FOOT;
     sei();
-  } else if (appMode == APP_PRE_CHECK) {
+  } else if (currentAppMode == APP_PRE_CHECK) {
       cli();
       errorState = OK;
       sei();
-      appMode = APP_PGMSTART;
+      currentAppMode = APP_PGMSTART;
   }
   
   // overall errorState check before any further action
@@ -1166,7 +1172,7 @@ void loop()
     }
 
     // menu branching
-    switch (appMode) 
+    switch (currentAppMode) 
     {
 
       // ----------------------------------
@@ -1180,8 +1186,8 @@ void loop()
         if (btn==BUTTON_SELECT_SHORT_RELEASE) 
         {
           homing();
-          mainAppMode = APP_NORMAL_MODE;
-          appMode = APP_DISP_UPD;
+          nextAppMode = APP_NORMAL_MODE;
+          currentAppMode = APP_DISP_UPD;
           screenToShow = ROWS_WITH_HEADER;
         }
 
@@ -1193,7 +1199,14 @@ void loop()
           if (currentRowCount > 0) 
           {
             knitContinuous = 1 - knitContinuous;
-            appMode = APP_CARRIAGE_RUNNING;
+            currentAppMode = APP_CARRIAGE_RUNNING;
+          } else {
+            lcdClear();
+            lcd.print(F("Please set row"));
+            lcd.setCursor(0, 1);
+            lcd.print(F("count to knit."));
+            delay(2000);
+            currentAppMode = APP_DISP_UPD;
           }
         }
 
@@ -1201,7 +1214,7 @@ void loop()
         {
           lcd.clear();
           menuStartTime = millis();
-          appMode = APP_MENU_MODE;
+          currentAppMode = APP_MENU_MODE;
           refreshMenuDisplay(REFRESH_DESCEND);
         }
 
@@ -1210,7 +1223,7 @@ void loop()
           currentConfig.rowCount = 0;
           currentConfig.save();
           currentRowCount = currentConfig.rowCount;
-          appMode = APP_DISP_UPD;
+          currentAppMode = APP_DISP_UPD;
           screenToShow = ROWS_WITH_HEADER;
         }
 
@@ -1219,7 +1232,7 @@ void loop()
           if (!myStepper.moving())
           {
             myStepper.moveTo(0);
-            appMode = APP_DISP_UPD;
+            currentAppMode = APP_DISP_UPD;
             screenToShow = ROWS_WITH_HEADER;
           }
         }
@@ -1229,7 +1242,7 @@ void loop()
           if (!myStepper.moving())
           {
             myStepper.moveTo(stepperMaxPos);
-            appMode = APP_DISP_UPD;
+            currentAppMode = APP_DISP_UPD;
             screenToShow = ROWS_WITH_HEADER;
           }
         }
@@ -1237,7 +1250,7 @@ void loop()
         // foot pedal hit
         if (knitRow == 1)
         {
-            appMode = APP_CARRIAGE_RUNNING;
+            currentAppMode = APP_CARRIAGE_RUNNING;
         }
         break;
 
@@ -1279,10 +1292,10 @@ void loop()
           }
         }
 
-        // deactivate continuous knitting with SELECT
+        // deactivate continuous knitting with DOWN
         if (knitContinuous == 1)
         {
-          if (btn == BUTTON_SELECT_SHORT_RELEASE)
+          if (btn == BUTTON_DOWN_SHORT_RELEASE)
           {
               knitContinuous = 0;
           }
@@ -1294,14 +1307,14 @@ void loop()
           if (currentRowCount > 0) 
           {
             knitRow = 1;
-            mainAppMode = APP_CARRIAGE_RUNNING;
+            nextAppMode = APP_CARRIAGE_RUNNING;
           } else 
           {
-            mainAppMode = APP_NORMAL_MODE;
+            nextAppMode = APP_NORMAL_MODE;
             knitContinuous = 0;
           }
         } else {
-          mainAppMode = APP_NORMAL_MODE;
+          nextAppMode = APP_NORMAL_MODE;
         }
 
         // save current row count, update display
@@ -1310,7 +1323,7 @@ void loop()
           currentConfig.rowCount = currentRowCount;
           currentConfig.save();
 
-          appMode = APP_DISP_UPD;
+          currentAppMode = APP_DISP_UPD;
           screenToShow = ROWS;
 
           oldRowCount = currentRowCount;
@@ -1320,13 +1333,13 @@ void loop()
                 currentConfig.rowCount = 0;
                 currentConfig.save();
                 currentRowCount = currentConfig.rowCount;
-                mainAppMode = APP_ALARM;
+                nextAppMode = APP_ALARM;
                 alarmStartTime = millis();
                 digitalWrite(alarmPin, HIGH);
           }
         } else if (oldRowCount == 0)
         {
-          appMode = APP_NORMAL_MODE;
+          currentAppMode = APP_NORMAL_MODE;
         }
        
         // counter if carriage moved
@@ -1340,8 +1353,8 @@ void loop()
         // exit menu after 5 seconds
         if ((menuStartTime + 5 * 1000) <= millis())
         {
-          appMode = APP_DISP_UPD;
-          mainAppMode = APP_NORMAL_MODE;
+          currentAppMode = APP_DISP_UPD;
+          nextAppMode = APP_NORMAL_MODE;
           screenToShow = ROWS_WITH_HEADER;
         } else 
         {
@@ -1355,13 +1368,13 @@ void loop()
 
           if (menuMode == MENU_EXIT)
           {
-            appMode = APP_DISP_UPD;
-            mainAppMode = APP_NORMAL_MODE;
+            currentAppMode = APP_DISP_UPD;
+            nextAppMode = APP_NORMAL_MODE;
             screenToShow = ROWS_WITH_HEADER;
           }
           else if (menuMode == MENU_INVOKE_ITEM)
           {
-            appMode = APP_PROCESS_MENU_CMD;
+            currentAppMode = APP_PROCESS_MENU_CMD;
 
             // Indicate selected item.
             if (Menu1.getCurrentItemCmdId() != mnuCmdResetToDefaults && \
@@ -1391,15 +1404,15 @@ void loop()
 
           if (btnFlags == BUTTON_SHORT_RELEASE_IND || btnFlags == BUTTON_LONG_RELEASE_IND)
           {
-            appMode = APP_NORMAL_MODE;
+            currentAppMode = APP_NORMAL_MODE;
           }
         }
         else if (millis() - alarmStartTime >= (short)currentConfig.alarmDuration * 1000)
         {
-          appMode = APP_NORMAL_MODE;
+          currentAppMode = APP_NORMAL_MODE;
         }
 
-        if (appMode == APP_NORMAL_MODE)
+        if (currentAppMode == APP_NORMAL_MODE)
         {
           digitalWrite(alarmPin, LOW);
         }
@@ -1419,7 +1432,7 @@ void loop()
           printRowCount(currentRowCount, true);
           break;
         }
-        appMode = mainAppMode;
+        currentAppMode = nextAppMode;
         break;
 
       // ----------------------------------
@@ -1432,7 +1445,7 @@ void loop()
         if (processingComplete)
         {
           menuStartTime = millis();
-          appMode = APP_MENU_MODE;
+          currentAppMode = APP_MENU_MODE;
           // clear forward arrow
           lcd.setCursor(0, 1);
           strbuf[0] = ' '; // clear forward arrow
@@ -1444,7 +1457,7 @@ void loop()
     }
     /*
     // BUTTON AND EVENT HANDLING
-    if (appMode == APP_PGMSTART) {
+    if (currentAppMode == APP_PGMSTART) {
         if (btn==BUTTON_SELECT_SHORT_RELEASE) {
           homing();
         }
@@ -1467,7 +1480,7 @@ void loop()
           DBG_PRINT(F("Detach stepper"));
           myStepper.stop();
           stepperDetach();
-          appMode = APP_PGMSTART;
+          currentAppMode = APP_PGMSTART;
           startupDisplayed = 0;
         } else if (btn==BUTTON_SELECT_SHORT_RELEASE) {  // start/stop continuour knitting
           DBG_PRINT(F("Request continuous knitting"));
@@ -1508,16 +1521,16 @@ void loop()
           }
         }
 
-    } // if (appMode == APP_PGMSTART) {
+    } // if (currentAppMode == APP_PGMSTART) {
 
     // DISPLAY UPDATE HANDLING
-    if (stepperAttached == 0 && appMode == APP_PGMSTART) 
+    if (stepperAttached == 0 && currentAppMode == APP_PGMSTART) 
     {
       startupScreen();
     } else
     {
       displaySteps();
-      if (appMode == APP_DISP_UPD) { appMode = APP_CARRIAGE_HOMED; }  // repeated homeing
+      if (currentAppMode == APP_DISP_UPD) { currentAppMode = APP_CARRIAGE_HOMED; }  // repeated homeing
     }
 
     */
@@ -1548,11 +1561,15 @@ ISR (PCINT1_vect)
       {
         myStepper.stop();
         errorState = HIT_HOME;
+        knitContinuous = 0;
+        knitRow = 0;
       }
       if (digitalRead(maxPin) == atRefpoint) 
       {
-          myStepper.stop();
-          errorState = HIT_MAX;
+        myStepper.stop();
+        errorState = HIT_MAX;
+        knitContinuous = 0;
+        knitRow = 0;
       }
     } else 
     {
