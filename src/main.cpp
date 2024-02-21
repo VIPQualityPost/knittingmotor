@@ -473,7 +473,12 @@ void printRowCount(unsigned int rowCount, bool withTopic) {
     {
       lcd.clear();
       lcd.setCursor(0,0);
-      lcd.print("Rows to knit:");
+      if (currentConfig.opMode) {
+        lcd.print("Rows to knit:");
+      } else
+      {
+        lcd.print("Rows knitted:");
+      }
     }
 
     lcd.setCursor(0,1);
@@ -481,7 +486,7 @@ void printRowCount(unsigned int rowCount, bool withTopic) {
     inttostr(intbuf, rowCount);
 
     if (nextAppMode == APP_ALARM) {
-      rpad(strbuf,"Done.");
+      rpad(strbuf, "Done.");
     } else {
       if (rowCount == 1)
       {
@@ -763,6 +768,27 @@ byte processMenuCommand(byte cmdId)
       else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
       {
         currentConfig.alarmDuration = --currentConfig.alarmDuration < 1 ? 1 : currentConfig.alarmDuration;
+      }
+      else
+      {
+        configChanged = false;
+      }
+      break;
+    case mnuCmdOpMode:
+      configChanged = true;
+      if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
+      {
+        currentConfig.opMode = true;
+        currentConfig.rowCount = 0;
+        currentRowCount = 0;
+        oldRowCount = currentRowCount;
+      }
+      else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
+      {
+        currentConfig.opMode = false;
+        currentConfig.rowCount = 0;
+        currentRowCount = 0;
+        oldRowCount = currentRowCount;
       }
       else
       {
@@ -1090,6 +1116,11 @@ void setup()
   digitalWrite(alarmPin, LOW);
 
   currentConfig.load();
+  if (!currentConfig.opMode)
+  {
+    currentConfig.rowCount = 0;
+    currentConfig.save();
+  }
   currentRowCount = currentConfig.rowCount;
   oldRowCount = currentRowCount;
   operationRPM = currentConfig.carriageSpeed * 10;
@@ -1196,17 +1227,22 @@ void loop()
       case APP_NORMAL_MODE :
 
         if (btn == BUTTON_SELECT_LONG_PRESSED) {
-          if (currentRowCount > 0) 
-          {
-            knitContinuous = 1 - knitContinuous;
-            currentAppMode = APP_CARRIAGE_RUNNING;
+          if (currentConfig.opMode){
+            if (currentRowCount > 0)
+            {
+              knitContinuous = 1 - knitContinuous;
+              currentAppMode = APP_CARRIAGE_RUNNING;
+            } else {
+              lcdClear();
+              lcd.print(F("Please set row"));
+              lcd.setCursor(0, 1);
+              lcd.print(F("count to knit."));
+              delay(2000);
+              currentAppMode = APP_DISP_UPD;
+            }
           } else {
-            lcdClear();
-            lcd.print(F("Please set row"));
-            lcd.setCursor(0, 1);
-            lcd.print(F("count to knit."));
-            delay(2000);
-            currentAppMode = APP_DISP_UPD;
+              knitContinuous = 1 - knitContinuous;
+              currentAppMode = APP_CARRIAGE_RUNNING;
           }
         }
 
@@ -1283,9 +1319,17 @@ void loop()
                 DBG_PRINTLN(0);
               }
             }
-            if (currentRowCount > 0) {
-              currentRowCount -= 1;
-              DBG_PRINT(F("Remaining rows: "));
+
+            // count rows up or down regarding modus
+            if (currentConfig.opMode) {
+              if (currentRowCount > 0) {
+                currentRowCount -= 1;
+                DBG_PRINT(F("Remaining rows: "));
+                DBG_PRINTLN(currentRowCount);
+              }
+            } else {
+              currentRowCount += 1;
+              DBG_PRINT(F("Rows already knit: "));
               DBG_PRINTLN(currentRowCount);
             }
             knitRow = 0;
@@ -1304,14 +1348,20 @@ void loop()
         // only allow continuous knitting if rowCount is set
         if (knitContinuous == 1) 
         {
-          if (currentRowCount > 0) 
+          if (currentConfig.opMode) {
+            if (currentRowCount > 0) 
+            {
+              knitRow = 1;
+              nextAppMode = APP_CARRIAGE_RUNNING;
+            } else 
+            {
+              nextAppMode = APP_NORMAL_MODE;
+              knitContinuous = 0;
+            }
+          } else
           {
-            knitRow = 1;
-            nextAppMode = APP_CARRIAGE_RUNNING;
-          } else 
-          {
-            nextAppMode = APP_NORMAL_MODE;
-            knitContinuous = 0;
+              knitRow = 1;
+              nextAppMode = APP_CARRIAGE_RUNNING;
           }
         } else {
           nextAppMode = APP_NORMAL_MODE;

@@ -27,6 +27,7 @@ enum knittingMenuCommandId
   mnuCmdMoveToMid,
   mnuCmdMoveToEnd,
   mnuCmdSettingsRoot,
+  mnuCmdOpMode,
   mnuCmdCarSpeed,
   mnuCmdYarnsensor,
   mnuCmdButtonBeep,
@@ -50,12 +51,13 @@ PROGMEM const char knittingMenu_3_3[] = "Move to middle";
 PROGMEM const char knittingMenu_3_4[] = "Move to end";
 PROGMEM const MenuItem knittingMenu_List_3[] = {{mnuCmdHomeing, knittingMenu_3_1}, {mnuCmdMoveToStart, knittingMenu_3_2}, {mnuCmdMoveToMid, knittingMenu_3_3}, {mnuCmdMoveToEnd, knittingMenu_3_4}, {mnuCmdBack, knittingMenu_back}};
 
-PROGMEM const char knittingMenu_4_1[] = "Carriage speed";
-PROGMEM const char knittingMenu_4_2[] = "Yarn sensor";
-PROGMEM const char knittingMenu_4_3[] = "Button Beep";
-PROGMEM const char knittingMenu_4_4[] = "Alarm Duration";
-PROGMEM const char knittingMenu_4_5[] = "LCD backlight";
-PROGMEM const MenuItem knittingMenu_List_4[] = {{mnuCmdCarSpeed, knittingMenu_4_1}, {mnuCmdYarnsensor, knittingMenu_4_2}, {mnuCmdButtonBeep, knittingMenu_4_3}, {mnuCmdAlarmDuration, knittingMenu_4_4}, {mnuCmdDisplayBrightness, knittingMenu_4_5}, {mnuCmdBack, knittingMenu_back}};
+PROGMEM const char knittingMenu_4_1[] = "Operation mode";
+PROGMEM const char knittingMenu_4_2[] = "Carriage speed";
+PROGMEM const char knittingMenu_4_3[] = "Yarn sensor";
+PROGMEM const char knittingMenu_4_4[] = "Button Beep";
+PROGMEM const char knittingMenu_4_5[] = "Alarm Duration";
+PROGMEM const char knittingMenu_4_6[] = "LCD backlight";
+PROGMEM const MenuItem knittingMenu_List_4[] = {{mnuCmdOpMode, knittingMenu_4_1}, {mnuCmdCarSpeed, knittingMenu_4_2}, {mnuCmdYarnsensor, knittingMenu_4_3}, {mnuCmdButtonBeep, knittingMenu_4_4}, {mnuCmdAlarmDuration, knittingMenu_4_5}, {mnuCmdDisplayBrightness, knittingMenu_4_6}, {mnuCmdBack, knittingMenu_back}};
 
 PROGMEM const char knittingMenu_1[] = "Set row count";
 PROGMEM const char knittingMenu_2[] = "Boundaries";
@@ -81,6 +83,8 @@ case mnuCmdMoveToStart :
 case mnuCmdMoveToMid :
 	break;
 case mnuCmdMoveToEnd :
+	break;
+case mnuCmdOpMode :
 	break;
 case mnuCmdCarSpeed :
 	break;
@@ -122,6 +126,7 @@ case mnuCmdResetToDefaults :
     </Item>
     <Item Id="SettingsRoot" Name="Settings">
       <MenuItems>
+        <Item Id="OpMode"   Name="Operation mode"/>
         <Item Id="CarSpeed"   Name="Carriage speed"/>
         <Item Id="Yarnsensor" Name="Yarn sensor"/>
         <Item Id="ButtonBeep" Name="Button Beep"/>

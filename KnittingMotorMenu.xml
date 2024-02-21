@@ -21,6 +21,7 @@
     </Item>
     <Item Id="SettingsRoot" Name="Settings">
       <MenuItems>
+        <Item Id="OpMode"   Name="Operation mode"/>
         <Item Id="CarSpeed"   Name="Carriage speed"/>
         <Item Id="Yarnsensor" Name="Yarn sensor"/>
         <Item Id="ButtonBeep" Name="Button Beep"/>

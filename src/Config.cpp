@@ -55,6 +55,16 @@ char *Config::getFormattedStr(byte cmdId)
         fmt(strbuf, 1, "off");
       }
       break;
+    case mnuCmdOpMode :
+      if (opMode)
+      {
+        fmt(strbuf, 1, "auto");
+      }
+      else
+      {
+        fmt(strbuf, 1, "manual");
+      }
+      break;
     case mnuCmdYarnsensor :
       if (yarnsensorEnable)
       {
@@ -114,6 +124,7 @@ void Config::setDefaults()
   displayBrightness = 3;
   yarnsensorEnable = true;
   carriageSpeed = 80;
+  opMode = true;
 }
 
 
