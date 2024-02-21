@@ -1505,7 +1505,7 @@ void loop()
             currentAppMode = APP_NORMAL_MODE;
           }
         }
-        else if (millis() - alarmStartTime >= (short)currentConfig.alarmDuration * 1000)
+        else if (millis() - alarmStartTime >= (unsigned short)currentConfig.alarmDuration * 1000)
         {
           currentAppMode = APP_NORMAL_MODE;
         }
