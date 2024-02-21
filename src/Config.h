@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 
-const char NameAndVersion[] = "Knitting Motor V0.5";
+const char NameAndVersion[] = "Knitting Motor Configuration V0.7";
 
 extern long addToVal(short delta, long timeval, long minval = 1, long maxval = 1);
 
@@ -31,6 +31,8 @@ class Config
     byte displayBrightness;     // 1=33%, 2=66%, 3=100%
     byte yarnsensorEnable;      // true/false
     byte opMode;                // operation mode true=row count down (auto), false=row count up (manual)
+    byte footMode;              // foot pedal mode: single / continuous
+    byte arrowMode;             // show arrow after knitting true/false
     unsigned int carriageSpeed; // see myStepper.setSpeed( 800 );  // 80 Rev/Min ( if stepsPerRev is set correctly )
 
     /// </configValues>

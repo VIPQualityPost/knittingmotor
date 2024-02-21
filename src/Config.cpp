@@ -45,6 +45,16 @@ char *Config::getFormattedStr(byte cmdId)
     case mnuCmdCarSpeed:
       fmt(strbuf, 2, inttostr(intbuf, carriageSpeed), " rpm");
       break;
+    case mnuCmdArrowMode :
+      if (arrowMode)
+      {
+        fmt(strbuf, 1, "show");
+      }
+      else
+      {
+        fmt(strbuf, 1, "hide");
+      }
+      break;
     case mnuCmdButtonBeep :
       if (buttonBeep)
       {
@@ -63,6 +73,16 @@ char *Config::getFormattedStr(byte cmdId)
       else
       {
         fmt(strbuf, 1, "manual");
+      }
+      break;
+    case mnuCmdFootMode :
+      if (footMode)
+      {
+        fmt(strbuf, 1, "single");
+      }
+      else
+      {
+        fmt(strbuf, 1, "continuous");
       }
       break;
     case mnuCmdYarnsensor :
@@ -125,6 +145,7 @@ void Config::setDefaults()
   yarnsensorEnable = true;
   carriageSpeed = 80;
   opMode = true;
+  arrowMode = true;
 }
 
 

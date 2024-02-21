@@ -4,6 +4,7 @@
 #include "LcdKeypad.h"
 #include "MenuData.h"
 #include "Config.h"
+#include "HardwareConfig.h"
 
 
 // make real string from preprocessor text
@@ -31,25 +32,17 @@
   #define DBG_PRINTLN(...)   //now defines a blank line
 #endif
 
-#define MAX8BUTTONS // spart Speicher, da nur 4 Taster benötigt werden
 #define STEP_CW 1
 #define STEP_CCW -1
 #define STEP_STOP 0
 
-// Rotary encoder pins and params
+// Rotary encoder params
 long oldEncPosition  = 0;
 long newEncPosition = 0;
 int encDir;
-const int encRes = 2400; // encoder resolution
-const byte rotaA = 2;  // encoder pin A
-const byte rotaB = 3; // encoder pin B
 Encoder myEnc(rotaA, rotaB);
 
-// Stepper pins and params
-const byte stepPin = 11;
-const byte dirPin  = 12;
-const byte enaPin  = 13;
-const int stepsPerRev = 1600;   // Steps per Revolution ( example with 1/4 microsteps )
+// Stepper pins params
 long stepperMaxPos = 0; // max endstop
 long stepperMidPos = 0; // mid position after homing
 byte stepperAttached = 0;
@@ -58,17 +51,6 @@ const int fastSpeedSteps = 20000;
 const int slowSpeedSteps = 1000;
 int operationRPM = 0;
 MoToStepper myStepper( stepsPerRev, STEPDIR );
-
-// Endstop / signal pins and params
-const byte refPin = A5;         // home endstop
-const byte maxPin = A4;         // max endstop
-const byte footswitchPin = A3;  // footswitch
-const byte alarmPin = A1;
-
-// const byte yarnsensePin = A2;   // yarn sensor pin
-//const byte hx711SCKPin = A2;    // HX711 serial clock input
-//const byte hx711DTPin = A1;     // HX711 DataOut
-const byte atRefpoint = LOW;    // endstop active on ... level
 
 // encoder to stepper steps transpose value
 const float encoderMultiplier = ((float)encRes / (float)stepsPerRev);
@@ -88,6 +70,8 @@ volatile byte errorState = OK;  // endstops/sensors hit? (0=ok,1=max endstop,2=h
 byte updLcd = 1; // update LCD after encoder value changed
 
 volatile byte knitRow = 0; // has to be defined here because of PCI ISR
+volatile byte knitContinuous = 0;
+volatile byte fpHit = 0;
 
 #ifdef DEBUG_POSITION
 void debugReportSteps();
@@ -121,7 +105,6 @@ AppModeValues nextAppMode = APP_PRE_CHECK;
 
 MenuManager Menu1(knittingMenu_Root, menuCount(knittingMenu_Root));
 
-volatile byte knitContinuous = 0;
 unsigned int currentRowCount;
 unsigned int oldRowCount;
 unsigned int rowsKnit = 0;
@@ -145,7 +128,7 @@ byte startupDisplayed = 0;  // is showing startup display
 byte errorDisplayed = 0;  // controls blinking of error message
 
 // timed actions always like this (!)
-const unsigned long REFRESH_INTERVAL = 600; // ms
+const unsigned long REFRESH_INTERVAL = 600; // display refresh when blinking in ms
 unsigned long lastRefreshTime = 0;
 /*
     ....
@@ -255,7 +238,7 @@ void stepperAttach()
   //myStepper.attachEnable( enaPin, 50, HIGH );        // Enable Pin aktivieren ( HIGH=aktiv )
   myStepper.setSpeed( 600 );
   myStepper.setRampLen( 200 );                       // Rampenlänge 100 Steps bei 20U/min
-  digitalWrite(enaPin, HIGH);
+  digitalWrite(enaPin, enaLevel);
   delay(50);
   stepperAttached = 1;
 }
@@ -795,6 +778,36 @@ byte processMenuCommand(byte cmdId)
         configChanged = false;
       }
       break;
+    case mnuCmdFootMode:
+      configChanged = true;
+      if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
+      {
+        currentConfig.footMode = true;
+      }
+      else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
+      {
+        currentConfig.footMode = false;
+      }
+      else
+      {
+        configChanged = false;
+      }
+      break;
+    case mnuCmdArrowMode:
+      configChanged = true;
+      if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
+      {
+        currentConfig.arrowMode = true;
+      }
+      else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
+      {
+        currentConfig.arrowMode = false;
+      }
+      else
+      {
+        configChanged = false;
+      }
+      break;
     case mnuCmdButtonBeep:
       configChanged = true;
       if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
@@ -1069,7 +1082,7 @@ void errorStateHandling()
 
     if (btn==BUTTON_SELECT_SHORT_RELEASE) 
     {
-      if (currentAppMode == APP_PRE_CHECK && digitalRead(footswitchPin) != HIGH) 
+      if (currentAppMode == APP_PRE_CHECK && digitalRead(footswitchPin) != signalLevel)
       { // foot switch installed
         currentAppMode = APP_PGMSTART;
         nok = 0;
@@ -1149,6 +1162,30 @@ void setup()
 
 }
 
+void startCarriage() {
+  if (currentConfig.opMode){
+    if (currentRowCount > 0)
+    {
+      cli();
+      knitContinuous = 1 - knitContinuous;
+      sei();
+      currentAppMode = APP_CARRIAGE_RUNNING;
+    } else {
+      lcdClear();
+      lcd.print(F("Please set row"));
+      lcd.setCursor(0, 1);
+      lcd.print(F("count to knit."));
+      delay(2000);
+      currentAppMode = APP_DISP_UPD;
+    }
+  } else {
+      cli();
+      knitContinuous = 1 - knitContinuous;
+      sei();
+      currentAppMode = APP_CARRIAGE_RUNNING;
+  }
+}
+
 // ------------------------------------------------------------------------
 void loop() 
 {
@@ -1169,7 +1206,7 @@ void loop()
   }
 
   // footswitch installed?
-  if (currentAppMode == APP_PRE_CHECK && digitalRead(footswitchPin) == HIGH) 
+  if (currentAppMode == APP_PRE_CHECK && digitalRead(footswitchPin) == signalLevel) 
   {
     cli();
     errorState = MISS_FOOT;
@@ -1185,16 +1222,18 @@ void loop()
   if (errorState == OK) 
   {
     
-    // reset direction arrow if not moving
-    if (!myStepper.moving() && arrowShown ==1)
-    {
-      for (int i=0; i<5; i++) {
-        lcd.setCursor(LCD_COLS-i,1);
-        lcd.print(" ");
+    if (!currentConfig.arrowMode) {
+      // reset direction arrow if not moving
+      if (!myStepper.moving() && arrowShown ==1)
+      {
+        for (int i=0; i<5; i++) {
+          lcd.setCursor(LCD_COLS-i,1);
+          lcd.print(" ");
+        }
+        arrowShown = 0;
       }
-      arrowShown = 0;
     }
-
+    
     // only query myStepper if attached
     if (stepperAttached == 1) 
     {
@@ -1227,23 +1266,7 @@ void loop()
       case APP_NORMAL_MODE :
 
         if (btn == BUTTON_SELECT_LONG_PRESSED) {
-          if (currentConfig.opMode){
-            if (currentRowCount > 0)
-            {
-              knitContinuous = 1 - knitContinuous;
-              currentAppMode = APP_CARRIAGE_RUNNING;
-            } else {
-              lcdClear();
-              lcd.print(F("Please set row"));
-              lcd.setCursor(0, 1);
-              lcd.print(F("count to knit."));
-              delay(2000);
-              currentAppMode = APP_DISP_UPD;
-            }
-          } else {
-              knitContinuous = 1 - knitContinuous;
-              currentAppMode = APP_CARRIAGE_RUNNING;
-          }
+          startCarriage();
         }
 
         if (btn == BUTTON_UP_LONG_PRESSED)
@@ -1284,9 +1307,19 @@ void loop()
         }
 
         // foot pedal hit
-        if (knitRow == 1)
-        {
+        if (fpHit == 1) {
+          if (currentConfig.footMode) {
+            cli();
+            knitRow = 1;
+            sei();
             currentAppMode = APP_CARRIAGE_RUNNING;
+          } else
+          {
+            startCarriage();
+          }
+          cli();
+          fpHit = 0;
+          sei();
         }
         break;
 
@@ -1332,7 +1365,9 @@ void loop()
               DBG_PRINT(F("Rows already knit: "));
               DBG_PRINTLN(currentRowCount);
             }
+            cli();
             knitRow = 0;
+            sei();
           }
         }
 
@@ -1341,7 +1376,16 @@ void loop()
         {
           if (btn == BUTTON_DOWN_SHORT_RELEASE)
           {
+              cli();
               knitContinuous = 0;
+              sei();
+          }
+          if (fpHit == 1)
+          {
+              cli();
+              knitContinuous = 0;
+              fpHit = 0;
+              sei();
           }
         }
 
@@ -1351,7 +1395,9 @@ void loop()
           if (currentConfig.opMode) {
             if (currentRowCount > 0) 
             {
+              cli();
               knitRow = 1;
+              sei();
               nextAppMode = APP_CARRIAGE_RUNNING;
             } else 
             {
@@ -1360,7 +1406,9 @@ void loop()
             }
           } else
           {
+              cli();
               knitRow = 1;
+              sei();
               nextAppMode = APP_CARRIAGE_RUNNING;
           }
         } else {
@@ -1385,7 +1433,7 @@ void loop()
                 currentRowCount = currentConfig.rowCount;
                 nextAppMode = APP_ALARM;
                 alarmStartTime = millis();
-                digitalWrite(alarmPin, HIGH);
+                digitalWrite(alarmPin, signalLevel);
           }
         } else if (oldRowCount == 0)
         {
@@ -1605,8 +1653,13 @@ SIGNAL(TIMER0_COMPA_vect)
 // (Pin change interrupt on Port C)
 ISR (PCINT1_vect)
 {
-  if (stepperAttached == 1) {
-    if (myStepper.moving()) {
+  static unsigned long previousStateChangeMillis = 0;
+  static bool previousPinState = LOW;
+
+  if (stepperAttached == 1) 
+  {
+    if (myStepper.moving()) 
+    {
       if (digitalRead(refPin) == atRefpoint) 
       {
         myStepper.stop();
@@ -1621,12 +1674,21 @@ ISR (PCINT1_vect)
         knitContinuous = 0;
         knitRow = 0;
       }
-    } else 
-    {
-      if (digitalRead(footswitchPin) == HIGH) 
-      {
-        knitRow = 1;
-      }
     }
+
+    // debounce foot pedal, see: https://arduino.stackexchange.com/a/45051
+    byte pinState = digitalRead(footswitchPin);
+    if (pinState != previousPinState) 
+    { // ignore pin changes of pins other than SELECTOR_BTN
+      if (pinState == signalLevel) {
+        if ((millis() - previousStateChangeMillis) > swDebounceTime) { // debounce
+          fpHit = 1;
+        }
+      }
+      previousPinState = pinState;
+      previousStateChangeMillis = millis();
+    }
+
   }
 }
+

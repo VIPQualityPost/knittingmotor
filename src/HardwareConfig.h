@@ -1,0 +1,34 @@
+#ifndef HWCONFIG_H_
+#define HWCONFIG_H_
+
+#include <Arduino.h>
+
+// Encoder pins
+const byte rotaA = 2;     // encoder pin A
+const byte rotaB = 3;     // encoder pin B
+const int encRes = 2400;  // encoder resolution
+
+
+// Stepper pins
+const byte stepPin = 11;
+const byte dirPin  = 12;
+const byte enaPin  = 13;
+const byte enaLevel = HIGH;     // level to enable stepper
+const int stepsPerRev = 1600;   // Steps per Revolution ( example with 1/4 microsteps )
+
+
+// Endstop pins
+const byte refPin = A5;         // home endstop
+const byte maxPin = A4;         // max endstop
+const byte atRefpoint = LOW;    // endstop active on ... level
+
+// Signal pins
+const byte footswitchPin = A3;  // footswitch
+const byte alarmPin = A1;       // buzzer pin
+const byte signalLevel = HIGH;  // switch level
+// const byte yarnsensePin = A2;   // yarn sensor pin
+// const byte hx711SCKPin = A2;    // HX711 serial clock input
+// const byte hx711DTPin = A1;     // HX711 DataOut
+const unsigned long swDebounceTime = 10;  // switch debounce time
+
+#endif

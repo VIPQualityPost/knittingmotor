@@ -22,8 +22,10 @@
     <Item Id="SettingsRoot" Name="Settings">
       <MenuItems>
         <Item Id="OpMode"   Name="Operation mode"/>
+        <Item Id="FootMode"   Name="Foot pedal mode"/>
         <Item Id="CarSpeed"   Name="Carriage speed"/>
         <Item Id="Yarnsensor" Name="Yarn sensor"/>
+        <Item Id="ArrowMode" Name="Direction arrow"/>
         <Item Id="ButtonBeep" Name="Button Beep"/>
         <Item Id="AlarmDuration" Name="Alarm Duration"/>
         <Item Id="DisplayBrightness" Name="LCD backlight"/>
