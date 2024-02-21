@@ -3,11 +3,18 @@
 
 #include <Arduino.h>
 
+// Display pins
+const byte rsPin = 8;
+const byte enablePin = 9;
+const byte d0Pin = 4;
+const byte d1Pin = 5;
+const byte d2Pin = 6;
+const byte d3Pin = 7;
+
 // Encoder pins
 const byte rotaA = 2;     // encoder pin A
 const byte rotaB = 3;     // encoder pin B
 const int encRes = 2400;  // encoder resolution
-
 
 // Stepper pins
 const byte stepPin = 11;
@@ -15,7 +22,6 @@ const byte dirPin  = 12;
 const byte enaPin  = 13;
 const byte enaLevel = HIGH;     // level to enable stepper
 const int stepsPerRev = 1600;   // Steps per Revolution ( example with 1/4 microsteps )
-
 
 // Endstop pins
 const byte refPin = A5;         // home endstop

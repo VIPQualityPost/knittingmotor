@@ -78,7 +78,7 @@ void debugReportSteps();
 #endif
 
 // temporary button request, later changed with menu
-LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
+LiquidCrystal lcd(rsPin, enablePin, d0Pin, d1Pin, d2Pin, d3Pin);
 char strbuf[LCD_COLS + 1]; // one line of lcd display
 const char EmptyStr[] = "";
 char intbuf[7];   // buffer for encoder and steps (5 characters + \0)
