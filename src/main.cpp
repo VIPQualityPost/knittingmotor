@@ -338,7 +338,8 @@ void readEncoder()
     if (oldEncPosition < newEncPosition) 
     {
       encDir = STEP_CCW;
-    } else 
+    } 
+    else 
     {
       encDir = STEP_CW;
     }
@@ -458,7 +459,8 @@ void printRowCount(unsigned int rowCount, bool withTopic) {
       lcd.setCursor(0,0);
       if (currentConfig.opMode) {
         lcd.print("Rows to knit:");
-      } else
+      } 
+      else
       {
         lcd.print("Rows knitted:");
       }
@@ -470,11 +472,14 @@ void printRowCount(unsigned int rowCount, bool withTopic) {
 
     if (nextAppMode == APP_ALARM) {
       rpad(strbuf, "Done.");
-    } else {
+    } 
+    else 
+    {
       if (rowCount == 1)
       {
         fmt(strbuf, 2, intbuf, " row");
-      } else 
+      } 
+      else 
       {
         fmt(strbuf, 2, intbuf, " rows");
       }
@@ -492,7 +497,9 @@ void printRowCount(unsigned int rowCount, bool withTopic) {
         if (knitContinuous == 1) 
         {
           strbuf[LCD_COLS-4] = 0b01011011;
-        } else {
+        } 
+        else 
+        {
           strbuf[LCD_COLS-3] = 0b01011011;
         }
         strbuf[LCD_COLS-1] = 0b01011101;
@@ -502,10 +509,12 @@ void printRowCount(unsigned int rowCount, bool withTopic) {
       {
         strbuf[LCD_COLS-2-bdPad] = 0b01000011; // for continuous
       }
+
       if (encDir == STEP_CW) 
       {
         strbuf[LCD_COLS-1-bdPad] = 0b01111110; // formward array
-      } else if (encDir == STEP_CCW) 
+      } 
+      else if (encDir == STEP_CCW) 
       {
         strbuf[LCD_COLS-1-bdPad] = 0b01111111;    // back arrow
       }
@@ -527,7 +536,14 @@ byte processMenuCommand(byte cmdId)
 
   if (btn == BUTTON_SELECT_PRESSED)
   {
-    if (cmdId != mnuCmdResetToDefaults && cmdId != mnuCmdClearBnd) complete = true;
+    if (cmdId != mnuCmdResetToDefaults && 
+        cmdId != mnuCmdInfo && \
+        cmdId != mnuCmdHomeing && \
+        cmdId != mnuCmdMoveToStart && \
+        cmdId != mnuCmdMoveToMid && \
+        cmdId != mnuCmdMoveToEnd && \
+        cmdId != mnuCmdClearBnd
+        ) complete = true;
   }
 
   switch (cmdId)
@@ -619,7 +635,9 @@ byte processMenuCommand(byte cmdId)
         currentConfig.rightBoundary = stepperMidPos-1;
         configChanged = true;
         DBG_PRINTLN(F("Moving to stepperMidPos-1"));
-      } else {
+      } 
+      else 
+      {
         myStepper.moveTo(currentConfig.rightBoundary);
         DBG_PRINTLN(F("Moving to rightBoundary"));
       }
@@ -649,6 +667,7 @@ byte processMenuCommand(byte cmdId)
       } else if (/*btn == BUTTON_SELECT_SHORT_RELEASE ||*/ btn == BUTTON_SELECT_LONG_RELEASE)
       {
         refreshMenuDisplay(REFRESH_ASCEND);
+        complete = true;
       }
       break;
     case mnuCmdMoveToStart:
@@ -658,6 +677,7 @@ byte processMenuCommand(byte cmdId)
       } else if (/*btn == BUTTON_SELECT_SHORT_RELEASE ||*/ btn == BUTTON_SELECT_LONG_RELEASE)
       {
         refreshMenuDisplay(REFRESH_ASCEND);
+        complete = true;
       }
       break;
     case mnuCmdMoveToMid:
@@ -667,6 +687,7 @@ byte processMenuCommand(byte cmdId)
       } else if (/*btn == BUTTON_SELECT_SHORT_RELEASE ||*/ btn == BUTTON_SELECT_LONG_RELEASE)
       {
         refreshMenuDisplay(REFRESH_ASCEND);
+        complete = true;
       }
       break;
     case mnuCmdMoveToEnd:
@@ -676,6 +697,7 @@ byte processMenuCommand(byte cmdId)
       } else if (/*btn == BUTTON_SELECT_SHORT_RELEASE ||*/ btn == BUTTON_SELECT_LONG_RELEASE)
       {
         refreshMenuDisplay(REFRESH_ASCEND);
+        complete = true;
       }
       break;
     case mnuCmdSetRowCount :
@@ -950,6 +972,7 @@ void homing()
     currentConfig.save();
     DBG_PRINTLN(F("Zeroing boundaries, left out of bounds"));
   }
+
   if (currentConfig.rightBoundary > stepperMidPos && currentConfig.rightBoundary != 0) {
     currentConfig.leftBoundary = 0;
     currentConfig.rightBoundary = 0;
@@ -999,7 +1022,8 @@ void displaySteps()
       if (encDir == STEP_CW) 
       {
         strbuf[LCD_COLS-1] = 0b01111110; // formward array
-      } else if (encDir == STEP_CCW) 
+      } 
+      else if (encDir == STEP_CCW) 
       {
         strbuf[LCD_COLS-1] = 0b01111111;    // back arrow
       }
@@ -1072,7 +1096,8 @@ void errorStateHandling()
         }
         lcd.setCursor(0, 1);
         lcd.print(F("SELECT TO RESUME"));
-      } else 
+      } 
+      else 
       {
         lcdClear();
       }
@@ -1086,15 +1111,18 @@ void errorStateHandling()
       { // foot switch installed
         currentAppMode = APP_PGMSTART;
         nok = 0;
-      } if (currentAppMode != APP_PRE_CHECK) 
+      } 
+      
+      if (currentAppMode != APP_PRE_CHECK) 
       {
-        if (currentAppMode == APP_CARRIAGE_RUNNING) 
-        {
+        // if (currentAppMode == APP_CARRIAGE_RUNNING) 
+        // { 
           nextAppMode = APP_NORMAL_MODE;
-        } else 
-        {
-          nextAppMode = currentAppMode;
-        }
+        // } 
+        // else 
+        // {
+        //  nextAppMode = currentAppMode;
+        // }
         currentAppMode = APP_DISP_UPD;
         screenToShow = ROWS_WITH_HEADER;
         nok = 0;
@@ -1162,6 +1190,24 @@ void setup()
 
 }
 
+void show2secMessage(const __FlashStringHelper *line1, const __FlashStringHelper *line2, const AppModeValues appM) {
+  lcdClear();
+  lcd.print(line1);
+  lcd.setCursor(0, 1);
+  lcd.print(line2);
+  delay(2000);
+  currentAppMode = appM;
+}
+
+void show2secMessage(const char *line1, const char *line2, const AppModeValues appM) {
+  lcdClear();
+  lcd.print(line1);
+  lcd.setCursor(0, 1);
+  lcd.print(line2);
+  delay(2000);
+  currentAppMode = appM;
+}
+
 void startCarriage() {
   if (currentConfig.opMode){
     if (currentRowCount > 0)
@@ -1170,15 +1216,14 @@ void startCarriage() {
       knitContinuous = 1 - knitContinuous;
       sei();
       currentAppMode = APP_CARRIAGE_RUNNING;
-    } else {
-      lcdClear();
-      lcd.print(F("Please set row"));
-      lcd.setCursor(0, 1);
-      lcd.print(F("count to knit."));
-      delay(2000);
-      currentAppMode = APP_DISP_UPD;
     }
-  } else {
+    else
+    {
+      show2secMessage(F("Please set row"), F("count to knit."), APP_DISP_UPD);
+    }
+  } 
+  else
+  {
       cli();
       knitContinuous = 1 - knitContinuous;
       sei();
@@ -1211,7 +1256,8 @@ void loop()
     cli();
     errorState = MISS_FOOT;
     sei();
-  } else if (currentAppMode == APP_PRE_CHECK) {
+  } 
+  else if (currentAppMode == APP_PRE_CHECK) {
       cli();
       errorState = OK;
       sei();
@@ -1219,9 +1265,10 @@ void loop()
   }
   
   // overall errorState check before any further action
+  cli();
   if (errorState == OK) 
   {
-    
+    sei();
     if (!currentConfig.arrowMode) {
       // reset direction arrow if not moving
       if (!myStepper.moving() && arrowShown ==1)
@@ -1248,6 +1295,10 @@ void loop()
       // ----------------------------------
       // only at program start
       case APP_PGMSTART:
+        #ifdef DEBUG_APPMODE
+        DBG_PRINTLN("appMode: APP_PGMSTART");
+        #endif
+
         if (stepperAttached == 0) 
         {
           startupScreen();
@@ -1264,6 +1315,9 @@ void loop()
       // ----------------------------------
       // normal operations, menu closed
       case APP_NORMAL_MODE :
+        #ifdef DEBUG_APPMODE
+        DBG_PRINTLN("appMode: APP_NORMAL_MODE");
+        #endif
 
         if (btn == BUTTON_SELECT_LONG_PRESSED) {
           startCarriage();
@@ -1290,9 +1344,12 @@ void loop()
         {
           if (!myStepper.moving())
           {
-            myStepper.moveTo(0);
-            currentAppMode = APP_DISP_UPD;
-            screenToShow = ROWS_WITH_HEADER;
+            if (myStepper.currentPosition() != 0)
+            {
+              myStepper.moveTo(0);
+              screenToShow = ROWS_WITH_HEADER;
+              show2secMessage(F("Going to"), F("home position..."), APP_DISP_UPD);
+            }
           }
         }
 
@@ -1300,9 +1357,12 @@ void loop()
         {
           if (!myStepper.moving())
           {
-            myStepper.moveTo(stepperMaxPos);
-            currentAppMode = APP_DISP_UPD;
-            screenToShow = ROWS_WITH_HEADER;
+            if (myStepper.currentPosition() != stepperMaxPos)
+            {
+              myStepper.moveTo(stepperMaxPos);
+              screenToShow = ROWS_WITH_HEADER;
+              show2secMessage(F("Going to"), F("max position..."), APP_DISP_UPD);
+            }
           }
         }
 
@@ -1313,19 +1373,25 @@ void loop()
             knitRow = 1;
             sei();
             currentAppMode = APP_CARRIAGE_RUNNING;
-          } else
+          } 
+          else
           {
             startCarriage();
           }
+
           cli();
           fpHit = 0;
           sei();
+
         }
         break;
 
       // ----------------------------------
       // active whenever the carriage moves
       case APP_CARRIAGE_RUNNING:
+        #ifdef DEBUG_APPMODE
+        DBG_PRINTLN("appMode: APP_CARRIAGE_RUNNING");
+        #endif
 
         // foot pedal hit
         if (knitRow == 1) 
@@ -1379,6 +1445,8 @@ void loop()
               cli();
               knitContinuous = 0;
               sei();
+              screenToShow = ROWS_WITH_HEADER;
+              show2secMessage(F("Stop knitting"), F("after row..."), APP_DISP_UPD);
           }
           if (fpHit == 1)
           {
@@ -1386,32 +1454,41 @@ void loop()
               knitContinuous = 0;
               fpHit = 0;
               sei();
+              screenToShow = ROWS_WITH_HEADER;
+              show2secMessage(F("Stop knitting"), F("after rows..."), APP_DISP_UPD);
           }
         }
 
         // only allow continuous knitting if rowCount is set
         if (knitContinuous == 1) 
         {
-          if (currentConfig.opMode) {
+          if (currentConfig.opMode)  // operation mode auto
+          {
             if (currentRowCount > 0) 
             {
               cli();
               knitRow = 1;
               sei();
               nextAppMode = APP_CARRIAGE_RUNNING;
-            } else 
+            } 
+            else 
             {
               nextAppMode = APP_NORMAL_MODE;
+              cli();
               knitContinuous = 0;
+              sei();
             }
-          } else
+          } 
+          else    // operation mode manual
           {
               cli();
               knitRow = 1;
               sei();
               nextAppMode = APP_CARRIAGE_RUNNING;
           }
-        } else {
+        } // if (knitContinuous == 1) 
+        else
+        {  
           nextAppMode = APP_NORMAL_MODE;
         }
 
@@ -1435,7 +1512,9 @@ void loop()
                 alarmStartTime = millis();
                 digitalWrite(alarmPin, signalLevel);
           }
-        } else if (oldRowCount == 0)
+
+        } // if (oldRowCount != currentRowCount)
+        else if (oldRowCount == 0)
         {
           currentAppMode = APP_NORMAL_MODE;
         }
@@ -1448,13 +1527,18 @@ void loop()
       // menu opened
       case APP_MENU_MODE :
       {
+        #ifdef DEBUG_APPMODE
+        DBG_PRINTLN("appMode: APP_MENU_MODE");
+        #endif
+
         // exit menu after 5 seconds
         if ((menuStartTime + 5 * 1000) <= millis())
         {
           currentAppMode = APP_DISP_UPD;
           nextAppMode = APP_NORMAL_MODE;
           screenToShow = ROWS_WITH_HEADER;
-        } else 
+        } 
+        else 
         {
           byte menuMode = Menu1.handleNavigation(getNavAction, refreshMenuDisplay);
 
@@ -1496,6 +1580,10 @@ void loop()
       // ----------------------------------
       // currentRowCount = 0, ready
       case APP_ALARM:
+        #ifdef DEBUG_APPMODE
+        DBG_PRINTLN("appMode: APP_ALARM");
+        #endif
+
         if (btn)
         {
           byte btnFlags = btn & 192;
@@ -1519,6 +1607,10 @@ void loop()
       // ----------------------------------
       // TODO: possible display handling
       case APP_DISP_UPD:
+        #ifdef DEBUG_APPMODE
+        DBG_PRINTLN("appMode: APP_DISP_UPD");
+        #endif
+
         switch (screenToShow)
         {
         case STEPS:
@@ -1536,105 +1628,30 @@ void loop()
       // ----------------------------------
       // mode is called after entering a menu item
       case APP_PROCESS_MENU_CMD:
-      {
-        byte curCmdId = Menu1.getCurrentItemCmdId();
-        byte processingComplete = processMenuCommand(curCmdId);
-
-        if (processingComplete)
         {
-          menuStartTime = millis();
-          currentAppMode = APP_MENU_MODE;
-          // clear forward arrow
-          lcd.setCursor(0, 1);
-          strbuf[0] = ' '; // clear forward arrow
-          strbuf[1] = 0;
-          lcd.print(strbuf);
-        }
-        break;
-      }
-    }
-    /*
-    // BUTTON AND EVENT HANDLING
-    if (currentAppMode == APP_PGMSTART) {
-        if (btn==BUTTON_SELECT_SHORT_RELEASE) {
-          homing();
-        }
-    } else {
-        if (btn==BUTTON_RIGHT_SHORT_RELEASE) {
-          DBG_PRINT(F("Going to max position: "));
-          DBG_PRINTLN(stepperMaxPos);
-          myStepper.moveTo(stepperMaxPos);
-        } else if (btn==BUTTON_LEFT_SHORT_RELEASE) {
-          DBG_PRINTLN(F("Going to zero"));
-          myStepper.moveTo(0);
-        } else if (btn==BUTTON_UP_SHORT_RELEASE) {
-          DBG_PRINT(F("Going to midpoint: "));
-          DBG_PRINTLN(stepperMidPos);
-          myStepper.moveTo(stepperMidPos);
-        }else if (btn==BUTTON_SELECT_LONG_PRESSED) {
-          DBG_PRINT(F("Repeated homing"));
-          homing();
-        } else if (btn==BUTTON_DOWN_SHORT_RELEASE) {
-          DBG_PRINT(F("Detach stepper"));
-          myStepper.stop();
-          stepperDetach();
-          currentAppMode = APP_PGMSTART;
-          startupDisplayed = 0;
-        } else if (btn==BUTTON_SELECT_SHORT_RELEASE) {  // start/stop continuour knitting
-          DBG_PRINT(F("Request continuous knitting"));
-          knitContinuous = 1 - knitContinuous;
-        }
+          #ifdef DEBUG_APPMODE
+          DBG_PRINTLN("appMode: APP_PROCESS_MENU_CMD");
+          #endif
 
-        // foot pedal hit
-        if (knitRow == 1) {
-          if (!myStepper.moving()) {
+          byte processingComplete = processMenuCommand(Menu1.getCurrentItemCmdId());
 
-            DBG_PRINT(F("Request to knit 1 row: "));
-            if (posFromEnc < ((float)stepperMidPos * encoderMultiplier)) {  // below half => knit to the left
-              DBG_PRINTLN(F("-> knitting to the left"));
-              myStepper.moveTo(stepperMaxPos);
-            }
-            if (posFromEnc >= ((float)stepperMidPos * encoderMultiplier)) { // above half => knit to the right
-              DBG_PRINTLN(F("-> knitting to the right"));
-              myStepper.moveTo(0);
-            }
-            if (currentRowCount > 0) {
-              currentRowCount -= 1;
-              DBG_PRINT(F("Remaining rows: "));
-              DBG_PRINTLN(rowCount);
-            }
-            knitRow = 0;
-          }
-        }
-
-        // only allow continuous knitting if rowCount is set
-        if (knitContinuous == 1) 
-        {
-          if (currentRowCount > 0) 
+          if (processingComplete)
           {
-            knitRow = 1;
-          } else 
-          {
-            knitContinuous = 0;
+            menuStartTime = millis();
+            currentAppMode = APP_MENU_MODE;
+            // clear forward arrow
+            lcd.setCursor(0, 1);
+            strbuf[0] = ' '; // clear forward arrow
+            strbuf[1] = 0;
+            lcd.print(strbuf);
           }
+          break;
         }
-
-    } // if (currentAppMode == APP_PGMSTART) {
-
-    // DISPLAY UPDATE HANDLING
-    if (stepperAttached == 0 && currentAppMode == APP_PGMSTART) 
-    {
-      startupScreen();
-    } else
-    {
-      displaySteps();
-      if (currentAppMode == APP_DISP_UPD) { currentAppMode = APP_CARRIAGE_HOMED; }  // repeated homeing
     }
-
-    */
-
-  } else 
-  { // if (errorState == OK) {}
+  } // if (errorState == OK) {}
+  else 
+  { 
+      sei();
       errorStateHandling();
   }
 
