@@ -31,6 +31,7 @@ enum knittingMenuCommandId
   mnuCmdFootMode,
   mnuCmdCarSpeed,
   mnuCmdYarnsensor,
+  mnuCmdOverloadsensor,
   mnuCmdArrowMode,
   mnuCmdButtonBeep,
   mnuCmdAlarmDuration,
@@ -57,11 +58,12 @@ PROGMEM const char knittingMenu_4_1[] = "Operation mode";
 PROGMEM const char knittingMenu_4_2[] = "Foot pedal mode";
 PROGMEM const char knittingMenu_4_3[] = "Carriage speed";
 PROGMEM const char knittingMenu_4_4[] = "Yarn sensor";
-PROGMEM const char knittingMenu_4_5[] = "Direction arrow";
-PROGMEM const char knittingMenu_4_6[] = "Button Beep";
-PROGMEM const char knittingMenu_4_7[] = "Alarm Duration";
-PROGMEM const char knittingMenu_4_8[] = "LCD backlight";
-PROGMEM const MenuItem knittingMenu_List_4[] = {{mnuCmdOpMode, knittingMenu_4_1}, {mnuCmdFootMode, knittingMenu_4_2}, {mnuCmdCarSpeed, knittingMenu_4_3}, {mnuCmdYarnsensor, knittingMenu_4_4}, {mnuCmdArrowMode, knittingMenu_4_5}, {mnuCmdButtonBeep, knittingMenu_4_6}, {mnuCmdAlarmDuration, knittingMenu_4_7}, {mnuCmdDisplayBrightness, knittingMenu_4_8}, {mnuCmdBack, knittingMenu_back}};
+PROGMEM const char knittingMenu_4_5[] = "Overload sensor";
+PROGMEM const char knittingMenu_4_6[] = "Direction arrow";
+PROGMEM const char knittingMenu_4_7[] = "Button Beep";
+PROGMEM const char knittingMenu_4_8[] = "Alarm Duration";
+PROGMEM const char knittingMenu_4_9[] = "LCD backlight";
+PROGMEM const MenuItem knittingMenu_List_4[] = {{mnuCmdOpMode, knittingMenu_4_1}, {mnuCmdFootMode, knittingMenu_4_2}, {mnuCmdCarSpeed, knittingMenu_4_3}, {mnuCmdYarnsensor, knittingMenu_4_4}, {mnuCmdOverloadsensor, knittingMenu_4_5}, {mnuCmdArrowMode, knittingMenu_4_6}, {mnuCmdButtonBeep, knittingMenu_4_7}, {mnuCmdAlarmDuration, knittingMenu_4_8}, {mnuCmdDisplayBrightness, knittingMenu_4_9}, {mnuCmdBack, knittingMenu_back}};
 
 PROGMEM const char knittingMenu_1[] = "Set row count";
 PROGMEM const char knittingMenu_2[] = "Boundaries";
@@ -95,6 +97,8 @@ case mnuCmdFootMode :
 case mnuCmdCarSpeed :
 	break;
 case mnuCmdYarnsensor :
+	break;
+case mnuCmdOverloadsensor :
 	break;
 case mnuCmdArrowMode :
 	break;
@@ -138,6 +142,7 @@ case mnuCmdResetToDefaults :
         <Item Id="FootMode"   Name="Foot pedal mode"/>
         <Item Id="CarSpeed"   Name="Carriage speed"/>
         <Item Id="Yarnsensor" Name="Yarn sensor"/>
+        <Item Id="Overloadsensor" Name="Overload sensor"/>
         <Item Id="ArrowMode" Name="Direction arrow"/>
         <Item Id="ButtonBeep" Name="Button Beep"/>
         <Item Id="AlarmDuration" Name="Alarm Duration"/>

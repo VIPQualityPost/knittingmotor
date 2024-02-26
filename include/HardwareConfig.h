@@ -31,8 +31,10 @@ const byte atRefpoint = LOW;    // endstop active on ... level
 // Signal pins
 const byte footswitchPin = A3;  // footswitch
 const byte alarmPin = A1;       // buzzer pin
+const byte yarnMainPin = A2;   // main yarn sensor pin
+const byte yarnSecPin = A1;   // second yarn sensor pin
+const byte overloadPin = 1;   // carrier overload sensor pin
 const byte signalLevel = HIGH;  // switch level
-// const byte yarnsensePin = A2;   // yarn sensor pin
 // const byte hx711SCKPin = A2;    // HX711 serial clock input
 // const byte hx711DTPin = A1;     // HX711 DataOut
 const unsigned long swDebounceTime = 10;  // switch debounce time

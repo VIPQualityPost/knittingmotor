@@ -95,6 +95,16 @@ char *Config::getFormattedStr(byte cmdId)
         fmt(strbuf, 1, "off");
       }
       break;
+    case mnuCmdOverloadsensor :
+      if (overloadsensorEnable)
+      {
+        fmt(strbuf, 1, "on");
+      }
+      else
+      {
+        fmt(strbuf, 1, "off");
+      }
+      break;
     case mnuCmdDisplayBrightness :
     {
       byte brightnessPC = ((unsigned short) displayBrightness * 100) / 3;
@@ -142,7 +152,8 @@ void Config::setDefaults()
   alarmDuration = 2;
   buttonBeep = true;
   displayBrightness = 3;
-  yarnsensorEnable = true;
+  yarnsensorEnable = false;
+  overloadsensorEnable = false;
   carriageSpeed = 80;
   opMode = true;
   arrowMode = true;

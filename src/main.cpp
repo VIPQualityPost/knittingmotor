@@ -61,7 +61,9 @@ enum ErrorStates : byte {
   OK, 
   HIT_HOME, 
   HIT_MAX, 
-  HIT_YARN,
+  HIT_YARN1,
+  HIT_YARN2,
+  MISS_OVRL,
   MISS_FOOT
 };
 
@@ -208,18 +210,36 @@ void disablePortC_PCI()
 // Enable Pins A4 and A5 for PCI on Port C
 void enablePortC_Pins() 
 {
-  set_bit(PCMSK1, PCINT13);
-  set_bit(PCMSK1, PCINT12);
-  set_bit(PCMSK1, PCINT11);
+  if (currentConfig.overloadsensorEnable == true) 
+  {
+    set_bit(PCMSK1, PCINT17); // D1
+  }
+  set_bit(PCMSK1, PCINT13); // A5
+  set_bit(PCMSK1, PCINT12); // A4
+  if (currentConfig.yarnsensorEnable == true) 
+  {
+    set_bit(PCMSK1, PCINT11); // A3
+    set_bit(PCMSK1, PCINT10); // A2
+  }
+  set_bit(PCMSK1, PCINT9);  // A1
 }
 
 // ------------------------------------------------------------------------
 // Disable Pins A4 and A5 for PCI on Port C
 void disablePortC_Pins() 
 {
-  clear_bit(PCMSK1, PCINT13);
-  clear_bit(PCMSK1, PCINT12);
-  clear_bit(PCMSK1, PCINT11);
+  if (currentConfig.overloadsensorEnable == true) 
+  {
+    clear_bit(PCMSK1, PCINT17); // D1
+  }
+  clear_bit(PCMSK1, PCINT13); // A5
+  clear_bit(PCMSK1, PCINT12); // A4
+  if (currentConfig.yarnsensorEnable == true) 
+  {
+    clear_bit(PCMSK1, PCINT11); // A3
+    clear_bit(PCMSK1, PCINT10); // A2
+  }
+  clear_bit(PCMSK1, PCINT9);  // A1
 }
 
 // ------------------------------------------------------------------------
@@ -860,6 +880,21 @@ byte processMenuCommand(byte cmdId)
         configChanged = false;
       }
       break;
+    case mnuCmdOverloadsensor:
+      configChanged = true;
+      if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
+      {
+        currentConfig.overloadsensorEnable = true;
+      }
+      else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
+      {
+        currentConfig.overloadsensorEnable = false;
+      }
+      else
+      {
+        configChanged = false;
+      }
+      break;
     case mnuCmdDisplayBrightness :
       configChanged = true;
       if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
@@ -1085,11 +1120,17 @@ void errorStateHandling()
           case HIT_HOME:
             lcd.print(F("HIT 2 - HOME"));
           break;
-          case HIT_YARN:
-            lcd.print(F("HIT 3 - YARN"));
+          case HIT_YARN1:
+            lcd.print(F("YARN 3 - MAIN"));
+          break;
+          case HIT_YARN2:
+            lcd.print(F("YARN 4 - SEC"));
           break;
           case MISS_FOOT:
-            lcd.print(F("ERR 4 - FOOT"));
+            lcd.print(F("ERR 1 - FOOT"));
+          break;
+          case MISS_OVRL:
+            lcd.print(F("ERR 2 - OVRL"));
           break;
           default:
           break;
@@ -1178,9 +1219,13 @@ void setup()
 
   pinMode(enaPin, OUTPUT);
   digitalWrite(enaPin, LOW);
-  pinMode(refPin, INPUT_PULLUP ); // NO
-  pinMode(maxPin, INPUT_PULLUP ); // NO
-  pinMode(footswitchPin, INPUT_PULLUP);  // NC
+  
+  pinMode(refPin, INPUT_PULLUP );       // NO
+  pinMode(maxPin, INPUT_PULLUP );       // NO
+  pinMode(yarnMainPin, INPUT_PULLUP );  // NO
+  pinMode(yarnSecPin, INPUT_PULLUP );   // NO
+  pinMode(overloadPin, INPUT_PULLUP );  // NO
+  pinMode(footswitchPin, INPUT_PULLUP); // NC
 
   lcd.clear();
   lcd.print(F("Knitting Motor"));
@@ -1691,6 +1736,33 @@ ISR (PCINT1_vect)
         knitContinuous = 0;
         knitRow = 0;
       }
+      if (currentConfig.yarnsensorEnable == true) 
+      {
+        if (digitalRead(yarnMainPin) == atRefpoint) 
+        {
+          myStepper.stop();
+          errorState = HIT_YARN1;
+          knitContinuous = 0;
+          knitRow = 0;
+        }
+        if (digitalRead(yarnSecPin) == atRefpoint) 
+        {
+          myStepper.stop();
+          errorState = HIT_YARN2;
+          knitContinuous = 0;
+          knitRow = 0;
+        }
+      }
+      if (currentConfig.overloadsensorEnable == true)
+      {
+        if (digitalRead(overloadPin) == atRefpoint) 
+        {
+          myStepper.stop();
+          errorState = MISS_OVRL;
+          knitContinuous = 0;
+          knitRow = 0;
+        }
+      }
     }
 
     // debounce foot pedal, see: https://arduino.stackexchange.com/a/45051
@@ -1698,7 +1770,8 @@ ISR (PCINT1_vect)
     if (pinState != previousPinState) 
     { // ignore pin changes of pins other than SELECTOR_BTN
       if (pinState == signalLevel) {
-        if ((millis() - previousStateChangeMillis) > swDebounceTime) { // debounce
+        if ((millis() - previousStateChangeMillis) > swDebounceTime) 
+        { // debounce
           fpHit = 1;
         }
       }
