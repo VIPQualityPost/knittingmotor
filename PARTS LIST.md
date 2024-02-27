@@ -1,10 +1,10 @@
-3D printed parts
-----------------
+1.) 3D printed parts
+--------------------
 
-Print all of the parts you find in the `knitting_machine_motor.3mf`. I used 6 walls, with 35% infill at 0.2mm layer height and tree support where needed. If you have a Bambulab X1C printer, you should be able to use the 3MF file directly.
+Print all of the parts you find in the `Kitting machine motor.3mf`. I used 6 walls, with 35% infill at 0.2mm layer height and tree support where needed. If you have a Bambulab X1C printer, you should be able to use the 3MF file directly.
 
-V-Slot Extrusions and accessories
----------------------------------
+2.) V-Slot Extrusions and accessories
+-------------------------------------
 
 2020:
   - 1700mm (1x)
@@ -18,8 +18,8 @@ V-Slot Extrusions and accessories
 - M5x8 T-nut pan head screws
 - end caps for extrusions, if you like
 
-Electronics
------------
+3.) Electronics
+---------------
 
 - Arduino UNO R3 or (better) R4
 - DFRobot LCD Keypad shield
@@ -28,15 +28,17 @@ Electronics
 - DC power supply 24V 10A
 - IEC320 / C14 power jack
 - Nema 23 stepper motor type 23HS2430B (like this https://www.sys-motor.com/show.aspx?id=165)
-- TB6600 stepper driver
+- TB6600 stepper driver (configured for 1600 steps)
 - (2x) Lerdge endstops (like this https://shop.lerdge.com/products/mechanical-endstop-horizontal)
-- small endstop switch (normally closed, for footswitch)
+- (2x) small endstop switches (normally closed, footswitch+overload)
+- (4x) reed contact 10mm (normally closed, yarn sensing)
 - (2x) GX16 4-pin male+female plug connector (for stepper motor and encoder)
-- (3x-4x) Stereo jack connector socket panel mount (for endstops, footswitch and yarn sensor)
+- (3x-4x) Stereo jack connector socket panel mount (for endstops, footswitch, (optional) overload and yarn sensor)
 - (3x-4x) 3.5mm stereo TRS plug
+- 12V 2-pin Fan (40x40x10)
 
-Mechanics
----------
+4.) Mechanics
+-------------
 
 - Openbuild V-slot gantry for 2020 with 4 wheels (like this https://openbuildspartstore.com/v-slot-gantry-kit-20mm/)
 - GT2 pulley 30T 8mm bore

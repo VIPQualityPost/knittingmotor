@@ -28,7 +28,7 @@
         <Item Id="Overloadsensor" Name="Overload sensor"/>
         <Item Id="ArrowMode" Name="Direction arrow"/>
         <Item Id="ButtonBeep" Name="Button Beep"/>
-        <Item Id="AlarmDuration" Name="Alarm Duration"/>
+        <Item Id="AlarmTune" Name="Alarm tune"/>
         <Item Id="DisplayBrightness" Name="LCD backlight"/>
       </MenuItems>
     </Item>

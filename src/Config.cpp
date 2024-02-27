@@ -1,6 +1,7 @@
 #include "Config.h"
 #include "LcdKeypad.h"
 #include "MenuData.h"
+#include "RTTTLTunes.h"
 #include <avr/eeprom.h>
 
 char NotImp[] = " Hold SELECT";
@@ -38,9 +39,6 @@ char *Config::getFormattedStr(byte cmdId)
       break;
     case mnuCmdRightBnd:
       fmt(strbuf, 2, inttostr(intbuf, rightBoundary), " pos");
-      break;
-    case mnuCmdAlarmDuration:
-      fmt(strbuf, 2, inttostr(intbuf, alarmDuration), " seconds");
       break;
     case mnuCmdCarSpeed:
       fmt(strbuf, 2, inttostr(intbuf, carriageSpeed), " rpm");
@@ -112,6 +110,9 @@ char *Config::getFormattedStr(byte cmdId)
       fmt(strbuf, 2, intbuf, "%");
       break;
     }
+    case mnuCmdAlarmTune :
+      fmt(strbuf, 1, (const char *)pgm_read_word(&(Songs[alarmTune])));
+      break;
     default:
       NotImp[0] = 0b01111110; // forward arrow representing input prompt.
       strcpy(strbuf, NotImp);
@@ -149,7 +150,7 @@ void Config::setDefaults()
   rowCount = 0;
   leftBoundary = 0;
   rightBoundary = 0;
-  alarmDuration = 2;
+  alarmTune = 0;
   buttonBeep = true;
   displayBrightness = 3;
   yarnsensorEnable = false;
