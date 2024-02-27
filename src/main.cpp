@@ -113,7 +113,6 @@ MenuManager Menu1(knittingMenu_Root, menuCount(knittingMenu_Root));
 unsigned int currentRowCount = 0;
 unsigned int oldRowCount = 999;
 unsigned int rowsKnit = 0;
-unsigned long alarmStartTime;
 unsigned long startMillis;
 unsigned long menuStartTime;
 char sngbuf[420];
@@ -484,7 +483,8 @@ void printRowCount(unsigned int rowCount, bool withTopic) {
   char intbuf[3];
   byte bdPad = 0; 
 
-  if (updLcd == 1 && currentAppMode == APP_DISP_UPD) 
+  // if (updLcd == 1 && currentAppMode == APP_DISP_UPD) 
+  if (updLcd == 1) 
   {
     if (withTopic == true)
     {
@@ -566,6 +566,7 @@ byte processMenuCommand(byte cmdId)
 {
   byte complete = false;  // set to true when menu command processing complete.
   byte configChanged = false;
+  int oldTune;
 
   if (btn == BUTTON_SELECT_PRESSED)
   {
@@ -578,6 +579,8 @@ byte processMenuCommand(byte cmdId)
         cmdId != mnuCmdClearBnd
         ) complete = true;
   }
+
+  oldTune = currentConfig.alarmTune;
 
   switch (cmdId)
   {
@@ -928,6 +931,24 @@ byte processMenuCommand(byte cmdId)
       {
         configChanged = false;
       }
+
+      // stop any current playing tune
+      if (anyrtttl::nonblocking::isPlaying())
+      {
+        if (oldTune != currentConfig.alarmTune)
+        {
+          anyrtttl::nonblocking::stop();
+        }
+      }
+      // start playing current selected tune
+      if ( !anyrtttl::nonblocking::isPlaying() )
+      {
+        strcpy_P(sngbuf, (char*)pgm_read_dword(&(Melodies[currentConfig.alarmTune])));
+        anyrtttl::nonblocking::begin(alarmPin, sngbuf);
+      }
+      else {
+        anyrtttl::nonblocking::play();
+      }
       break;
     case mnuCmdInfo:
       if (btn == BUTTON_SELECT_LONG_PRESSED)
@@ -1048,7 +1069,6 @@ void homing()
   delay(1000);
 
   myStepper.moveTo(0);
-  readEncoder();  // to update the encoder direction directly after homing
 }
 
 // ------------------------------------------------------------------------
@@ -1585,8 +1605,6 @@ void loop()
             // currentConfig.save();
             // currentRowCount = currentConfig.rowCount;
             nextAppMode = APP_ALARM;
-            alarmStartTime = millis();
-            // tone(alarmPin, NOTE_C5, (unsigned long)currentConfig.alarmDuration * 1000);              
             if ( !anyrtttl::nonblocking::isPlaying() )
             {
               strcpy_P(sngbuf, (char*)pgm_read_dword(&(Melodies[currentConfig.alarmTune])));
@@ -1681,7 +1699,6 @@ void loop()
 
         if (currentAppMode == APP_NORMAL_MODE)
         {
-          // noTone(alarmPin);
           anyrtttl::nonblocking::stop();
         }
         else
@@ -1725,6 +1742,10 @@ void loop()
           {
             menuStartTime = millis();
             currentAppMode = APP_MENU_MODE;
+            if ( anyrtttl::nonblocking::isPlaying() )
+            {
+              anyrtttl::nonblocking::stop();
+            }
             // clear forward arrow
             lcd.setCursor(0, 1);
             strbuf[0] = ' '; // clear forward arrow
