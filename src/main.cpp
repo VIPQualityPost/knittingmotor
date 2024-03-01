@@ -906,6 +906,14 @@ byte processMenuCommand(byte cmdId)
       {
         configChanged = false;
       }
+      if (configChanged == true) {
+        cli();
+        disablePort_Pins();
+        disablePort_PCI();
+        enablePort_PCI();
+        enablePort_Pins();
+        sei();
+      }
       break;
     case mnuCmdDisplayBrightness :
       configChanged = true;
