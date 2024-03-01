@@ -1,0 +1,36 @@
+
+diff --git a/aJSON.cpp b/aJSON.cpp
+index 1bb9320..158ff88 100644
+--- a/aJSON.cpp
++++ b/aJSON.cpp
+@@ -510,7 +510,7 @@ aJsonStream::skip()
+ // Utility to flush our buffer in case it contains garbage
+ // since the parser will return the buffer untouched if it
+ // cannot understand it.
+-int
++void
+ aJsonStream::flush()
+ {
+   int in = this->getch();
+@@ -518,7 +518,7 @@ aJsonStream::flush()
+   {
+     in = this->getch();
+   }
+-  return EOF;
++  // return EOF;
+ }
+ 
+ 
+diff --git a/aJSON.h b/aJSON.h
+index a409a92..8f60c2f 100644
+--- a/aJSON.h
++++ b/aJSON.h
+@@ -89,7 +89,7 @@ public:
+ 	int printString(aJsonObject *item);
+ 
+ 	int skip();
+-	int flush();
++	void flush();
+ 
+ 	int parseValue(aJsonObject *item, char** filter);
+ 	int printValue(aJsonObject *item);

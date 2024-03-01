@@ -9,7 +9,6 @@
 #include "HardwareConfig.h"
 #include "RTTTLTunes.h"
 
-
 // make real string from preprocessor text
 #define _STRINGIZE(x) #x
 #define STRINGIZE(x) _STRINGIZE(x)
@@ -34,6 +33,10 @@
   #define DBG_PRINT(...)     //now defines a blank line
   #define DBG_PRINTLN(...)   //now defines a blank line
 #endif
+
+// further possible debug macros
+// #define DEBUG_APPMODE
+// #define DEBUG_POSITION
 
 #define STEP_CW 1
 #define STEP_CCW -1
@@ -129,7 +132,7 @@ enum Screens : byte
 
 Screens screenToShow = ROWS;
 
-byte arrowShown = 0;
+byte arrowShown = 0;    // arrow on display?
 byte startupDisplayed = 0;  // is showing startup display
 byte errorDisplayed = 0;  // controls blinking of error message
 
@@ -880,6 +883,14 @@ byte processMenuCommand(byte cmdId)
       {
         configChanged = false;
       }
+      if (configChanged == true) {
+        cli();
+        disablePort_Pins();
+        disablePort_PCI();
+        enablePort_PCI();
+        enablePort_Pins();
+        sei();
+      }
       break;
     case mnuCmdOverloadsensor:
       configChanged = true;
@@ -1147,7 +1158,11 @@ void errorStateHandling()
       errorDisplayed = 1 - errorDisplayed;
       if (errorDisplayed == 1) 
       {
+        #ifdef DEBUG_APPMODE
+        DBG_PRINTLN("Errorscreen LCD on");
+        #endif
         lcdClear();
+
         switch (errorState) 
         {
           case HIT_MAX:
@@ -1176,6 +1191,10 @@ void errorStateHandling()
       } 
       else 
       {
+        #ifdef DEBUG_APPMODE
+        DBG_PRINTLN("Errorscreen LCD off");
+        #endif
+
         lcdClear();
       }
     }
@@ -1192,17 +1211,21 @@ void errorStateHandling()
       
       if (currentAppMode != APP_PRE_CHECK) 
       {
-        // if (currentAppMode == APP_CARRIAGE_RUNNING) 
-        // { 
-          nextAppMode = APP_NORMAL_MODE;
-        // } 
-        // else 
-        // {
-        //  nextAppMode = currentAppMode;
-        // }
-        currentAppMode = APP_DISP_UPD;
-        screenToShow = ROWS_WITH_HEADER;
-        nok = 0;
+        // only clear error after overload sensor reset
+        if (digitalRead(overloadPin) != signalLevel) 
+        {
+          // if (currentAppMode == APP_CARRIAGE_RUNNING) 
+          // { 
+            nextAppMode = APP_NORMAL_MODE;
+          // } 
+          // else 
+          // {
+          //  nextAppMode = currentAppMode;
+          // }
+          currentAppMode = APP_DISP_UPD;
+          screenToShow = ROWS_WITH_HEADER;
+          nok = 0;
+        } 
       }
     }
 
@@ -1324,6 +1347,7 @@ void loop()
   btn = getButton();
   readEncoder();
 
+  // button beep
   if (btn && currentConfig.buttonBeep && currentAppMode != APP_ALARM)
   {
     byte btnFlags = btn & 192;
@@ -1348,11 +1372,12 @@ void loop()
       currentAppMode = APP_PGMSTART;
   }
   
-  // overall errorState check before any further action
+  // only proceed if errorState is OK
   if (errorState == OK) 
   {
+
+      // reset direction arrow on display if not moving
     if (!currentConfig.arrowMode) {
-      // reset direction arrow if not moving
       if (!myStepper.moving() && arrowShown ==1)
       {
         for (int i=0; i<5; i++) {
@@ -1375,7 +1400,7 @@ void loop()
     {
 
       // ----------------------------------
-      // only at program start
+      // program start
       case APP_PGMSTART:
         #ifdef DEBUG_APPMODE
         DBG_PRINTLN("appMode: APP_PGMSTART");
@@ -1395,7 +1420,7 @@ void loop()
         }
 
       // ----------------------------------
-      // normal operations, menu closed
+      // normal operation, menu closed
       case APP_NORMAL_MODE :
         #ifdef DEBUG_APPMODE
         DBG_PRINTLN("appMode: APP_NORMAL_MODE");
@@ -1448,7 +1473,29 @@ void loop()
           }
         }
 
-        // foot pedal hit
+        if (btn == BUTTON_LEFT_SHORT_RELEASE)
+        {
+          if (!myStepper.moving())
+          {
+            if (myStepper.currentPosition() != stepperMaxPos)
+            {
+              myStepper.move(200);
+            }
+          }
+        }
+
+        if (btn == BUTTON_RIGHT_SHORT_RELEASE)
+        {
+          if (!myStepper.moving())
+          {
+            if (myStepper.currentPosition() != 0)
+            {
+              myStepper.move(-200);
+            }
+          }
+        }
+
+        // foot pedal hit?
         if (fpHit == 1) {
           if (currentConfig.footMode) {
             cli();
@@ -1531,7 +1578,7 @@ void loop()
           }
         }
 
-        // deactivate continuous knitting with DOWN
+        // deactivate continuous?
         if (knitContinuous == 1)
         {
           // deeactivate continuous with DOWN button
@@ -1558,7 +1605,8 @@ void loop()
         // only allow continuous knitting if rowCount is set
         if (knitContinuous == 1) 
         {
-          if (currentConfig.opMode)  // operation mode auto
+          // auto mode
+          if (currentConfig.opMode)
           {
             if (currentRowCount > 0) 
             {
@@ -1567,7 +1615,7 @@ void loop()
               sei();
               nextAppMode = APP_CARRIAGE_RUNNING;
             } 
-            else 
+            else
             {
               nextAppMode = APP_NORMAL_MODE;
               cli();
@@ -1575,7 +1623,7 @@ void loop()
               sei();
             }
           } 
-          else    // operation mode manual
+          else // manual mode
           {
               cli();
               knitRow = 1;
@@ -1594,8 +1642,8 @@ void loop()
           currentConfig.rowCount = currentRowCount;
           currentConfig.save();
 
-          currentAppMode = APP_DISP_UPD;
-          screenToShow = ROWS;
+          // currentAppMode = APP_DISP_UPD;
+          // screenToShow = ROWS;
 
           oldRowCount = currentRowCount;
 
@@ -1619,6 +1667,8 @@ void loop()
         //}
        
         currentAppMode = APP_DISP_UPD;
+        screenToShow = ROWS;
+
         // counter if carriage moved
         rowsKnit += 1;
         break;
@@ -1708,7 +1758,7 @@ void loop()
         break;
 
       // ----------------------------------
-      // TODO: possible display handling
+      // display handling
       case APP_DISP_UPD:
         #ifdef DEBUG_APPMODE
         DBG_PRINTLN("appMode: APP_DISP_UPD");

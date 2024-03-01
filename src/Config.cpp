@@ -1,8 +1,8 @@
+#include <avr/eeprom.h>
 #include "Config.h"
 #include "LcdKeypad.h"
 #include "MenuData.h"
 #include "RTTTLTunes.h"
-#include <avr/eeprom.h>
 
 char NotImp[] = " Hold SELECT";
 static char strbuf[LCD_COLS+1];
@@ -150,7 +150,7 @@ void Config::setDefaults()
   rowCount = 0;
   leftBoundary = 0;
   rightBoundary = 0;
-  alarmTune = 0;
+  alarmTune = 4;
   buttonBeep = true;
   displayBrightness = 3;
   yarnsensorEnable = false;

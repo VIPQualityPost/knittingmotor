@@ -1,9 +1,10 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#include "Arduino.h"
+#include <Arduino.h>
 
-const char NameAndVersion[] = "Knitting Motor Configuration V1.2";
+
+const char NameAndVersion[] = "Knitting Motor Configuration V1.4";
 
 extern long addToVal(short delta, long timeval, long minval = 1, long maxval = 1);
 
@@ -26,7 +27,7 @@ class Config
     unsigned int leftBoundary;
     unsigned int rightBoundary;
     
-    int alarmTune;              // sing no.
+    byte alarmTune;              // sing no.
     byte buttonBeep;            // true/false
     byte displayBrightness;     // 1=33%, 2=66%, 3=100%
     byte yarnsensorEnable;      // true/false
