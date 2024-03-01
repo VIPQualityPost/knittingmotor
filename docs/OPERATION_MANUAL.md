@@ -100,11 +100,13 @@ To change any of the following parameters, open the control box menu and go to `
 
 - Yarn sensor (default: `off`)<br>
   Activate or deactivate, if the control box should check for messages from the yarn sensor.
-  If you don't use one, set to `off`.
+  If you don't use one, set to `off`.<br>
+  ***Changing this parameter requires a manual `REBOOT` of the control box.***
 
 - Overload sensor (default: `off`)<br>
   Activate or deactivate, if the control box should check for messages from the overload sensor.
-  If you don't use one, set it to `off`.
+  If you don't use one, set it to `off`.<br>
+  ***Changing this parameter requires a manual `REBOOT` of the control box.***
 
 - Direction arrow (default: `on`)<br>
   During knitting you will be presented with a small combination of symbols on the lower right side of the display right next to the current row count, showing you the knitting direction, if continuous knitting is active and if boundaries are set.
