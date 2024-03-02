@@ -3,8 +3,9 @@
 #include "LcdKeypad.h"
 #include "MenuData.h"
 #include "RTTTLTunes.h"
+#include "Lang.h"
 
-char NotImp[] = " Hold SELECT";
+char NotImp[] = CFG_hold;
 static char strbuf[LCD_COLS+1];
 
 
@@ -32,85 +33,85 @@ char *Config::getFormattedStr(byte cmdId)
       strbuf[0] = 0;
       break; */
     case mnuCmdSetRowCount:
-      fmt(strbuf, 2, inttostr(intbuf, rowCount), " row(s)");
+      fmt(strbuf, 2, inttostr(intbuf, rowCount), CFG_rows);
       break;
     case mnuCmdLeftBnd:
-      fmt(strbuf, 2, inttostr(intbuf, leftBoundary), " pos");
+      fmt(strbuf, 2, inttostr(intbuf, leftBoundary), CFG_pos);
       break;
     case mnuCmdRightBnd:
-      fmt(strbuf, 2, inttostr(intbuf, rightBoundary), " pos");
+      fmt(strbuf, 2, inttostr(intbuf, rightBoundary), CFG_pos);
       break;
     case mnuCmdCarSpeed:
-      fmt(strbuf, 2, inttostr(intbuf, carriageSpeed), " rpm");
+      fmt(strbuf, 2, inttostr(intbuf, carriageSpeed), CFG_rpm);
       break;
     case mnuCmdArrowMode :
       if (arrowMode)
       {
-        fmt(strbuf, 1, "show");
+        fmt(strbuf, 1, CFG_show);
       }
       else
       {
-        fmt(strbuf, 1, "hide");
+        fmt(strbuf, 1, CFG_hide);
       }
       break;
     case mnuCmdButtonBeep :
       if (buttonBeep)
       {
-        fmt(strbuf, 1, "on");
+        fmt(strbuf, 1, CFG_on);
       }
       else
       {
-        fmt(strbuf, 1, "off");
+        fmt(strbuf, 1, CFG_off);
       }
       break;
     case mnuCmdOpMode :
       if (opMode)
       {
-        fmt(strbuf, 1, "auto");
+        fmt(strbuf, 1, CFG_auto);
       }
       else
       {
-        fmt(strbuf, 1, "manual");
+        fmt(strbuf, 1, CFG_manual);
       }
       break;
     case mnuCmdFootMode :
       if (footMode)
       {
-        fmt(strbuf, 1, "single");
+        fmt(strbuf, 1, CFG_single);
       }
       else
       {
-        fmt(strbuf, 1, "continuous");
+        fmt(strbuf, 1, CFG_continuous);
       }
       break;
     case mnuCmdYarnMain :
       if (yarnsensorMainEnable)
       {
-        fmt(strbuf, 1, "on");
+        fmt(strbuf, 1, CFG_on);
       }
       else
       {
-        fmt(strbuf, 1, "off");
+        fmt(strbuf, 1, CFG_off);
       }
       break;
     case mnuCmdYarnSec :
       if (yarnsensorSecEnable)
       {
-        fmt(strbuf, 1, "on");
+        fmt(strbuf, 1, CFG_on);
       }
       else
       {
-        fmt(strbuf, 1, "off");
+        fmt(strbuf, 1, CFG_off);
       }
       break;
     case mnuCmdOverloadsensor :
       if (overloadsensorEnable)
       {
-        fmt(strbuf, 1, "on");
+        fmt(strbuf, 1, CFG_on);
       }
       else
       {
-        fmt(strbuf, 1, "off");
+        fmt(strbuf, 1, CFG_off);
       }
       break;
     case mnuCmdDisplayBrightness :

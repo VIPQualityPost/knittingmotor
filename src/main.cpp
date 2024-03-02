@@ -10,6 +10,7 @@
 #include "HardwareConfig.h"
 #include "RTTTLTunes.h"
 #include "Version.h"
+#include "Lang.h"
 
 // make real string from preprocessor text
 // #define _STRINGIZE(x) #x
@@ -307,7 +308,7 @@ void toRefPoint()
 {
   disablePort_PCI();   // disable pin change interrupts for exclusive pin access
   // Run stepper to home endpoint and zero position
-  DBG_PRINT(F("Homeing"));
+  DBG_PRINT(F("Homing"));
 
   // move fast to endpoint...
   if ( digitalRead( refPin ) != atRefpoint ) 
@@ -500,7 +501,7 @@ void refreshMenuDisplay (byte refreshMode)
 void printRowCount(unsigned int rowCount, bool withTopic) 
 {
   char intbuf[3];
-  char tmpbuf[17];
+  // char tmpbuf[17];
   byte bdPad = 0; 
 
 //  if (updLcd == 1 && currentAppMode == APP_DISP_UPD) 
@@ -512,11 +513,11 @@ void printRowCount(unsigned int rowCount, bool withTopic)
       lcd.clear();
       lcd.setCursor(0,0);
       if (currentConfig.opMode) {
-        lcd.print(F("Rows to knit:"));
+        lcd.print(F(MAIN_rtk));
       } 
       else
       {
-        lcd.print(F("Rows knitted:"));
+        lcd.print(F(MAIN_rk));
       }
     }
 
@@ -526,19 +527,19 @@ void printRowCount(unsigned int rowCount, bool withTopic)
     char tmpbuf[17];
 
     if (nextAppMode == APP_ALARM) {
-      strncpy_P(tmpbuf, (const char*)F("Done."), 16);
+      strncpy_P(tmpbuf, (const char*)F(MAIN_done), 16);
       rpad(strbuf, tmpbuf);
     } 
     else 
     {
       if (rowCount == 1)
       {
-        strncpy_P(tmpbuf, (const char*)F(" row"), 16);
+        strncpy_P(tmpbuf, (const char*)F(MAIN_row), 16);
         fmt(strbuf, 2, intbuf, tmpbuf);
       } 
       else 
       {
-        strncpy_P(tmpbuf, (const char*)F(" rows"), 16);
+        strncpy_P(tmpbuf, (const char*)F(MAIN_rows), 16);
         fmt(strbuf, 2, intbuf, tmpbuf);
       }
     }
@@ -723,9 +724,9 @@ byte processMenuCommand(byte cmdId)
         currentConfig.leftBoundary = 0;
         currentConfig.rightBoundary = 0;
         lcd.setCursor(0, 0);
-        lcd.print(F("Boundaries"));
+        lcd.print(F(MAIN_boundaries));
         lcd.setCursor(0, 1);
-        lcd.print(F("cleared."));
+        lcd.print(F(MAIN_cleared));
       } else if (/*btn == BUTTON_SELECT_SHORT_RELEASE ||*/ btn == BUTTON_SELECT_LONG_RELEASE)
       {
         refreshMenuDisplay(REFRESH_ASCEND);
@@ -1045,7 +1046,7 @@ byte processMenuCommand(byte cmdId)
         currentConfig.setDefaults();
         setBacklightBrightness(currentConfig.displayBrightness);
         lcd.setCursor(1, 1);
-        lcd.print(F("Defaults loaded"));
+        lcd.print(F(MAIN_defload));
       }
       else if (/*btn == BUTTON_SELECT_SHORT_RELEASE ||*/ btn == BUTTON_SELECT_LONG_RELEASE)
       {
@@ -1089,10 +1090,10 @@ void homing()
   if (stepperAttached == 0) { stepperAttach(); }
 
   lcdClear();
-  strncpy_P(tmpbuf, (const char*)F("Searching for"),16);
+  strncpy_P(tmpbuf, (const char*)F(MAIN_home1),16);
   lcd.print(rpad(strbuf, tmpbuf));
   lcd.setCursor(0,1);
-  lcd.print(F("home position..."));
+  lcd.print(F(MAIN_home2));
   toRefPoint();
   myEnc.write(0);  // zero encoder pos, too
 
@@ -1100,10 +1101,10 @@ void homing()
   DBG_PRINTLN(myStepper.currentPosition());
 
   lcdClear();
-  strncpy_P(tmpbuf, (const char*)F("...then going to"),16);
+  strncpy_P(tmpbuf, (const char*)F(MAIN_home3),16);
   lcd.print(rpad(strbuf, tmpbuf));
   lcd.setCursor(0,1);
-  lcd.print(F("the maximum..."));
+  lcd.print(F(MAIN_home4));
   toMaxPoint();
   
   DBG_PRINT(F("Max position: "));
@@ -1136,19 +1137,19 @@ void homing()
   DBG_PRINTLN(currentConfig.rightBoundary);
 
   lcdClear();
-  strncpy_P(tmpbuf, (const char*)F("...and now back"),16);
+  strncpy_P(tmpbuf, (const char*)F(MAIN_home5),16);
   lcd.print(rpad(strbuf, tmpbuf));
   lcd.setCursor(0,1);
-  lcd.print(F("home in: 3"));
+  lcd.print(F(MAIN_home6));
   delay(1000);
   lcd.setCursor(0,1);
-  lcd.print(F("home in: 2"));
+  lcd.print(F(MAIN_home7));
   delay(1000);
   lcd.setCursor(0,1);
-  lcd.print(F("home in: 1"));
+  lcd.print(F(MAIN_home8));
   delay(1000);
   lcdClear();
-  lcd.print(F("Please wait..."));
+  lcd.print(F(MAIN_home9));
 
   myStepper.moveTo(0);
   while ( myStepper.moving() );     // wait for deceleration ramp;
@@ -1212,9 +1213,9 @@ void startupScreen()
   if (startupDisplayed == 0) 
   {
     lcdClear();
-    lcd.print(F("Press SELECT to"));
+    lcd.print(F(MAIN_start1));
     lcd.setCursor(0, 1);
-    lcd.print(F("start homeing"));
+    lcd.print(F(MAIN_start2));
     startupDisplayed = 1;
   }
 }
@@ -1241,30 +1242,30 @@ void errorStateHandling()
         switch (errorState) 
         {
           case HIT_MAX:
-            lcd.print(F("HIT 1 - MAX"));
+            lcd.print(F(MAIN_err1));
           break;
           case HIT_HOME:
-            lcd.print(F("HIT 2 - HOME"));
+            lcd.print(F(MAIN_err2));
           break;
           case HIT_YARN1:
-            lcd.print(F("YARN 3 - MAIN"));
+            lcd.print(F(MAIN_err3));
             errorSymbolDisplayed = 1;
           break;
           case HIT_YARN2:
-            lcd.print(F("YARN 4 - SEC"));
+            lcd.print(F(MAIN_err4));
             errorSymbolDisplayed = 1;
           break;
           case MISS_FOOT:
-            lcd.print(F("ERR 1 - FOOT"));
+            lcd.print(F(MAIN_err5));
           break;
           case MISS_OVRL:
-            lcd.print(F("ERR 2 - OVRL"));
+            lcd.print(F(MAIN_err6));
           break;
           default:
           break;
         }
         lcd.setCursor(0, 1);
-        lcd.print(F("SELECT TO RESUME"));
+        lcd.print(F(MAIN_err_sel));
       } 
       else 
       {
@@ -1410,7 +1411,7 @@ void startCarriage() {
     }
     else
     {
-      show2secMessage(F("Please set row"), F("count to knit."), APP_DISP_UPD);
+      show2secMessage(F(MAIN_rowcount1), F(MAIN_rowcount2), APP_DISP_UPD);
     }
   } 
   else
@@ -1569,7 +1570,7 @@ void loop()
             {
               myStepper.moveTo(0);
               screenToShow = ROWS_WITH_HEADER;
-              show2secMessage(F("Going to"), F("home position..."), APP_DISP_UPD);
+              show2secMessage(F(MAIN_goingto), F(MAIN_zero), APP_DISP_UPD);
             }
           }
         }
@@ -1582,7 +1583,7 @@ void loop()
             {
               myStepper.moveTo(stepperMaxPos);
               screenToShow = ROWS_WITH_HEADER;
-              show2secMessage(F("Going to"), F("max position..."), APP_DISP_UPD);
+              show2secMessage(F(MAIN_goingto), F(MAIN_max), APP_DISP_UPD);
             }
           }
         }
@@ -1721,7 +1722,7 @@ void loop()
               knitContinuous = 0;
               sei();
               screenToShow = ROWS_WITH_HEADER;
-              show2secMessage(F("Stop knitting"), F("after row..."), APP_DISP_UPD);
+              show2secMessage(F(MAIN_stopknit1), F(MAIN_stopknit2), APP_DISP_UPD);
           }
           // deactivate continuous with foot switch
           if (footswitchBtn.pressed())
@@ -1731,7 +1732,7 @@ void loop()
               fpHit = 0;
               sei();
               screenToShow = ROWS_WITH_HEADER;
-              show2secMessage(F("Stop knitting"), F("after row..."), APP_DISP_UPD);
+              show2secMessage(F(MAIN_stopknit1), F(MAIN_stopknit2), APP_DISP_UPD);
           }
         }
 

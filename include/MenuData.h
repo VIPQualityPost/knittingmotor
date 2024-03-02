@@ -2,6 +2,7 @@
 #define _knittingMenu_
 #include "MenuManager.h"
 #include <avr/pgmspace.h>
+#include "Lang.h"
 
 /*
 
@@ -41,38 +42,38 @@ enum knittingMenuCommandId
   mnuCmdResetToDefaults
 };
 
-PROGMEM const char knittingMenu_back[] = "Back";
-PROGMEM const char knittingMenu_exit[] = "Exit";
+PROGMEM const char knittingMenu_back[] = MENU_back;
+PROGMEM const char knittingMenu_exit[] = MENU_exit;
 
-PROGMEM const char knittingMenu_2_1[] = "Left boundary";
-PROGMEM const char knittingMenu_2_2[] = "Right boundary";
-PROGMEM const char knittingMenu_2_3[] = "Clear boundaries";
+PROGMEM const char knittingMenu_2_1[] = MENU_2_1;
+PROGMEM const char knittingMenu_2_2[] = MENU_2_2;
+PROGMEM const char knittingMenu_2_3[] = MENU_2_3;
 PROGMEM const MenuItem knittingMenu_List_2[] = {{mnuCmdLeftBnd, knittingMenu_2_1}, {mnuCmdRightBnd, knittingMenu_2_2}, {mnuCmdClearBnd, knittingMenu_2_3}, {mnuCmdBack, knittingMenu_back}};
 
-PROGMEM const char knittingMenu_3_1[] = "Home carriage";
-PROGMEM const char knittingMenu_3_2[] = "Move to start";
-PROGMEM const char knittingMenu_3_3[] = "Move to middle";
-PROGMEM const char knittingMenu_3_4[] = "Move to end";
+PROGMEM const char knittingMenu_3_1[] = MENU_3_1;
+PROGMEM const char knittingMenu_3_2[] = MENU_3_2;
+PROGMEM const char knittingMenu_3_3[] = MENU_3_3;
+PROGMEM const char knittingMenu_3_4[] = MENU_3_4;
 PROGMEM const MenuItem knittingMenu_List_3[] = {{mnuCmdHomeing, knittingMenu_3_1}, {mnuCmdMoveToStart, knittingMenu_3_2}, {mnuCmdMoveToMid, knittingMenu_3_3}, {mnuCmdMoveToEnd, knittingMenu_3_4}, {mnuCmdBack, knittingMenu_back}};
 
-PROGMEM const char knittingMenu_4_1[] = "Operation mode";
-PROGMEM const char knittingMenu_4_2[] = "Foot pedal mode";
-PROGMEM const char knittingMenu_4_3[] = "Carriage speed";
-PROGMEM const char knittingMenu_4_4[] = "Yarn sensor main";
-PROGMEM const char knittingMenu_4_5[] = "Yarn sensor sec";
-PROGMEM const char knittingMenu_4_6[] = "Overload sensor";
-PROGMEM const char knittingMenu_4_7[] = "Direction arrow";
-PROGMEM const char knittingMenu_4_8[] = "Button Beep";
-PROGMEM const char knittingMenu_4_9[] = "Alarm tune";
-PROGMEM const char knittingMenu_4_10[] = "LCD backlight";
+PROGMEM const char knittingMenu_4_1[] = MENU_4_1;
+PROGMEM const char knittingMenu_4_2[] = MENU_4_2;
+PROGMEM const char knittingMenu_4_3[] = MENU_4_3;
+PROGMEM const char knittingMenu_4_4[] = MENU_4_4;
+PROGMEM const char knittingMenu_4_5[] = MENU_4_5;
+PROGMEM const char knittingMenu_4_6[] = MENU_4_6;
+PROGMEM const char knittingMenu_4_7[] = MENU_4_7;
+PROGMEM const char knittingMenu_4_8[] = MENU_4_8;
+PROGMEM const char knittingMenu_4_9[] = MENU_4_9;
+PROGMEM const char knittingMenu_4_10[] = MENU_4_10;
 PROGMEM const MenuItem knittingMenu_List_4[] = {{mnuCmdOpMode, knittingMenu_4_1}, {mnuCmdFootMode, knittingMenu_4_2}, {mnuCmdCarSpeed, knittingMenu_4_3}, {mnuCmdYarnMain, knittingMenu_4_4}, {mnuCmdYarnSec, knittingMenu_4_5}, {mnuCmdOverloadsensor, knittingMenu_4_6}, {mnuCmdArrowMode, knittingMenu_4_7}, {mnuCmdButtonBeep, knittingMenu_4_8}, {mnuCmdAlarmTune, knittingMenu_4_9}, {mnuCmdDisplayBrightness, knittingMenu_4_10}, {mnuCmdBack, knittingMenu_back}};
 
-PROGMEM const char knittingMenu_1[] = "Set row count";
-PROGMEM const char knittingMenu_2[] = "Boundaries";
-PROGMEM const char knittingMenu_3[] = "Tools";
-PROGMEM const char knittingMenu_4[] = "Settings";
-PROGMEM const char knittingMenu_5[] = "Info";
-PROGMEM const char knittingMenu_6[] = "Reset all";
+PROGMEM const char knittingMenu_1[] = MENU_1;
+PROGMEM const char knittingMenu_2[] = MENU_2;
+PROGMEM const char knittingMenu_3[] = MENU_3;
+PROGMEM const char knittingMenu_4[] = MENU_4;
+PROGMEM const char knittingMenu_5[] = MENU_5;
+PROGMEM const char knittingMenu_6[] = MENU_6;
 PROGMEM const MenuItem knittingMenu_Root[] = {{mnuCmdSetRowCount, knittingMenu_1}, {mnuCmdBoundariesRoot, knittingMenu_2, knittingMenu_List_2, menuCount(knittingMenu_List_2)}, {mnuCmdToolsRoot, knittingMenu_3, knittingMenu_List_3, menuCount(knittingMenu_List_3)}, {mnuCmdSettingsRoot, knittingMenu_4, knittingMenu_List_4, menuCount(knittingMenu_List_4)}, {mnuCmdInfo, knittingMenu_5}, {mnuCmdResetToDefaults, knittingMenu_6}, {mnuCmdBack, knittingMenu_exit}};
 
 /*
