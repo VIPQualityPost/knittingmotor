@@ -89,8 +89,6 @@ void debugReportSteps();
 LiquidCrystal lcd(rsPin, enablePin, d0Pin, d1Pin, d2Pin, d3Pin);
 char strbuf[LCD_COLS + 1]; // one line of lcd display
 const char EmptyStr[] = "";
-char intbuf[7];   // buffer for encoder and steps (5 characters + \0)
-char intbuf2[7];  // buffer for encoder and steps
 
 // app states
 // APP_PGMSTART - program just started, not homed and uninitialized values on LCD screen
@@ -118,7 +116,6 @@ unsigned int oldRowCount = 999;
 unsigned int rowsKnit = 0;
 unsigned long startMillis;
 unsigned long menuStartTime;
-char sngbuf[420];
 
 Config currentConfig;
 
@@ -570,6 +567,8 @@ byte processMenuCommand(byte cmdId)
   byte complete = false;  // set to true when menu command processing complete.
   byte configChanged = false;
   int oldTune;
+  char sngbuf[420];
+
 
   if (btn == BUTTON_SELECT_PRESSED)
   {
@@ -1094,6 +1093,9 @@ void homing()
 // show Stepper/Encoder/calculated steps on screen
 void displaySteps() 
 {
+  char intbuf[7];   // buffer for encoder and steps (5 characters + \0)
+  char intbuf2[7];  // buffer for encoder and steps
+
   // first display line
   if (updLcd == 1 && currentAppMode == APP_DISP_UPD) 
   {
@@ -1351,6 +1353,7 @@ void startCarriage() {
 // ------------------------------------------------------------------------
 void loop() 
 {
+  char sngbuf[420];
 
   btn = getButton();
   readEncoder();
