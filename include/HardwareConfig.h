@@ -37,6 +37,6 @@ const byte alarmPin = 0;       // buzzer pin
 const byte signalLevel = HIGH;  // switch level
 // const byte hx711SCKPin = A2;    // HX711 serial clock input
 // const byte hx711DTPin = A1;     // HX711 DataOut
-const unsigned long swDebounceTime = 10;  // switch debounce time
+const unsigned long swDebounceTime = 20;  // switch debounce time
 
 #endif

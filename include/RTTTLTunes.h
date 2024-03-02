@@ -7,7 +7,7 @@ PROGMEM const int songCount = 26;
 // some example RTTTL tunes
 PROGMEM const char HappyBday[]     = "HappyBday:d=4,o=5,b=125:8d.,16d,e,d,g,2f#,8p, 8d.,16d,e,d,a,2g,8p, 8d.,16d,d6,b,g,f#,2e,8p,8c6.,16c6,b,g,a,2g";
 PROGMEM const char Simpsons[]      = "The Simpsons:d=4,o=5,b=160:c.6,e6,f#6,8a6,g.6,e6,c6,8a,8f#,8f#,8f#,2g,8p,8p,8f#,8f#,8f#,8g,a#.,8c6,8c6,8c6,c6";
-PROGMEM const char dianaJones[]    = "IndianaJones:d=4,o=5,b=250:e,8p,8f,8g,8p,1c6,8p.,d,8p,8e,1f,p.,g,8p,8a,8b,8p,1f6,p,a,8p,8b,2c6,2d6,2e6,e,8p,8f,8g,8p,1c6,p,d6,8p,8e6,1f.6,g,8p,8g,e.6,8p,d6,8p,8g,e.6,8p,d6,8p,8g,f.6,8p,e6,8p,8d6,2c6";
+PROGMEM const char IndianaJones[]  = "IndianaJones:d=4,o=5,b=250:e,8p,8f,8g,8p,1c6,8p.,d,8p,8e,1f,p.,g,8p,8a,8b,8p,1f6,p,a,8p,8b,2c6,2d6,2e6,e,8p,8f,8g,8p,1c6,p,d6,8p,8e6,1f.6,g,8p,8g,e.6,8p,d6,8p,8g,e.6,8p,d6,8p,8g,f.6,8p,e6,8p,8d6,2c6";
 PROGMEM const char TakeOnMe[]      = "TakeOnMe:d=4,o=4,b=160:8f#5,8f#5,8f#5,8d5,8p,8b,8p,8e5,8p,8e5,8p,8e5,8g#5,8g#5,8a5,8b5,8a5,8a5,8a5,8e5,8p,8d5,8p,8f#5,8p,8f#5,8p,8f#5,8e5,8e5,8f#5,8e5,8f#5,8f#5,8f#5,8d5,8p,8b,8p,8e5,8p,8e5,8p,8e5,8g#5,8g#5,8a5,8b5,8a5,8a5,8a5,8e5,8p,8d5,8p,8f#5,8p,8f#5,8p,8f#5,8e5,8e5";
 PROGMEM const char Entertainer[]   = "Entertainer:d=4,o=5,b=140:8d,8d#,8e,c6,8e,c6,8e,2c.6,8c6,8d6,8d#6,8e6,8c6,8d6,e6,8b,d6,2c6,p,8d,8d#,8e,c6,8e,c6,8e,2c.6,8p,8a,8g,8f#,8a,8c6,e6,8d6,8c6,8a,2d6";
 PROGMEM const char Muppets[]       = "Muppets:d=4,o=5,b=250:c6,c6,a,b,8a,b,g,p,c6,c6,a,8b,8a,8p,g.,p,e,e,g,f,8e,f,8c6,8c,8d,e,8e,8e,8p,8e,g,2p,c6,c6,a,b,8a,b,g,p,c6,c6,a,8b,a,g.,p,e,e,g,f,8e,f,8c6,8c,8d,e,8e,d,8d,c";
@@ -35,7 +35,7 @@ PROGMEM const char MontyPython[]   = "MontyPython:d=4,o=5,b=200:32p,f6,8e6,d6,8c
 PROGMEM const char * const Melodies[] {
   HappyBday,    
   Simpsons,     
-  dianaJones,   
+  IndianaJones,   
   TakeOnMe,     
   Entertainer,  
   Muppets,      
@@ -64,7 +64,7 @@ PROGMEM const char * const Melodies[] {
 PROGMEM const char * const Songs[] {
   "HappyBday",    
   "Simpsons",     
-  "dianaJones",   
+  "IndianaJones",   
   "TakeOnMe",     
   "Entertainer",  
   "Muppets",      

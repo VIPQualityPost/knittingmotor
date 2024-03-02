@@ -30,7 +30,8 @@ enum knittingMenuCommandId
   mnuCmdOpMode,
   mnuCmdFootMode,
   mnuCmdCarSpeed,
-  mnuCmdYarnsensor,
+  mnuCmdYarnMain,
+  mnuCmdYarnSec,
   mnuCmdOverloadsensor,
   mnuCmdArrowMode,
   mnuCmdButtonBeep,
@@ -57,13 +58,14 @@ PROGMEM const MenuItem knittingMenu_List_3[] = {{mnuCmdHomeing, knittingMenu_3_1
 PROGMEM const char knittingMenu_4_1[] = "Operation mode";
 PROGMEM const char knittingMenu_4_2[] = "Foot pedal mode";
 PROGMEM const char knittingMenu_4_3[] = "Carriage speed";
-PROGMEM const char knittingMenu_4_4[] = "Yarn sensor";
-PROGMEM const char knittingMenu_4_5[] = "Overload sensor";
-PROGMEM const char knittingMenu_4_6[] = "Direction arrow";
-PROGMEM const char knittingMenu_4_7[] = "Button Beep";
-PROGMEM const char knittingMenu_4_8[] = "Alarm Tune";
-PROGMEM const char knittingMenu_4_9[] = "LCD backlight";
-PROGMEM const MenuItem knittingMenu_List_4[] = {{mnuCmdOpMode, knittingMenu_4_1}, {mnuCmdFootMode, knittingMenu_4_2}, {mnuCmdCarSpeed, knittingMenu_4_3}, {mnuCmdYarnsensor, knittingMenu_4_4}, {mnuCmdOverloadsensor, knittingMenu_4_5}, {mnuCmdArrowMode, knittingMenu_4_6}, {mnuCmdButtonBeep, knittingMenu_4_7}, {mnuCmdAlarmTune, knittingMenu_4_8}, {mnuCmdDisplayBrightness, knittingMenu_4_9}, {mnuCmdBack, knittingMenu_back}};
+PROGMEM const char knittingMenu_4_4[] = "Yarn sensor main";
+PROGMEM const char knittingMenu_4_5[] = "Yarn sensor sec";
+PROGMEM const char knittingMenu_4_6[] = "Overload sensor";
+PROGMEM const char knittingMenu_4_7[] = "Direction arrow";
+PROGMEM const char knittingMenu_4_8[] = "Button Beep";
+PROGMEM const char knittingMenu_4_9[] = "Alarm tune";
+PROGMEM const char knittingMenu_4_10[] = "LCD backlight";
+PROGMEM const MenuItem knittingMenu_List_4[] = {{mnuCmdOpMode, knittingMenu_4_1}, {mnuCmdFootMode, knittingMenu_4_2}, {mnuCmdCarSpeed, knittingMenu_4_3}, {mnuCmdYarnMain, knittingMenu_4_4}, {mnuCmdYarnSec, knittingMenu_4_5}, {mnuCmdOverloadsensor, knittingMenu_4_6}, {mnuCmdArrowMode, knittingMenu_4_7}, {mnuCmdButtonBeep, knittingMenu_4_8}, {mnuCmdAlarmTune, knittingMenu_4_9}, {mnuCmdDisplayBrightness, knittingMenu_4_10}, {mnuCmdBack, knittingMenu_back}};
 
 PROGMEM const char knittingMenu_1[] = "Set row count";
 PROGMEM const char knittingMenu_2[] = "Boundaries";
@@ -96,7 +98,9 @@ case mnuCmdFootMode :
 	break;
 case mnuCmdCarSpeed :
 	break;
-case mnuCmdYarnsensor :
+case mnuCmdYarnMain :
+	break;
+case mnuCmdYarnSec :
 	break;
 case mnuCmdOverloadsensor :
 	break;
@@ -141,11 +145,12 @@ case mnuCmdResetToDefaults :
         <Item Id="OpMode"   Name="Operation mode"/>
         <Item Id="FootMode"   Name="Foot pedal mode"/>
         <Item Id="CarSpeed"   Name="Carriage speed"/>
-        <Item Id="Yarnsensor" Name="Yarn sensor"/>
+        <Item Id="YarnMain" Name="Yarn sensor main"/>
+        <Item Id="YarnSec"  Name="Yarn sensor sec"/>
         <Item Id="Overloadsensor" Name="Overload sensor"/>
         <Item Id="ArrowMode" Name="Direction arrow"/>
         <Item Id="ButtonBeep" Name="Button Beep"/>
-        <Item Id="AlarmTune" Name="Alarm Tune"/>
+        <Item Id="AlarmTune" Name="Alarm tune"/>
         <Item Id="DisplayBrightness" Name="LCD backlight"/>
       </MenuItems>
     </Item>

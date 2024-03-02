@@ -83,8 +83,18 @@ char *Config::getFormattedStr(byte cmdId)
         fmt(strbuf, 1, "continuous");
       }
       break;
-    case mnuCmdYarnsensor :
-      if (yarnsensorEnable)
+    case mnuCmdYarnMain :
+      if (yarnsensorMainEnable)
+      {
+        fmt(strbuf, 1, "on");
+      }
+      else
+      {
+        fmt(strbuf, 1, "off");
+      }
+      break;
+    case mnuCmdYarnSec :
+      if (yarnsensorSecEnable)
       {
         fmt(strbuf, 1, "on");
       }
@@ -153,16 +163,18 @@ void Config::setDefaults()
   alarmTune = 4;
   buttonBeep = true;
   displayBrightness = 3;
-  yarnsensorEnable = false;
+  yarnsensorMainEnable = false;
+  yarnsensorSecEnable = false;
   overloadsensorEnable = false;
   carriageSpeed = 80;
   opMode = true;
   arrowMode = true;
 }
 
-
+/*
 //------------------------------------------------------------------------------
 void Config::copyTo(Config *dest)
 {
   memcpy(dest, this, sizeof(Config));
 }
+*/

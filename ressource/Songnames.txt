@@ -1,6 +1,6 @@
   "HappyBday"
   "Simpsons"
-  "dianaJones"
+  "IndianaJones"
   "TakeOnMe"
   "Entertainer"
   "Muppets"
