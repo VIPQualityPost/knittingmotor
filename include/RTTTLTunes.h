@@ -2,7 +2,7 @@
 #define RTTTLTUNES_H_
 #include <avr/pgmspace.h>
 
-PROGMEM const int songCount = 26;
+const int songCount = 26;
 
 // some example RTTTL tunes
 PROGMEM const char HappyBday[]     = "HappyBday:d=4,o=5,b=125:8d.,16d,e,d,g,2f#,8p, 8d.,16d,e,d,a,2g,8p, 8d.,16d,d6,b,g,f#,2e,8p,8c6.,16c6,b,g,a,2g";
@@ -31,6 +31,8 @@ PROGMEM const char MissionImp[]    = "MissionImp:d=16,o=6,b=95:32d,32d#,32d,32d#
 PROGMEM const char Pacman[]        = "Pacman:d=4,o=5,b=112:32b,32p,32b6,32p,32f#6,32p,32d#6,32p,32b6,32f#6,16p,16d#6,16p,32c6,32p,32c7,32p,32g6,32p,32e6,32p,32c7,32g6,16p,16e6,16p,32b,32p,32b6,32p,32f#6,32p,32d#6,32p,32b6,32f#6,16p,16d#6,16p,32d#6,32e6,32f6,32p,32f6,32f#6,32g6,32p,32g6,32g#6,32a6,32p,32b.6";
 PROGMEM const char OffToSeeWiz[]   = "OffToSeeWiz:d=32,o=5,b=45:16g#.,16c#6,f#,16f,f#,g#,8c#6,g#,a#,g#,f#,f,f#,d#,8c#.,c#,16c#,c#,16c#6,c#6,c6,c6,c6,16a#,a#,d#6,d#6,d#6,16d#6,c6,8g#";
 PROGMEM const char MontyPython[]   = "MontyPython:d=4,o=5,b=200:32p,f6,8e6,d6,8c#6,c6,8b,a#,8a,8g,8a,8a#,a,8g,2c6,8p,8c6,8a,8p,8a,8a,8g#,8a,8f6,8p,8c6,8c6,8p,8a,8a#,8p,8a#,8a#,8p,8c6,2d6,8p,8a#,8g,8p,8g,8g,8f#,8g,8e6,8p,8d6,8d6,8p,8a#,8a,8p,8a,8a,8p,8a#,2c6,8p,8c6";
+
+const int longest_tune = 421;
 
 PROGMEM const char * const Melodies[] {
   HappyBday,    

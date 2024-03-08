@@ -1,10 +1,12 @@
-# Parts list
+# Open Knitting Motor - Parts list
 
 This document hopefully lists all the needed parts to build the open knitting motor.
 
 ## 3D printed parts
 
 Print all of the parts you find in the `Kitting machine motor.3mf`. I used 6 walls, with 35% infill at 0.2mm layer height and tree support where needed. If you have a Bambulab X1C printer, you should be able to use the 3MF file directly without any further modifications.
+
+Regarding the housing, you have to choose between TB6600 and DM542T because of the stepper driver.
 
 ## V-Slot Extrusions and accessories
 
@@ -31,7 +33,9 @@ Print all of the parts you find in the `Kitting machine motor.3mf`. I used 6 wal
 - DC power supply 24V 10A
 - IEC320 / C14 power jack
 - Nema 23 stepper motor type 23HS2430B [like this](https://www.sys-motor.com/show.aspx?id=165)
-- TB6600 stepper driver (configured for 1600 steps)
+- Stepper driver alternatives (configured for 1600 steps):
+    1. TB6600 stepper driver (works, but not recommended)
+    2. DM542T (MUCH better, quieter, more precise, etc. etc.)
 - 12V 2-pin Fan (40x40x10)
 - (2x) Lerdge endstops [like this](https://shop.lerdge.com/products/mechanical-endstop-horizontal)
 - (2x) small endstop switches (normally closed, footswitch+overload)
@@ -39,6 +43,7 @@ Print all of the parts you find in the `Kitting machine motor.3mf`. I used 6 wal
 - (2x) GX16 4-pin male+female plug connector (for stepper motor and encoder)
 - (3x-4x) Stereo jack connector socket panel mount (for endstops, footswitch, (optional) overload and yarn sensor)
 - (3x-4x) 3.5mm stereo TRS plug
+- something to connect all GND and +5V lines together - I used Wago splicing connectors with levers, but everthing else with which you can connect multiple wires into one should work :D
 
 ## Mechanics
 

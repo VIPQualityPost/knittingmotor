@@ -1,4 +1,4 @@
-# Open Knitting Motor operation manual
+# Open Knitting Motor - Operation manual
 
 ## 1. Firmware pre-build configuration
 
@@ -11,10 +11,10 @@ Open include/HardwareConfig.h and make all necessary changes.
 
 After powering on the control box, you will have to reset (aka homing) the knitting carriage once by pressing the `SELECT` button.
 
-<u>Please make sure that during homing:
-- no needles are in working position or
-- that both PART buttons on the carriage are pressed and needles are in E position
-- simply disengage the carriage from the mover plate. After homing, the carriage will return to the zero position on the right and the motor is ready to knit.</u>
+*Please make sure that during homing:<br>
+- no needles are in working position or<br>
+- that both PART buttons on the carriage are pressed and needles are in E position<br>
+- simply disengage the carriage from the mover plate. After homing, the carriage will return to the zero position on the right and the motor is ready to knit.*
 
 **(It can happen, that the carriage activates the zero position endstop when it returned right after homing. Simply ignore this error message and clear it by pressing the `SELECT` button.)**
 
@@ -24,7 +24,7 @@ To start knitting a single row right away, all you have to do is to just hit the
 No problem. If you want the motor to continuously knit a decent amount of rows, you simply setup the control box in `auto` mode (which is by default), enter a defined no. of rows and start the continuous knitting process via the buttons on the control box, or with the foot pedal, if it is configured for continuous knittin. See part 3. of the manual on how to do this.
 
 ***
-**There is variant regarding continuous knitting:**
+*There is variant regarding continuous knitting:*
 
 If you simply want the motor to continuously knit, regardless of the row count, you can set the control box into `manual` mode. Then you can start continuous knitting and the control box will only count the rows knitted so far, but will not stop on its own.
 ***
@@ -35,12 +35,12 @@ If, for whatever reason, you encounter any problems (some unknown error, menu no
 
 **Needle bed position naming convention**
 
-                                       needle bed
-      100 ---------------------------------0---------------------------------100
-       |                  |                |                 |                |
-    max position          |                |                 |          zero position
-                          |           mid position           |
-                    left boundary                        right boundary
+			                                       needle bed
+			      100 ---------------------------------0---------------------------------100
+			       |                  |                |                 |                |
+			    max position          |                |                 |          zero position
+			                          |           mid position           |
+			                    left boundary                        right boundary
 
 
 ### General menu handling
@@ -57,6 +57,7 @@ You can use the `Back` menu options to change the submenu one level up and the `
 ### Main daily usage parameters and handling
 
 - Set row count (will be saved and reloaded)<br>
+  Can be set between 1 and 999 rows. The meaning of "row count" is different between operation modes:<br>
   `auto` mode: Setup a number of rows to knit<br>
   `manual` mode: Correct the no. of rows knitted here to reflect any manual interactions which the control box can not account for on its own
 
@@ -75,7 +76,7 @@ The boundaries don't have to be symmetrically aligned, but always have to be pla
 
 If the carriage is on the zero position, it will knit to the left boundary. Is the carriage on the max position, it will knit to the right boundary. Every further row will then be knitted between these two boundaries.
 
-**Manual carriage movement:**
+#### Manual carriage movement
 
 If for some reason you want to bring the carriage over to the max or zero position regardless of the boundaries set, press and hold the `LEFT` or `RIGHT` button and the carriage will start to move in this direction, until the endpoint is reached.
 
@@ -83,7 +84,7 @@ Normally, boundary values are saved. If there are any problems with the carriage
 
 <u>*BEWARE: Make sure no needles are engaged while setting the boundaries!*</u>
 
-**Regarding the yarn sensor and its activation:**
+#### The yarn sensor and its activation
 
 In case your system is equipped with a yarn sensor, the control box is able to detect, if the yarn runs out or if there is a knot in the yarn, for main and secondary color. You can activate the sensor for both colors independently, but runout and knot sensing will always be activated together per side.
 
@@ -97,7 +98,7 @@ If the yarn sensor is activated during knitting, the following will happen:
 
 ## 4. Configuration settings
 
-To change any of the following parameters, open the control box menu and go to `Setting`.
+To change any of the following parameters, open the control box menu and go to `Settings`.
 
 - Operation mode (default: `auto`)<br>
   `auto`: Automatic knitting according to the given row count, machine will stop when all rows are done. Continuous knitting can only be started, if a positive row count is set.

@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 
-const char NameAndVersion[] = "Knitting Motor Configuration V1.5";
+const char NameAndVersion[] = "Knitting Motor Configuration V1.6";
 
 extern long addToVal(short delta, long timeval, long minval = 1, long maxval = 1);
 

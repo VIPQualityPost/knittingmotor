@@ -24,8 +24,8 @@ def post_program_action(source, target, env):
       os.makedirs(dest)
 
     print("Copy firmware...")
-    print("fw source:"+src)
-    print("fw dest:"+dest)
+    print("FW source:"+src)
+    print("FW dest:"+dest)
  
     shutil.copy(src, dest)
     shutil.copy(src_h,dest)
@@ -61,8 +61,8 @@ def versioning(source, target, env):
         '\n#define VERSION_FULL "%s"' % versionFull
       ])
 
-      print('Release: ' + version)
+      print('Next upload version: ' + version)
 
 # register post build actions
-env.AddPostAction("buildprog", versioning)
+env.AddPostAction("upload", versioning)
 env.AddPostAction("$BUILD_DIR/firmware.hex", post_program_action)

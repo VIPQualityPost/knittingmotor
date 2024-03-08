@@ -1,10 +1,10 @@
-# Wiring description
+# Open Knitting Motor - Wiring
 
-### How to wire all parts?
+## How to wire all parts?
 
 I try to describe how I wired everything together the best I can. Sorry, no schematic available, but it should not be too complicated.
 
-#### External connectors
+## External connectors
 
     GX16 4pin                   : stepper motor connection
     GX16 4pin                   : rotary encoder
@@ -14,8 +14,10 @@ I try to describe how I wired everything together the best I can. Sorry, no sche
     Stereo plug (GND + Tip)     : overload sensor
     Stereo plug (GND, Ring, Tip): yarn sensor (main+secondary)
 
-#### PIN assignment
+### PIN assignment
 If you want to change the pin assignment to the Arduino for any reason, you will have to change the associated values in `include\HardwareConfig.h` and recompile the firmware.
+
+## Common connection rails
 
 ### GND connections rail
 
@@ -68,11 +70,11 @@ Because of the design of the upper housing, you will have to solder wire connect
     A2:  yarn sensor main (normally closed)
     A1:  yarn sensor secondary (normally closed)
 
-## TB6600
+## DM542T / TB6600
 
 Use a GX16 connector.
 
-(Only outgoing connections described, see other parts for the rest of the pins.)
+(Only outgoing connections described, see VIN rail and LCD Keypad Shield for the rest of the connections)
 
 A+ / A- / B+ / B-: to stepper motor via GX16 connector
 
@@ -89,6 +91,8 @@ See this as example for rewiring the direction:
     A-: blue     -> becomes   A-: brown
     B+: brown    -> becomes   B+: blue
     B-: green    -> becomes   B-: white
+
+Regarding DM542T: make sure that the control voltage switch on top is set to 5V, or nothing will happen - don't ask how I know...
 
 ## Rotary enoder
 
