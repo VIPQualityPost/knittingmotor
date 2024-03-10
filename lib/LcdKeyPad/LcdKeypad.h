@@ -74,5 +74,4 @@ extern char *rpad (char *dest, const char *str, char chr = ' ', unsigned char wi
 extern char *fmt (char *dest, unsigned char argc, ... );
 
 
-
 #endif

@@ -45,56 +45,16 @@
 #define STEP_CCW -1
 #define STEP_STOP 0
 
-// Rotary encoder params
-long oldEncPosition  = 0;
-long newEncPosition = 0;
-short encDir = STEP_STOP;
-Encoder myEnc(rotaA, rotaB);
-
-// Stepper pins params
-long stepperMaxPos = 0; // max endstop
-long stepperMidPos = 0; // mid position after homing
-byte stepperAttached = 0;
-const int rampLen = 200;
-const int fastSpeedSteps = 20000;
-const int slowSpeedSteps = 1000;
-int operationRPM = 0;
-MoToStepper myStepper( stepsPerRev, STEPDIR );
-
-// encoder to stepper steps transpose value
-const float encoderMultiplier = ((float)encRes / (float)stepsPerRev);
-float posFromEnc = 0;  // calculated encoder position from stepper steps
-
 // error and warnings
 enum ErrorStates : byte {
-  OK, 
-  HIT_HOME, 
-  HIT_MAX, 
+  OK,
+  HIT_HOME,
+  HIT_MAX,
   HIT_YARN1,
   HIT_YARN2,
-  MISS_OVRL,
+  ERR_OVRL,
   MISS_FOOT
 };
-
-volatile byte errorState = OK;  // endstops/sensors hit? (0=ok,1=max endstop,2=home endstop,3=yarnsensor)
-
-byte updLcd = 1; // update LCD after encoder value changed
-
-// ISR relevant variables
-volatile byte knitRow = 0; // has to be defined here because of PCI ISR
-volatile byte knitContinuous = 0;
-volatile byte fpHit = 0;
-volatile short errPreservedDir = STEP_STOP;   // preserve old direction in case of an error
-
-
-#ifdef DEBUG_POSITION
-void debugReportSteps();
-#endif
-
-// temporary button request, later changed with menu
-LiquidCrystal lcd(rsPin, enablePin, d0Pin, d1Pin, d2Pin, d3Pin);
-const char EmptyStr[] = "";
-char strbuf[LCD_COLS + 1]; // one line of lcd display
 
 // app states
 // APP_PGMSTART - program just started, not homed and uninitialized values on LCD screen
@@ -102,29 +62,15 @@ char strbuf[LCD_COLS + 1]; // one line of lcd display
 // APP_PRE_CHECK - basic checks, if all necessary sensors are attached
 enum AppModeValues : byte 
 { 
-    APP_PRE_CHECK,          // 0
-    APP_PGMSTART,           // 1
-    APP_DISP_UPD,           // 2
-    APP_NORMAL_MODE,        // 3
-    APP_CARRIAGE_RUNNING,   // 4
-    APP_ALARM,              // 5
-    APP_MENU_MODE,          // 6
-    APP_PROCESS_MENU_CMD    // 7
+  APP_PRE_CHECK,          // 0
+  APP_PGMSTART,           // 1
+  APP_DISP_UPD,           // 2
+  APP_NORMAL_MODE,        // 3
+  APP_CARRIAGE_RUNNING,   // 4
+  APP_ALARM,              // 5
+  APP_MENU_MODE,          // 6
+  APP_PROCESS_MENU_CMD    // 7
 };
-
-AppModeValues currentAppMode = APP_PRE_CHECK;
-AppModeValues nextAppMode = APP_PRE_CHECK;
-
-MenuManager Menu1(knittingMenu_Root, menuCount(knittingMenu_Root));
-
-unsigned int currentRowCount = 0;
-unsigned int oldRowCount = 0;
-unsigned int rowsKnit = 0;
-// unsigned long startMillis;
-unsigned long menuStartTime;
-
-
-Config currentConfig;
 
 // different main screens to show during APP_NORMAL_MODE
 enum Screens : byte
@@ -134,14 +80,56 @@ enum Screens : byte
   ROWS_WITH_HEADER
 };
 
-Screens screenToShow = ROWS_WITH_HEADER;
+// Rotary encoder params
+long oldEncPosition  = 0;
+long newEncPosition = 0;
+short encDir = STEP_STOP;
 
+// Stepper pins params
+long stepperMaxPos = 0;     // max endstop
+long stepperMidPos = 0;     // mid position after homing
+byte stepperAttached = 0;
+int operationRPM = 0;
+
+long posFromEnc = 0;  // calculated stepper position from encoder
+
+byte updLcd = 1; // update LCD after encoder value changed
+
+// error relevant variables
+volatile byte errorState = OK;  // endstops/sensors hit? (0=ok,1=max endstop,2=home endstop,3=yarnsensor)
+volatile short errPreservedDir = STEP_STOP;   // preserve old direction in case of an error
+
+// temporary button request, later changed with menu
+const char EmptyStr[] = "";
+char strbuf[LCD_COLS + 1]; // one line of lcd display
+
+// knitting related
+unsigned int currentRowCount = 0;
+unsigned int oldRowCount = 0;
+unsigned int rowsKnit = 0;
+volatile byte knitRow = 0;         // switch to knit 1 row
+volatile byte knitContinuous = 0;  // switch to control continuous knitting
+byte fpHit = 0;           // footpedal hit switch
+
+// error and display related
+unsigned long menuStartTime;
 byte arrowShown = 0;    // arrow on display?
 byte startupDisplayed = 0;  // is showing startup display
 byte errorDisplayed = 0;  // controls blinking of error message
 byte errorSymbolDisplayed = 0; // show continue screen after error
 
+
+Encoder myEnc(rotaA, rotaB);
+MoToStepper myStepper( stepsPerRev, STEPDIR );
+LiquidCrystal lcd(rsPin, enablePin, d0Pin, d1Pin, d2Pin, d3Pin);
+AppModeValues currentAppMode = APP_PRE_CHECK;
+AppModeValues nextAppMode = APP_PRE_CHECK;
+MenuManager Menu1(knittingMenu_Root, menuCount(knittingMenu_Root));
+Config currentConfig;
+Screens screenToShow = ROWS_WITH_HEADER;
 Bounce2::Button footswitchBtn = Bounce2::Button();
+Bounce2::Button homeBtn = Bounce2::Button();
+Bounce2::Button maxBtn = Bounce2::Button();
 byte btn;  // menu button
 
 // timed actions always like this (!)
@@ -175,6 +163,10 @@ void lcdClear();
 void printVersion();
 void show2secMessage(const __FlashStringHelper *line1, const __FlashStringHelper *line2, const AppModeValues appM);
 void show2secMessage(const char *line1, const char *line2, const AppModeValues appM);
+#ifdef DEBUG_POSITION
+void debugReportSteps();
+#endif
+
 
 
 // ------------------------------------------------------------------------
@@ -235,20 +227,20 @@ void disablePort_PCI()
 // Enable Pins A4 and A5 for PCI on Port C
 void enablePort_Pins() 
 {
-  if (currentConfig.overloadsensorEnable == true) 
+  if (currentConfig.yarnsensorSecEnable == true) 
   {
-    set_bit(PCMSK2, PCINT17); // D1
+    set_bit(PCMSK1, PCINT9); // A1
   }
-  set_bit(PCMSK1, PCINT13); // A5
-  set_bit(PCMSK1, PCINT12); // A4
-  // set_bit(PCMSK1, PCINT11); // A3
   if (currentConfig.yarnsensorMainEnable == true) 
   {
     set_bit(PCMSK1, PCINT10); // A2
   }
-  if (currentConfig.yarnsensorSecEnable == true) 
+  // set_bit(PCMSK1, PCINT12); // A4
+  // set_bit(PCMSK1, PCINT13); // A5
+  // set_bit(PCMSK1, PCINT11); // A3
+  if (currentConfig.overloadsensorEnable == true) 
   {
-    set_bit(PCMSK1, PCINT9); // A1
+    set_bit(PCMSK2, PCINT17); // D1
   }
 }
 
@@ -256,20 +248,20 @@ void enablePort_Pins()
 // Disable Pins A4 and A5 for PCI on Port C
 void disablePort_Pins() 
 {
-  if (currentConfig.overloadsensorEnable == true) 
+  if (currentConfig.yarnsensorSecEnable == true) 
   {
-    clear_bit(PCMSK2, PCINT17); // D1
+    clear_bit(PCMSK1, PCINT9);  // A1
   }
-  clear_bit(PCMSK1, PCINT13); // A5
-  clear_bit(PCMSK1, PCINT12); // A4
-  // clear_bit(PCMSK1, PCINT11); // A3
   if (currentConfig.yarnsensorMainEnable == true) 
   {
     clear_bit(PCMSK1, PCINT10); // A2
   }
-  if (currentConfig.yarnsensorSecEnable == true) 
+  // clear_bit(PCMSK1, PCINT12); // A4
+  // clear_bit(PCMSK1, PCINT13); // A5
+  // clear_bit(PCMSK1, PCINT11); // A3
+  if (currentConfig.overloadsensorEnable == true) 
   {
-    clear_bit(PCMSK1, PCINT9);  // A1
+    clear_bit(PCMSK2, PCINT17); // D1
   }
 }
 
@@ -286,11 +278,11 @@ void startBacklightPWM()
 void stepperAttach() 
 {
   myStepper.attach( stepPin, dirPin );
-  //myStepper.attachEnable( enaPin, 50, HIGH );        // Enable Pin aktivieren ( HIGH=aktiv )
-  myStepper.setSpeed( 600 );
-  myStepper.setRampLen( 200 );                       // Rampenlänge 100 Steps bei 20U/min
+  // myStepper.attachEnable( enaPin, enaDelay, HIGH );        // Enable Pin aktivieren ( HIGH=aktiv )
+  myStepper.setSpeed( homeSpeed );
+  myStepper.setRampLen( rampLen );                       // Rampenlänge 100 Steps bei 20U/min
   digitalWrite(enaPin, enaLevel);
-  delay(50);
+  delay(enaDelay);
   stepperAttached = 1;
 }
 
@@ -306,17 +298,16 @@ void stepperDetach()
 // Move stepper to home position, backup and return
 void toRefPoint() 
 {
-  disablePort_PCI();   // disable pin change interrupts for exclusive pin access
   // Run stepper to home endpoint and zero position
   DBG_PRINT(F("Homing"));
 
   // move fast to endpoint...
-  if ( digitalRead( refPin ) != atRefpoint ) 
+  if ( digitalRead( refPin ) != signalLevel ) 
   {
     // ... but only if stepper is not already there
     myStepper.setSpeedSteps( fastSpeedSteps, rampLen );
     myStepper.rotate(STEP_CCW);
-    while ( digitalRead( refPin ) != atRefpoint );
+    while ( digitalRead( refPin ) != signalLevel );
   }
 
   // home endstop reached, stop
@@ -328,7 +319,7 @@ void toRefPoint()
   myStepper.setSpeedSteps( slowSpeedSteps );
   myStepper.setRampLen(0);
   myStepper.rotate(STEP_CW);
-  while ( digitalRead( refPin ) == atRefpoint );
+  while ( digitalRead( refPin ) == signalLevel );
   
   DBG_PRINTLN(F("Home endpoint reached"));
   myStepper.rotate(0);
@@ -337,23 +328,21 @@ void toRefPoint()
   myStepper.setSpeed( operationRPM );
   myStepper.setRampLen((uint16_t)rampLen);        // acceleration ramp 100 steps at 20rpm
   DBG_PRINTLN(F("Homeing end"));
-  enablePort_PCI();
 }
 
 // ------------------------------------------------------------------------
 // Move stepper to max end of pathway
 void toMaxPoint() 
 {
-  disablePort_PCI();   // disable pin change interrupts for exclusive pin access
   // Run stepper to home endpoint and zero position
   DBG_PRINTLN(F("Going to max endstop"));
   // move fast to endpoint...
-  if ( digitalRead( maxPin ) != atRefpoint ) 
+  if ( digitalRead( maxPin ) != signalLevel ) 
   {
     // ... but only if stepper is not already there
     myStepper.setSpeedSteps( fastSpeedSteps, rampLen );
     myStepper.rotate(STEP_CW);
-    while ( digitalRead( maxPin ) != atRefpoint );
+    while ( digitalRead( maxPin ) != signalLevel );
   }
 
   // home endstop reached, stop
@@ -365,7 +354,7 @@ void toMaxPoint()
   myStepper.setSpeedSteps( slowSpeedSteps );
   myStepper.setRampLen(0);
   myStepper.rotate(STEP_CCW);
-  while ( digitalRead( maxPin ) == atRefpoint );
+  while ( digitalRead( maxPin ) == signalLevel );
   
   DBG_PRINT(F("Max endpoint reached at: "));
   DBG_PRINTLN(myStepper.currentPosition());
@@ -375,7 +364,6 @@ void toMaxPoint()
   myStepper.setRampLen((uint16_t)rampLen);
   stepperMaxPos = myStepper.currentPosition();
   DBG_PRINTLN(F("Maxing finished"));
-  enablePort_PCI();
 }
 
 // ------------------------------------------------------------------------
@@ -410,7 +398,7 @@ void debugReportSteps()
   if(millis() - last < interval) return;
   last += interval;
   dbgbuf[0] = 0;
-  snprintf(debugbuf,sizeof(debugbuf),"stepper: %ld, newEncPosition: %ld, posFromEncoder: %ld, posDiff: %ld", myStepper.currentPosition(), newEncPosition, (long)posFromEnc, (newEncPosition-(long)posFromEnc));
+  snprintf(debugbuf,sizeof(debugbuf),"stepper: %ld, newEncPosition: %ld, posFromEncoder: %ld, posDiff: %ld", myStepper.currentPosition(), newEncPosition, (long)posFromEnc, (myStepper.currentPosition()-posFromEnc));
   DBG_PRINTLN(debugbuf);
 }
 #endif
@@ -500,7 +488,7 @@ void refreshMenuDisplay (byte refreshMode)
 //----------------------------------------------------------------------
 void printRowCount(unsigned int rowCount, bool withTopic) 
 {
-  char intbuf[3];
+  char intbuf[4];
   // char tmpbuf[17];
   byte bdPad = 0; 
 
@@ -524,22 +512,22 @@ void printRowCount(unsigned int rowCount, bool withTopic)
     lcd.setCursor(0,1);
 
     inttostr(intbuf, rowCount);
-    char tmpbuf[17];
+    char tmpbuf[LCD_COLS + 1];
 
     if (nextAppMode == APP_ALARM) {
-      strncpy_P(tmpbuf, (const char*)F(MAIN_done), 16);
+      strlcpy_P(tmpbuf, PSTR(MAIN_done), sizeof(tmpbuf));
       rpad(strbuf, tmpbuf);
     } 
     else 
     {
       if (rowCount == 1)
       {
-        strncpy_P(tmpbuf, (const char*)F(MAIN_row), 16);
+        strlcpy_P(tmpbuf, PSTR(MAIN_row), sizeof(tmpbuf));
         fmt(strbuf, 2, intbuf, tmpbuf);
       } 
       else 
       {
-        strncpy_P(tmpbuf, (const char*)F(MAIN_rows), 16);
+        strlcpy_P(tmpbuf, PSTR(MAIN_rows), sizeof(tmpbuf));
         fmt(strbuf, 2, intbuf, tmpbuf);
       }
     }
@@ -602,7 +590,7 @@ byte processMenuCommand(byte cmdId)
   byte complete = false;  // set to true when menu command processing complete.
   byte configChanged = false;
   int oldTune;
-  char sngbuf[420];
+  char sngbuf[longest_tune+1];
 
 
   if (btn == BUTTON_SELECT_PRESSED)
@@ -746,7 +734,7 @@ byte processMenuCommand(byte cmdId)
     case mnuCmdMoveToStart:
       if (btn == BUTTON_SELECT_LONG_PRESSED)
       {
-        myStepper.moveTo(0);
+        myStepper.moveTo(0+endstopOffset);
       } else if (/*btn == BUTTON_SELECT_SHORT_RELEASE ||*/ btn == BUTTON_SELECT_LONG_RELEASE)
       {
         refreshMenuDisplay(REFRESH_ASCEND);
@@ -766,7 +754,7 @@ byte processMenuCommand(byte cmdId)
     case mnuCmdMoveToEnd:
       if (btn == BUTTON_SELECT_LONG_PRESSED)
       {
-        myStepper.moveTo(stepperMaxPos);
+        myStepper.moveTo(stepperMaxPos-endstopOffset);
       } else if (/*btn == BUTTON_SELECT_SHORT_RELEASE ||*/ btn == BUTTON_SELECT_LONG_RELEASE)
       {
         refreshMenuDisplay(REFRESH_ASCEND);
@@ -1085,12 +1073,14 @@ void lcdClear()
 // Run complete homing and calibration run
 void homing() 
 {
-  char tmpbuf[17];
+  char tmpbuf[LCD_COLS + 1];
+
+  disablePort_PCI();
 
   if (stepperAttached == 0) { stepperAttach(); }
 
   lcdClear();
-  strncpy_P(tmpbuf, (const char*)F(MAIN_home1),16);
+  strlcpy_P(tmpbuf, PSTR(MAIN_home1), sizeof(tmpbuf));
   lcd.print(rpad(strbuf, tmpbuf));
   lcd.setCursor(0,1);
   lcd.print(F(MAIN_home2));
@@ -1101,7 +1091,7 @@ void homing()
   DBG_PRINTLN(myStepper.currentPosition());
 
   lcdClear();
-  strncpy_P(tmpbuf, (const char*)F(MAIN_home3),16);
+  strlcpy_P(tmpbuf, PSTR(MAIN_home3), sizeof(tmpbuf));
   lcd.print(rpad(strbuf, tmpbuf));
   lcd.setCursor(0,1);
   lcd.print(F(MAIN_home4));
@@ -1137,7 +1127,7 @@ void homing()
   DBG_PRINTLN(currentConfig.rightBoundary);
 
   lcdClear();
-  strncpy_P(tmpbuf, (const char*)F(MAIN_home5),16);
+  strlcpy_P(tmpbuf, PSTR(MAIN_home5), sizeof(tmpbuf));
   lcd.print(rpad(strbuf, tmpbuf));
   lcd.setCursor(0,1);
   lcd.print(F(MAIN_home6));
@@ -1151,8 +1141,11 @@ void homing()
   lcdClear();
   lcd.print(F(MAIN_home9));
 
-  myStepper.moveTo(0);
+  myStepper.moveTo(0+endstopOffset);
+
   while ( myStepper.moving() );     // wait for deceleration ramp;
+
+  enablePort_PCI();
 }
 
 // ------------------------------------------------------------------------
@@ -1192,7 +1185,7 @@ void displaySteps()
     lcd.print(rpad(strbuf, EmptyStr));
     lcd.setCursor(0, 1);
     snprintf(intbuf,sizeof(intbuf),"%ld",newEncPosition);  // (use "%ld" for longs)
-    snprintf(intbuf2,sizeof(intbuf2),"%ld",(long)posFromEnc);
+    snprintf(intbuf2,sizeof(intbuf2),"%ld",posFromEnc);
     // inttostr(intbuf, newEncPosition);
     fmt(strbuf, 4, "E", intbuf,"/C",intbuf2);
     rpad(strbuf,strbuf);
@@ -1228,6 +1221,7 @@ void errorStateHandling()
 
   while (errorState != OK) 
   {
+
     if(millis() - lastRefreshTime >= REFRESH_INTERVAL)
     {
       lastRefreshTime += REFRESH_INTERVAL;
@@ -1242,30 +1236,30 @@ void errorStateHandling()
         switch (errorState) 
         {
           case HIT_MAX:
-            lcd.print(F(MAIN_err1));
-          break;
+            lcd.print(MAIN_err1);
+            break;
           case HIT_HOME:
-            lcd.print(F(MAIN_err2));
-          break;
+            lcd.print(MAIN_err2);
+            break;
           case HIT_YARN1:
-            lcd.print(F(MAIN_err3));
+            lcd.print(MAIN_err3);
             errorSymbolDisplayed = 1;
-          break;
+            break;
           case HIT_YARN2:
-            lcd.print(F(MAIN_err4));
+            lcd.print(MAIN_err4);
             errorSymbolDisplayed = 1;
-          break;
+            break;
           case MISS_FOOT:
-            lcd.print(F(MAIN_err5));
-          break;
-          case MISS_OVRL:
-            lcd.print(F(MAIN_err6));
-          break;
+            lcd.print(MAIN_err5);
+            break;
+          case ERR_OVRL:
+            lcd.print(MAIN_err6);
+            break;
           default:
-          break;
+            break;
         }
         lcd.setCursor(0, 1);
-        lcd.print(F(MAIN_err_sel));
+        lcd.print(MAIN_err_sel);
       } 
       else 
       {
@@ -1281,20 +1275,20 @@ void errorStateHandling()
 
     if (btn==BUTTON_SELECT_SHORT_RELEASE) 
     {
-      if (currentAppMode == APP_PRE_CHECK && digitalRead(footswitchPin) != signalLevel)
-      { // foot switch installed
+      if (currentAppMode == APP_PRE_CHECK && digitalRead(footswitchPin) != signalLevel) // foot switch installed at start
+      { 
         currentAppMode = APP_PGMSTART;
         nok = 0;
       } 
       
-      if (currentAppMode != APP_PRE_CHECK) 
+      if (currentAppMode != APP_PRE_CHECK)
       {
         // only clear error after overload sensor reset
         if (digitalRead(overloadPin) != signalLevel) 
         {
           // if (currentAppMode == APP_CARRIAGE_RUNNING) 
           // { 
-            nextAppMode = APP_NORMAL_MODE;
+          nextAppMode = APP_NORMAL_MODE;
           // } 
           // else 
           // {
@@ -1320,8 +1314,8 @@ void errorStateHandling()
 
 // ------------------------------------------------------------------------
 void printVersion() {
-  char version[15];
-  snprintf(version, 15, "%i.%i.%i+%i", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, VERSION_BUILD);
+  char version[LCD_COLS];
+  snprintf_P(version, LCD_COLS, PSTR("%i.%i.%i+%i"), VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, VERSION_BUILD);
   lcd.print(version);
 }
 
@@ -1352,10 +1346,10 @@ void setup()
 
   startBacklightPWM();
   setBacklightBrightness(currentConfig.displayBrightness);
-
+  
   enablePort_PCI();
   enablePort_Pins();
-  
+
   DBG_PRINTLN(F("Knitting motor test started..."));
   DBG_PRINT(F("Encoder multiplier: "));
   DBG_PRINTLN(encoderMultiplier);
@@ -1363,16 +1357,34 @@ void setup()
   pinMode(enaPin, OUTPUT);
   digitalWrite(enaPin, LOW);
   
-  pinMode(refPin, INPUT_PULLUP );       // NO
-  pinMode(maxPin, INPUT_PULLUP );       // NO
-  pinMode(yarnMainPin, INPUT_PULLUP );  // NO
-  pinMode(yarnSecPin, INPUT_PULLUP );   // NO
-  pinMode(overloadPin, INPUT_PULLUP );  // NC
+  // pinMode(refPin, INPUT_PULLUP );       // NC
+  // pinMode(maxPin, INPUT_PULLUP );       // NC
+
+  if (currentConfig.yarnsensorMainEnable == true) 
+  {
+    pinMode(yarnMainPin, INPUT_PULLUP );  // NO
+  }
+  if (currentConfig.yarnsensorSecEnable == true) 
+  {
+    pinMode(yarnSecPin, INPUT_PULLUP );   // NO
+  }
+  if (currentConfig.overloadsensorEnable == true) 
+  {
+    pinMode(overloadPin, INPUT_PULLUP );  // NC
+  }
   // pinMode(footswitchPin, INPUT_PULLUP); // NC
 
   footswitchBtn.attach ( footswitchPin , INPUT_PULLUP );
   footswitchBtn.interval( 5 );
-  footswitchBtn.setPressedState( HIGH ); 
+  footswitchBtn.setPressedState( HIGH );
+
+  homeBtn.attach ( refPin , INPUT_PULLUP );
+  homeBtn.interval( 5 );
+  homeBtn.setPressedState( HIGH );
+
+  maxBtn.attach ( maxPin , INPUT_PULLUP );
+  maxBtn.interval( 5 );
+  maxBtn.setPressedState( HIGH );
 
   lcd.clear();
   lcd.print(F("Knitting Motor"));
@@ -1447,7 +1459,7 @@ void knitRight() {
     } 
     else 
     {
-      myStepper.moveTo(0);
+      myStepper.moveTo(0+endstopOffset);
       DBG_PRINTLN(0);
     }
 }
@@ -1455,7 +1467,7 @@ void knitRight() {
 // ------------------------------------------------------------------------
 void loop() 
 {
-  char sngbuf[420];
+  char sngbuf[longest_tune+1];
 
   readEncoder();
 
@@ -1486,6 +1498,29 @@ void loop()
       currentAppMode = APP_PGMSTART;
       nextAppMode = APP_PGMSTART;
   }
+
+  // check endstops  
+  if (stepperAttached == 1) {
+    if (myStepper.moving())
+    {
+      homeBtn.update();
+      if (homeBtn.pressed())
+      {
+        myStepper.stop();
+        errorState = HIT_HOME;
+        knitContinuous = 0;
+        knitRow = 0;
+      }
+      maxBtn.update();
+      if (maxBtn.pressed())
+      {
+        myStepper.stop();
+        errorState = HIT_MAX;
+        knitContinuous = 0;
+        knitRow = 0;
+      }
+    }
+  }
   
   // only proceed if errorState is OK
   if (errorState == OK) 
@@ -1497,17 +1532,17 @@ void loop()
       {
         for (int i=0; i<5; i++) {
           lcd.setCursor(LCD_COLS-i,1);
-          lcd.print(" ");
-        }
+        lcd.print(" ");
+}
         arrowShown = 0;
       }
     }
     
-    // only query myStepper if attached
+    // position from encoder, but only query myStepper if attached
     if (stepperAttached == 1) 
     {
       // calculated encoder position from stepper steps
-      posFromEnc = round((float)myStepper.currentPosition() * encoderMultiplier);
+      posFromEnc = round((float)newEncPosition * encoderMultiplier);
     }
 
     // menu branching
@@ -1526,12 +1561,12 @@ void loop()
           startupScreen();
         }
 
-        if (btn==BUTTON_SELECT_SHORT_RELEASE) 
+        if (btn == BUTTON_SELECT_SHORT_RELEASE || btn == BUTTON_SELECT_LONG_PRESSED || btn == BUTTON_SELECT_LONG_RELEASE) 
         {
+          homing();
           currentAppMode = APP_DISP_UPD;
           nextAppMode = APP_NORMAL_MODE;
           screenToShow = ROWS_WITH_HEADER;
-          homing();
         }
 
       // ----------------------------------
@@ -1541,7 +1576,7 @@ void loop()
         DBG_PRINTLN("appMode: APP_NORMAL_MODE");
         #endif
 
-        if (btn == BUTTON_SELECT_LONG_PRESSED) {
+        if (btn == BUTTON_SELECT_LONG_PRESSED) { 
           startCarriage();
         }
 
@@ -1566,9 +1601,9 @@ void loop()
         {
           if (!myStepper.moving())
           {
-            if (myStepper.currentPosition() != 0)
+            if (myStepper.currentPosition() > (0+endstopOffset))
             {
-              myStepper.moveTo(0);
+              myStepper.moveTo(0+endstopOffset);
               screenToShow = ROWS_WITH_HEADER;
               show2secMessage(F(MAIN_goingto), F(MAIN_zero), APP_DISP_UPD);
             }
@@ -1579,9 +1614,9 @@ void loop()
         {
           if (!myStepper.moving())
           {
-            if (myStepper.currentPosition() != stepperMaxPos)
+            if (myStepper.currentPosition() < (stepperMaxPos-endstopOffset))
             {
-              myStepper.moveTo(stepperMaxPos);
+              myStepper.moveTo(stepperMaxPos-endstopOffset);
               screenToShow = ROWS_WITH_HEADER;
               show2secMessage(F(MAIN_goingto), F(MAIN_max), APP_DISP_UPD);
             }
@@ -1627,12 +1662,9 @@ void loop()
           {
             startCarriage();
           }
-
-          cli();
           fpHit = 0;
-          sei();
-
         }
+
         break;
 
       // ----------------------------------
@@ -1663,13 +1695,13 @@ void loop()
             else // normal operation
             {
               // carriage below half => knit to the left
-              if (posFromEnc < ((float)stepperMidPos * encoderMultiplier)) 
+              if (myStepper.currentPosition() < stepperMidPos) 
               {  
                 knitLeft();
               }
 
               // carriage above half => knit to the right
-              if (posFromEnc >= ((float)stepperMidPos * encoderMultiplier)) 
+              if (myStepper.currentPosition() >= stepperMidPos)
               { 
                 knitRight();
               }
@@ -1729,8 +1761,8 @@ void loop()
           {
               cli();
               knitContinuous = 0;
-              fpHit = 0;
               sei();
+              fpHit = 0;
               screenToShow = ROWS_WITH_HEADER;
               show2secMessage(F(MAIN_stopknit1), F(MAIN_stopknit2), APP_DISP_UPD);
           }
@@ -1967,21 +1999,23 @@ ISR (PCINT1_vect)
   {
     if (myStepper.moving()) 
     {
-      if (digitalRead(refPin) == atRefpoint) 
+      /*
+      if (digitalRead(refPin) != atRefpoint) 
       {
         myStepper.stop();
         errorState = HIT_HOME;
         knitContinuous = 0;
         knitRow = 0;
       }
-      if (digitalRead(maxPin) == atRefpoint) 
+
+      if (digitalRead(maxPin) != atRefpoint) 
       {
         myStepper.stop();
         errorState = HIT_MAX;
         knitContinuous = 0;
         knitRow = 0;
       }
-
+      */
       if (currentConfig.yarnsensorMainEnable == true) 
       {
         if (digitalRead(yarnMainPin) != atRefpoint) 
@@ -1993,6 +2027,7 @@ ISR (PCINT1_vect)
           knitRow = 0;
         }
       }
+
       if (currentConfig.yarnsensorSecEnable == true) 
       {
         if (digitalRead(yarnSecPin) != atRefpoint) 
@@ -2006,6 +2041,9 @@ ISR (PCINT1_vect)
       }
     }
       /*
+
+    // -> foot pedal handling to main loop
+
     // debounce foot pedal, see: https://arduino.stackexchange.com/a/45051
     byte pinState = digitalRead(footswitchPin);
     if (pinState != previousPinState) 
@@ -2036,16 +2074,18 @@ ISR (PCINT2_vect)
   {
     if (myStepper.moving()) 
     {
+
       if (currentConfig.overloadsensorEnable == true)
       {
         if (digitalRead(overloadPin) != atRefpoint) 
         {
           myStepper.stop();
-          errorState = MISS_OVRL;
+          errorState = ERR_OVRL;
           knitContinuous = 0;
           knitRow = 0;
         }
       }
+
     }
   }
 }
