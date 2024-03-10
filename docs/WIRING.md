@@ -4,6 +4,18 @@
 
 I try to describe how I wired everything together the best I can. Sorry, no schematic available, but it should not be too complicated.
 
+## PIN defaults
+
+See `HardwareConfig.h` for the pin assignment defaults.
+
+The minimum sensing pins you have to use are:
+- home endstop
+- max endstop
+- foot switch
+
+*Regarding yarn sensor / overload sensor pins:
+You HAVE to assign valid pin numbers, even though you do not have to use the sensors as of the current firmware implementation.*
+
 ## External connectors
 
     GX16 4pin                   : stepper motor connection

@@ -4,12 +4,12 @@
 #include <Arduino.h>
 
 // LiquidCrystal display init pins
-const byte rsPin = 8;
-const byte enablePin = 9;
 const byte d0Pin = 4;
 const byte d1Pin = 5;
 const byte d2Pin = 6;
 const byte d3Pin = 7;
+const byte rsPin = 8;
+const byte enablePin = 9;
 
 // Encoder pins and parameters
 const byte rotaA = 2;                     // encoder pin A
@@ -30,15 +30,15 @@ const int slowSpeedSteps = 1000;          // steps per 10sec slow
 const int endstopOffset = 80;             // endstop clearance offset after homing
 
 // Endstop pins and parameters
-const byte refPin = A5;                   // home endstop
+const byte homePin = A5;                   // home endstop
 const byte maxPin = A4;                   // max endstop
 const byte atRefpoint = LOW;              // endstop active on ... level
 
 // Signal pins and parameters 
 const byte footswitchPin = A3;            // footswitch
-const byte yarnMainPin = A2;              // main yarn sensor pin
-const byte yarnSecPin = A1;               // second yarn sensor pin
-const byte overloadPin = 1;               // carrier overload sensor pin
+const byte yarnMainPin = A2;              // main yarn sensor pin (SET TO UNUSED PIN NO. IF NOT USED)
+const byte yarnSecPin = A1;               // second yarn sensor pin (SET TO UNUSED PIN NO. IF NOT USED)
+const byte overloadPin = 1;               // carrier overload sensor pin (SET TO UNUSED PIN NO. IF NOT USED)
 const byte alarmPin = 0;                  // buzzer pin
 const byte signalLevel = HIGH;            // switch level
 
