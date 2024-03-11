@@ -66,3 +66,4 @@ def versioning(source, target, env):
 # register post build actions
 env.AddPostAction("upload", versioning)
 env.AddPostAction("$BUILD_DIR/firmware.hex", post_program_action)
+env.AddPostAction("$BUILD_DIR/firmware.bin", post_program_action)

@@ -1,6 +1,39 @@
 #ifndef LANG_H_
 #define LANG_H_
 
+/*
+  Adding a new language:
+
+  To add a new language block, create new lines between the marked two comments at the end of the file:
+
+  1) Start with a new #elif line to give your language block a name
+  2) Then, copy'n'paste a whole language set from an already existing language after this first line
+  3) Begin translating, but keep in mind that you ABSOLUTELY HAVE TO use text that is no more than 16 single
+     characters. See `LCDeypadCharacters.gif`in the `ressource` folder for supported western letters and symbols.
+
+     If you are using an eastern version of the LCD keypad, you have to adjust and test yourself.
+
+  If you ready, it will look like this (but with your translation of course!):
+
+      ///////////////////////////////////////
+      // ADD NEW LANGUAGE BLOCK FROM HERE
+      #elif defined LANG_MYNEWLANGUAGE
+
+      //                        |1-------------16|
+      #define CFG_hold        " SELECT halten"
+      #define CFG_rows       " Reihe(n)"
+      #define CFG_pos        " pos"
+      #define CFG_rpm        " UPM"
+      #define CFG_show        "zeigen"
+      #define CFG_hide        "verstecken"
+      ....
+
+      // KEEP EVERYTHING AFTER THIS LINE
+      //////////////////////////////////////
+
+*/
+
+
 #if defined LANG_EN
 //                        |1-------------16|
 #define CFG_hold         " Hold SELECT"
@@ -81,7 +114,7 @@
 // \342  ß
 #elif defined LANG_DE
 
-//                      "1-------------16"
+//                        |1-------------16|
 #define CFG_hold        " SELECT halten"
 #define CFG_rows       " Reihe(n)"
 #define CFG_pos        " pos"
@@ -152,6 +185,12 @@
 #define MAIN_max        "Endposition..."
 #define MAIN_stopknit1  "Stoppe Wagen"
 #define MAIN_stopknit2  "nach Reihe..."
+
+//////////////////////////////////////
+// ADD NEW LANGUAGE BLOCK FROM HERE
+
+// KEEP EVERYTHING AFTER THIS LINE
+//////////////////////////////////////
 
 #else
 #error No language defined!

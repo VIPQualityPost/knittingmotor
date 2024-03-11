@@ -25,7 +25,7 @@ Regarding the housing, you have to choose between TB6600 and DM542T because of t
 
 ## Electronics
 
-- Arduino UNO R3 (NO R4 support at the moment!)
+- Arduino UNO R3 (R4 support since 0.4.6+78 in separate fw branch)
 - DFRobot LCD Keypad shield
 - LM2596 Step-down DC-DC Buck-Converter modul for 4-40V to 3,3-24V
 - Passive buzzer module

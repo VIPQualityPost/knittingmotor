@@ -1,6 +1,8 @@
+#include <string.h>
+#include <TimerOne.h>
+#include <strlcpy.h>
 #include <LiquidCrystal.h>
 #include <MobaTools.h>
-#include <Encoder.h>
 #include <anyrtttl.h>
 #include <Pitches.h>
 #include <Bounce2.h>
@@ -23,9 +25,6 @@
 #if !defined(VERSION)
   #define VERSION 0.0.1-dbg
 #endif // VERSION
-#if !defined(DBG)
-  #define DBG 0            // DEBUGGING motorcontrol
-#endif // DBG
 
 // define macros for debug output
 #ifdef DEBUG
@@ -118,8 +117,6 @@ byte startupDisplayed = 0;  // is showing startup display
 byte errorDisplayed = 0;  // controls blinking of error message
 byte errorSymbolDisplayed = 0; // show continue screen after error
 
-
-Encoder myEnc(rotaA, rotaB);
 MoToStepper myStepper( stepsPerRev, STEPDIR );
 LiquidCrystal lcd(rsPin, enablePin, d0Pin, d1Pin, d2Pin, d3Pin);
 AppModeValues currentAppMode = APP_PRE_CHECK;
@@ -168,12 +165,22 @@ void debugReportSteps();
 #endif
 
 // ------------------------------------------------------------------------
-// Use soft PWM for backlight, as hardware PWM must be avoided for some LCD shields.
-// piggy back on to timer0, which is already set to approx 1khz.
-void startBacklightPWM() 
-{
-  OCR0A = 0xAF;
-  TIMSK0 |= _BV(OCIE0A);
+void doEncoderA() {
+
+  if (digitalRead(rotaA) != digitalRead(rotaB)) {
+    newEncPosition--;
+  } else {
+    newEncPosition++;
+  }
+}
+
+// ------------------------------------------------------------------------
+void doEncoderB() {
+  if (digitalRead(rotaA) == digitalRead(rotaB)) {
+    newEncPosition--;
+  } else {
+    newEncPosition++;
+  }
 }
 
 // ------------------------------------------------------------------------
@@ -271,9 +278,7 @@ void toMaxPoint()
 // ------------------------------------------------------------------------
 // Read values from rotary encoder
 void readEncoder() 
-{   
-  newEncPosition = myEnc.read();
-
+{ 
   if (newEncPosition != oldEncPosition) 
   {
     if (oldEncPosition < newEncPosition) 
@@ -285,23 +290,26 @@ void readEncoder()
       encDir = STEP_CW;
     }
     oldEncPosition = newEncPosition;
+
     updLcd = 1;
   }
 }
+
 
 #ifdef DEBUG_POSITION
 // ------------------------------------------------------------------------
 // report steps debug
 void debugReportSteps() 
 {
+  char dbgbuf[250];
   uint32_t interval = 250;
   static uint32_t last = - interval;
 
   if(millis() - last < interval) return;
   last += interval;
   dbgbuf[0] = 0;
-  snprintf(debugbuf,sizeof(debugbuf),"stepper: %ld, newEncPosition: %ld, posFromEncoder: %ld, posDiff: %ld", myStepper.currentPosition(), newEncPosition, (long)posFromEnc, (myStepper.currentPosition()-posFromEnc));
-  DBG_PRINTLN(debugbuf);
+  snprintf(dbgbuf,sizeof(dbgbuf),"stepper: %ld, newEncPosition: %ld, posFromEncoder: %ld, posDiff: %ld", myStepper.currentPosition(), newEncPosition, (long)posFromEnc, (myStepper.currentPosition()-posFromEnc));
+  DBG_PRINTLN(dbgbuf);
 }
 #endif
 
@@ -402,7 +410,7 @@ void printRowCount(unsigned int rowCount, bool withTopic)
     {
       lcd.clear();
       lcd.setCursor(0,0);
-      if (currentConfig.opMode) {
+      if (currentConfig.cfg.opMode) {
         lcd.print(F(MAIN_rtk));
       } 
       else
@@ -417,19 +425,19 @@ void printRowCount(unsigned int rowCount, bool withTopic)
     char tmpbuf[LCD_COLS + 1];
 
     if (nextAppMode == APP_ALARM) {
-      strlcpy_P(tmpbuf, PSTR(MAIN_done), sizeof(tmpbuf));
+      strlcpy(tmpbuf, PSTR(MAIN_done), sizeof(tmpbuf));
       rpad(strbuf, tmpbuf);
     } 
     else 
     {
       if (rowCount == 1)
       {
-        strlcpy_P(tmpbuf, PSTR(MAIN_row), sizeof(tmpbuf));
+        strlcpy(tmpbuf, PSTR(MAIN_row), sizeof(tmpbuf));
         fmt(strbuf, 2, intbuf, tmpbuf);
       } 
       else 
       {
-        strlcpy_P(tmpbuf, PSTR(MAIN_rows), sizeof(tmpbuf));
+        strlcpy(tmpbuf, PSTR(MAIN_rows), sizeof(tmpbuf));
         fmt(strbuf, 2, intbuf, tmpbuf);
       }
     }
@@ -441,7 +449,7 @@ void printRowCount(unsigned int rowCount, bool withTopic)
       rpad (strbuf, strbuf); // if strbuf is not padded, one cannot put an arrow at the end
 
       // show [C->] if boundaries are defined
-      if (currentConfig.leftBoundary != 0 || currentConfig.rightBoundary != 0)
+      if (currentConfig.cfg.leftBoundary != 0 || currentConfig.cfg.rightBoundary != 0)
       {
         bdPad = 1;
         if (knitContinuous == 1) 
@@ -507,7 +515,7 @@ byte processMenuCommand(byte cmdId)
         ) complete = true;
   }
 
-  oldTune = currentConfig.alarmTune;
+  oldTune = currentConfig.cfg.alarmTune;
 
   switch (cmdId)
   {
@@ -517,26 +525,26 @@ byte processMenuCommand(byte cmdId)
       {
         if (btn == BUTTON_LEFT_PRESSED)
         {
-          currentConfig.leftBoundary = addToVal(120, currentConfig.leftBoundary,stepperMidPos+2,stepperMaxPos);
-          myStepper.moveTo(currentConfig.leftBoundary);
+          currentConfig.cfg.leftBoundary = addToVal(120, currentConfig.cfg.leftBoundary,stepperMidPos+2,stepperMaxPos);
+          myStepper.moveTo(currentConfig.cfg.leftBoundary);
         }
         if (btn == BUTTON_LEFT_LONG_PRESSED)
         {
-          currentConfig.leftBoundary = addToVal(600, currentConfig.leftBoundary,stepperMidPos+2,stepperMaxPos);
-          myStepper.moveTo(currentConfig.leftBoundary);
+          currentConfig.cfg.leftBoundary = addToVal(600, currentConfig.cfg.leftBoundary,stepperMidPos+2,stepperMaxPos);
+          myStepper.moveTo(currentConfig.cfg.leftBoundary);
         }
       }
       else if (btn == BUTTON_RIGHT_PRESSED || btn == BUTTON_RIGHT_LONG_PRESSED)
       {
         if (btn == BUTTON_RIGHT_PRESSED)
         {
-          currentConfig.leftBoundary = addToVal(-120, currentConfig.leftBoundary,stepperMidPos+2,stepperMaxPos);
-          myStepper.moveTo(currentConfig.leftBoundary);
+          currentConfig.cfg.leftBoundary = addToVal(-120, currentConfig.cfg.leftBoundary,stepperMidPos+2,stepperMaxPos);
+          myStepper.moveTo(currentConfig.cfg.leftBoundary);
         }
         if (btn == BUTTON_RIGHT_LONG_PRESSED)
         {
-          currentConfig.leftBoundary = addToVal(-600, currentConfig.leftBoundary,stepperMidPos+2,stepperMaxPos);
-          myStepper.moveTo(currentConfig.leftBoundary);
+          currentConfig.cfg.leftBoundary = addToVal(-600, currentConfig.cfg.leftBoundary,stepperMidPos+2,stepperMaxPos);
+          myStepper.moveTo(currentConfig.cfg.leftBoundary);
         }
       }
       else
@@ -545,14 +553,14 @@ byte processMenuCommand(byte cmdId)
       }
 
       myStepper.setSpeed(1000);
-      if (currentConfig.leftBoundary == 0)
+      if (currentConfig.cfg.leftBoundary == 0)
       {
         myStepper.moveTo(stepperMidPos+1);
-        currentConfig.leftBoundary = stepperMidPos+1;
+        currentConfig.cfg.leftBoundary = stepperMidPos+1;
         configChanged = true;
         DBG_PRINTLN(F("Moving to stepperMidPos+1"));
       } else {
-        myStepper.moveTo(currentConfig.leftBoundary);
+        myStepper.moveTo(currentConfig.cfg.leftBoundary);
         DBG_PRINTLN(F("Moving to leftBoundary"));
       }
       while ( myStepper.moving() );
@@ -564,26 +572,26 @@ byte processMenuCommand(byte cmdId)
       {
         if (btn == BUTTON_LEFT_PRESSED)
         {
-          currentConfig.rightBoundary = addToVal(120, currentConfig.rightBoundary,0,stepperMidPos-2);
-          myStepper.moveTo(currentConfig.rightBoundary);
+          currentConfig.cfg.rightBoundary = addToVal(120, currentConfig.cfg.rightBoundary,0,stepperMidPos-2);
+          myStepper.moveTo(currentConfig.cfg.rightBoundary);
         }
         if (btn == BUTTON_LEFT_LONG_PRESSED)
         {
-          currentConfig.rightBoundary = addToVal(600, currentConfig.rightBoundary,0,stepperMidPos-2);
-          myStepper.moveTo(currentConfig.rightBoundary);
+          currentConfig.cfg.rightBoundary = addToVal(600, currentConfig.cfg.rightBoundary,0,stepperMidPos-2);
+          myStepper.moveTo(currentConfig.cfg.rightBoundary);
         }
       }
       else if (btn == BUTTON_RIGHT_PRESSED || btn == BUTTON_RIGHT_LONG_PRESSED)
       {
         if (btn == BUTTON_RIGHT_PRESSED)
         {
-          currentConfig.rightBoundary = addToVal(-120, currentConfig.rightBoundary,0,stepperMidPos-2);
-          myStepper.moveTo(currentConfig.rightBoundary);
+          currentConfig.cfg.rightBoundary = addToVal(-120, currentConfig.cfg.rightBoundary,0,stepperMidPos-2);
+          myStepper.moveTo(currentConfig.cfg.rightBoundary);
         }
         if (btn == BUTTON_RIGHT_LONG_PRESSED)
         {
-          currentConfig.rightBoundary = addToVal(-600, currentConfig.rightBoundary,0,stepperMidPos-2);
-          myStepper.moveTo(currentConfig.rightBoundary);
+          currentConfig.cfg.rightBoundary = addToVal(-600, currentConfig.cfg.rightBoundary,0,stepperMidPos-2);
+          myStepper.moveTo(currentConfig.cfg.rightBoundary);
         }
       }
       else
@@ -592,16 +600,16 @@ byte processMenuCommand(byte cmdId)
       }
 
       myStepper.setSpeed(1000);
-      if (currentConfig.rightBoundary == 0)
+      if (currentConfig.cfg.rightBoundary == 0)
       {
         myStepper.moveTo(stepperMidPos-1);
-        currentConfig.rightBoundary = stepperMidPos-1;
+        currentConfig.cfg.rightBoundary = stepperMidPos-1;
         configChanged = true;
         DBG_PRINTLN(F("Moving to stepperMidPos-1"));
       } 
       else 
       {
-        myStepper.moveTo(currentConfig.rightBoundary);
+        myStepper.moveTo(currentConfig.cfg.rightBoundary);
         DBG_PRINTLN(F("Moving to rightBoundary"));
       }
       while ( myStepper.moving() );
@@ -611,8 +619,8 @@ byte processMenuCommand(byte cmdId)
       if (btn == BUTTON_SELECT_LONG_PRESSED)
       {
         lcdClear();
-        currentConfig.leftBoundary = 0;
-        currentConfig.rightBoundary = 0;
+        currentConfig.cfg.leftBoundary = 0;
+        currentConfig.cfg.rightBoundary = 0;
         lcd.setCursor(0, 0);
         lcd.print(F(MAIN_boundaries));
         lcd.setCursor(0, 1);
@@ -670,22 +678,22 @@ byte processMenuCommand(byte cmdId)
       {
         if (btn == BUTTON_UP_PRESSED)
         {
-          currentConfig.rowCount = addToVal(1, currentConfig.rowCount,1,999);
+          currentConfig.cfg.rowCount = addToVal(1, currentConfig.cfg.rowCount,1,999);
         }
         if (btn == BUTTON_UP_LONG_PRESSED)
         {
-          currentConfig.rowCount = addToVal(10, currentConfig.rowCount,1,999);
+          currentConfig.cfg.rowCount = addToVal(10, currentConfig.cfg.rowCount,1,999);
         }
       }
       else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
       {
         if (btn == BUTTON_DOWN_PRESSED)
         {
-          currentConfig.rowCount = addToVal(-1, currentConfig.rowCount,1,999);
+          currentConfig.cfg.rowCount = addToVal(-1, currentConfig.cfg.rowCount,1,999);
         }
         if (btn == BUTTON_DOWN_LONG_PRESSED)
         {
-          currentConfig.rowCount = addToVal(-10, currentConfig.rowCount,1,999);
+          currentConfig.cfg.rowCount = addToVal(-10, currentConfig.cfg.rowCount,1,999);
         }
       }
       else
@@ -701,29 +709,29 @@ byte processMenuCommand(byte cmdId)
       {
         if (btn == BUTTON_UP_PRESSED)
         {
-          currentConfig.carriageSpeed = addToVal(1, currentConfig.carriageSpeed,60,200);
+          currentConfig.cfg.carriageSpeed = addToVal(1, currentConfig.cfg.carriageSpeed,60,200);
         }
         if (btn == BUTTON_UP_LONG_PRESSED)
         {
-          currentConfig.carriageSpeed = addToVal(10, currentConfig.carriageSpeed,60,200);
+          currentConfig.cfg.carriageSpeed = addToVal(10, currentConfig.cfg.carriageSpeed,60,200);
         }
       }
       else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
       {
         if (btn == BUTTON_DOWN_PRESSED)
         {
-          currentConfig.carriageSpeed = addToVal(-1, currentConfig.carriageSpeed,60,200);
+          currentConfig.cfg.carriageSpeed = addToVal(-1, currentConfig.cfg.carriageSpeed,60,200);
         }
         if (btn == BUTTON_DOWN_LONG_PRESSED)
         {
-          currentConfig.carriageSpeed = addToVal(-10, currentConfig.carriageSpeed,60,200);
+          currentConfig.cfg.carriageSpeed = addToVal(-10, currentConfig.cfg.carriageSpeed,60,200);
         }
       }
       else
       {
         configChanged = false;
       }
-      operationRPM = currentConfig.carriageSpeed * 10;
+      operationRPM = currentConfig.cfg.carriageSpeed * 10;
       myStepper.setSpeed(operationRPM);
       lcd.noBlink();
       break;
@@ -731,15 +739,15 @@ byte processMenuCommand(byte cmdId)
       configChanged = true;
       if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
       {
-        currentConfig.opMode = true;
-        currentConfig.rowCount = 0;
+        currentConfig.cfg.opMode = true;
+        currentConfig.cfg.rowCount = 0;
         currentRowCount = 0;
         oldRowCount = currentRowCount;
       }
       else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
       {
-        currentConfig.opMode = false;
-        currentConfig.rowCount = 0;
+        currentConfig.cfg.opMode = false;
+        currentConfig.cfg.rowCount = 0;
         currentRowCount = 0;
         oldRowCount = currentRowCount;
       }
@@ -752,11 +760,11 @@ byte processMenuCommand(byte cmdId)
       configChanged = true;
       if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
       {
-        currentConfig.footMode = true;
+        currentConfig.cfg.footMode = true;
       }
       else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
       {
-        currentConfig.footMode = false;
+        currentConfig.cfg.footMode = false;
       }
       else
       {
@@ -767,11 +775,11 @@ byte processMenuCommand(byte cmdId)
       configChanged = true;
       if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
       {
-        currentConfig.arrowMode = true;
+        currentConfig.cfg.arrowMode = true;
       }
       else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
       {
-        currentConfig.arrowMode = false;
+        currentConfig.cfg.arrowMode = false;
       }
       else
       {
@@ -782,11 +790,11 @@ byte processMenuCommand(byte cmdId)
       configChanged = true;
       if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
       {
-        currentConfig.buttonBeep = true;
+        currentConfig.cfg.buttonBeep = true;
       }
       else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
       {
-        currentConfig.buttonBeep = false;
+        currentConfig.cfg.buttonBeep = false;
       }
       else
       {
@@ -797,11 +805,11 @@ byte processMenuCommand(byte cmdId)
       configChanged = true;
       if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
       {
-        currentConfig.yarnsensorMainEnable = true;
+        currentConfig.cfg.yarnsensorMainEnable = true;
       }
       else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
       {
-        currentConfig.yarnsensorMainEnable = false;
+        currentConfig.cfg.yarnsensorMainEnable = false;
       }
       else
       {
@@ -812,11 +820,11 @@ byte processMenuCommand(byte cmdId)
       configChanged = true;
       if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
       {
-        currentConfig.yarnsensorSecEnable = true;
+        currentConfig.cfg.yarnsensorSecEnable = true;
       }
       else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
       {
-        currentConfig.yarnsensorSecEnable = false;
+        currentConfig.cfg.yarnsensorSecEnable = false;
       }
       else
       {
@@ -827,11 +835,11 @@ byte processMenuCommand(byte cmdId)
       configChanged = true;
       if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
       {
-        currentConfig.overloadsensorEnable = true;
+        currentConfig.cfg.overloadsensorEnable = true;
       }
       else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
       {
-        currentConfig.overloadsensorEnable = false;
+        currentConfig.cfg.overloadsensorEnable = false;
       }
       else
       {
@@ -842,15 +850,15 @@ byte processMenuCommand(byte cmdId)
       configChanged = true;
       if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
       {
-        currentConfig.displayBrightness++;
-        currentConfig.displayBrightness = constrain(currentConfig.displayBrightness, 1, 3);
-        setBacklightBrightness(currentConfig.displayBrightness);
+        currentConfig.cfg.displayBrightness++;
+        currentConfig.cfg.displayBrightness = constrain(currentConfig.cfg.displayBrightness, 1, 3);
+        setBacklightBrightness(currentConfig.cfg.displayBrightness);
       }
       else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
       {
-        currentConfig.displayBrightness--;
-        currentConfig.displayBrightness = constrain(currentConfig.displayBrightness, 1, 3);
-        setBacklightBrightness(currentConfig.displayBrightness);
+        currentConfig.cfg.displayBrightness--;
+        currentConfig.cfg.displayBrightness = constrain(currentConfig.cfg.displayBrightness, 1, 3);
+        setBacklightBrightness(currentConfig.cfg.displayBrightness);
       }
       else
       {
@@ -861,13 +869,13 @@ byte processMenuCommand(byte cmdId)
       configChanged = true;
       if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
       {
-        currentConfig.alarmTune++;
-        currentConfig.alarmTune = constrain(currentConfig.alarmTune, 0, songCount-1);
+        currentConfig.cfg.alarmTune++;
+        currentConfig.cfg.alarmTune = constrain(currentConfig.cfg.alarmTune, 0, songCount-1);
       }
       else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
       {
-        currentConfig.alarmTune--;
-        currentConfig.alarmTune = constrain(currentConfig.alarmTune, 0, songCount-1);
+        currentConfig.cfg.alarmTune--;
+        currentConfig.cfg.alarmTune = constrain(currentConfig.cfg.alarmTune, 0, songCount-1);
       }
       else
       {
@@ -877,7 +885,7 @@ byte processMenuCommand(byte cmdId)
       // stop any current playing tune
       if (anyrtttl::nonblocking::isPlaying())
       {
-        if (oldTune != currentConfig.alarmTune)
+        if (oldTune != currentConfig.cfg.alarmTune)
         {
           anyrtttl::nonblocking::stop();
         }
@@ -885,7 +893,7 @@ byte processMenuCommand(byte cmdId)
       // start playing current selected tune
       if ( !anyrtttl::nonblocking::isPlaying() )
       {
-        strcpy_P(sngbuf, (char*)pgm_read_dword(&(Melodies[currentConfig.alarmTune])));
+        strcpy_P(sngbuf, (char*)pgm_read_dword(&(Melodies[currentConfig.cfg.alarmTune])));
         anyrtttl::nonblocking::begin(alarmPin, sngbuf);
       }
       else {
@@ -910,7 +918,7 @@ byte processMenuCommand(byte cmdId)
       if (btn == BUTTON_SELECT_LONG_PRESSED)
       {
         currentConfig.setDefaults();
-        setBacklightBrightness(currentConfig.displayBrightness);
+        setBacklightBrightness(currentConfig.cfg.displayBrightness);
         lcd.setCursor(1, 1);
         lcd.print(F(MAIN_defload));
       }
@@ -930,7 +938,7 @@ byte processMenuCommand(byte cmdId)
   }
   if (complete) {
     currentConfig.save();
-    currentRowCount = currentConfig.rowCount;
+    currentRowCount = currentConfig.cfg.rowCount;
   }
   return complete;
 }
@@ -956,18 +964,18 @@ void homing()
   if (stepperAttached == 0) { stepperAttach(); }
 
   lcdClear();
-  strlcpy_P(tmpbuf, PSTR(MAIN_home1), sizeof(tmpbuf));
+  strlcpy(tmpbuf, PSTR(MAIN_home1), sizeof(tmpbuf));
   lcd.print(rpad(strbuf, tmpbuf));
   lcd.setCursor(0,1);
   lcd.print(F(MAIN_home2));
   toRefPoint();
-  myEnc.write(0);  // zero encoder pos, too
+  newEncPosition = 0;  // zero encoder pos, too
 
   DBG_PRINT(F("Position after homeing: "));
   DBG_PRINTLN(myStepper.currentPosition());
 
   lcdClear();
-  strlcpy_P(tmpbuf, PSTR(MAIN_home3), sizeof(tmpbuf));
+  strlcpy(tmpbuf, PSTR(MAIN_home3), sizeof(tmpbuf));
   lcd.print(rpad(strbuf, tmpbuf));
   lcd.setCursor(0,1);
   lcd.print(F(MAIN_home4));
@@ -983,27 +991,27 @@ void homing()
 
   // if somehow boundaries are not correct in relation
   // to mid point, zero them out
-  if (currentConfig.leftBoundary < stepperMidPos && currentConfig.leftBoundary != 0) {
-    currentConfig.leftBoundary = 0;
-    currentConfig.rightBoundary = 0;
+  if (currentConfig.cfg.leftBoundary < stepperMidPos && currentConfig.cfg.leftBoundary != 0) {
+    currentConfig.cfg.leftBoundary = 0;
+    currentConfig.cfg.rightBoundary = 0;
     currentConfig.save();
     DBG_PRINTLN(F("Zeroing boundaries, left out of bounds"));
   }
 
-  if (currentConfig.rightBoundary > stepperMidPos && currentConfig.rightBoundary != 0) {
-    currentConfig.leftBoundary = 0;
-    currentConfig.rightBoundary = 0;
+  if (currentConfig.cfg.rightBoundary > stepperMidPos && currentConfig.cfg.rightBoundary != 0) {
+    currentConfig.cfg.leftBoundary = 0;
+    currentConfig.cfg.rightBoundary = 0;
     currentConfig.save();
     DBG_PRINTLN(F("Zeroing boundaries, right out of bounds"));
   }
 
   DBG_PRINT(F("Left boundary: "));
-  DBG_PRINTLN(currentConfig.leftBoundary);
+  DBG_PRINTLN(currentConfig.cfg.leftBoundary);
   DBG_PRINT(F("Right boundary: "));
-  DBG_PRINTLN(currentConfig.rightBoundary);
+  DBG_PRINTLN(currentConfig.cfg.rightBoundary);
 
   lcdClear();
-  strlcpy_P(tmpbuf, PSTR(MAIN_home5), sizeof(tmpbuf));
+  strlcpy(tmpbuf, PSTR(MAIN_home5), sizeof(tmpbuf));
   lcd.print(rpad(strbuf, tmpbuf));
   lcd.setCursor(0,1);
   lcd.print(F(MAIN_home6));
@@ -1030,7 +1038,7 @@ void displaySteps()
   char intbuf2[7];  // buffer for encoder and steps
 
   // first display line
-  if (updLcd == 1 && currentAppMode == APP_DISP_UPD) 
+  if (updLcd == 1) 
   {
     lcd.print(rpad(strbuf, EmptyStr));
     lcd.setCursor(0, 0);
@@ -1066,10 +1074,6 @@ void displaySteps()
     lcd.print(strbuf);
     updLcd = 0;
   }
-
-  #ifdef DEBUG_POSITION
-  debugReportSteps();
-  #endif
 
 }
 
@@ -1201,27 +1205,35 @@ void setup()
   #ifdef DEBUG
   Serial.begin(115200);
   #endif
+  
   backLightOn();
   lcd.begin(LCD_COLS, LCD_ROWS);
 
   pinMode(alarmPin, OUTPUT);
 
   currentConfig.load();
-  if (!currentConfig.opMode)
+  if (!currentConfig.cfg.opMode)
   {
-    currentConfig.rowCount = 0;
+    currentConfig.cfg.rowCount = 0;
     currentConfig.save();
   }
-  currentRowCount = currentConfig.rowCount;
+  currentRowCount = currentConfig.cfg.rowCount;
   // oldRowCount = currentRowCount;
-  operationRPM = currentConfig.carriageSpeed * 10;
+  operationRPM = currentConfig.cfg.carriageSpeed * 10;
 
-  startBacklightPWM();
-  setBacklightBrightness(currentConfig.displayBrightness);
+  Timer1.initialize(10000);
+  Timer1.attachInterrupt(lcdBacklightISR);
+
+  setBacklightBrightness(currentConfig.cfg.displayBrightness);
 
   DBG_PRINTLN(F("Knitting motor test started..."));
   DBG_PRINT(F("Encoder multiplier: "));
   DBG_PRINTLN(encoderMultiplier);
+
+  pinMode(rotaA, INPUT_PULLUP);
+  pinMode(rotaB, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(rotaA), doEncoderA, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(rotaB), doEncoderB, CHANGE);
 
   pinMode(enaPin, OUTPUT);
   digitalWrite(enaPin, LOW);
@@ -1277,7 +1289,7 @@ void show2secMessage(const char *line1, const char *line2, const AppModeValues a
 }
 
 void startCarriage() {
-  if (currentConfig.opMode){
+  if (currentConfig.cfg.opMode){
     if (currentRowCount > 0)
     {
       knitContinuous = 1 - knitContinuous;
@@ -1298,10 +1310,10 @@ void startCarriage() {
 // ------------------------------------------------------------------------
 void knitLeft() {
   DBG_PRINT(F("-> knitting to the left pos: "));
-  if (currentConfig.leftBoundary != 0) 
+  if (currentConfig.cfg.leftBoundary != 0) 
   {
-    myStepper.moveTo(currentConfig.leftBoundary);
-    DBG_PRINTLN(currentConfig.leftBoundary);
+    myStepper.moveTo(currentConfig.cfg.leftBoundary);
+    DBG_PRINTLN(currentConfig.cfg.leftBoundary);
   } 
   else 
   {
@@ -1313,9 +1325,9 @@ void knitLeft() {
 // ------------------------------------------------------------------------
 void knitRight() {
     DBG_PRINT(F("-> knitting to the right pos: "));
-    if (currentConfig.rightBoundary != 0) {
-      myStepper.moveTo(currentConfig.rightBoundary);
-      DBG_PRINTLN(currentConfig.rightBoundary);
+    if (currentConfig.cfg.rightBoundary != 0) {
+      myStepper.moveTo(currentConfig.cfg.rightBoundary);
+      DBG_PRINTLN(currentConfig.cfg.rightBoundary);
     } 
     else 
     {
@@ -1334,7 +1346,7 @@ void loop()
   btn = getButton();
 
   // button beep
-  if (btn && currentConfig.buttonBeep && currentAppMode != APP_ALARM)
+  if (btn && currentConfig.cfg.buttonBeep && currentAppMode != APP_ALARM)
   {
     byte btnFlags = btn & 192;
 
@@ -1378,7 +1390,7 @@ void loop()
         knitRow = 0;
       }
 
-      if (currentConfig.yarnsensorMainEnable == true) 
+      if (currentConfig.cfg.yarnsensorMainEnable == true) 
       {
         yarnMainSens.update();
         if (yarnMainSens.pressed()) 
@@ -1391,7 +1403,7 @@ void loop()
         }
       }
 
-      if (currentConfig.yarnsensorSecEnable == true) 
+      if (currentConfig.cfg.yarnsensorSecEnable == true) 
       {
         yarnSecSens.update();
         if (yarnSecSens.pressed()) 
@@ -1404,7 +1416,7 @@ void loop()
         }
       }
 
-      if (currentConfig.overloadsensorEnable == true)
+      if (currentConfig.cfg.overloadsensorEnable == true)
       {
         overloadSens.update();
         if (overloadSens.pressed()) 
@@ -1423,13 +1435,14 @@ void loop()
   {
 
       // reset direction arrow on display if not moving
-    if (!currentConfig.arrowMode) {
+    if (!currentConfig.cfg.arrowMode) {
       if (!myStepper.moving() && arrowShown ==1)
       {
-        for (int i=0; i<5; i++) {
+        for (int i=0; i<5; i++) 
+        {
           lcd.setCursor(LCD_COLS-i,1);
-        lcd.print(" ");
-}
+          lcd.print(" ");
+        }
         arrowShown = 0;
       }
     }
@@ -1439,6 +1452,10 @@ void loop()
     {
       // calculated encoder position from stepper steps
       posFromEnc = round((float)newEncPosition * encoderMultiplier);
+      #ifdef DEBUG_POSITION
+      debugReportSteps();
+      #endif
+
     }
 
     // menu branching
@@ -1487,9 +1504,9 @@ void loop()
 
         if (btn == BUTTON_DOWN_LONG_PRESSED)
         {
-          currentConfig.rowCount = 0;
+          currentConfig.cfg.rowCount = 0;
           currentConfig.save();
-          currentRowCount = currentConfig.rowCount;
+          currentRowCount = currentConfig.cfg.rowCount;
           currentAppMode = APP_DISP_UPD;
           screenToShow = ROWS_WITH_HEADER;
         }
@@ -1549,7 +1566,7 @@ void loop()
 
         // foot pedal hit?
         if (fpHit == 1) {
-          if (currentConfig.footMode) {
+          if (currentConfig.cfg.footMode) {
             knitRow = 1;
             currentAppMode = APP_CARRIAGE_RUNNING;
           } 
@@ -1606,7 +1623,7 @@ void loop()
             if (errPreservedDir == STEP_STOP)
             {
               // count rows up or down regarding modus
-              if (currentConfig.opMode) {
+              if (currentConfig.cfg.opMode) {
                 if (currentRowCount > 0) {
                   currentRowCount -= 1;
                   DBG_PRINT(F("Remaining rows: "));
@@ -1659,7 +1676,7 @@ void loop()
         if (knitContinuous == 1) 
         {
           // auto mode
-          if (currentConfig.opMode)
+          if (currentConfig.cfg.opMode)
           {
             if (currentRowCount > 0) 
             {
@@ -1686,7 +1703,7 @@ void loop()
         // save current row count, update display
         if (oldRowCount != currentRowCount)
         {
-          currentConfig.rowCount = currentRowCount;
+          currentConfig.cfg.rowCount = currentRowCount;
           currentConfig.save();
 
           oldRowCount = currentRowCount;
@@ -1695,13 +1712,13 @@ void loop()
 
           if (currentRowCount <= 0)
           {
-            // currentConfig.rowCount = 0;
+            // currentConfig.cfg.rowCount = 0;
             // currentConfig.save();
-            // currentRowCount = currentConfig.rowCount;
+            // currentRowCount = currentConfig.cfg.rowCount;
             nextAppMode = APP_ALARM;
             if ( !anyrtttl::nonblocking::isPlaying() )
             {
-              strcpy_P(sngbuf, (char*)pgm_read_dword(&(Melodies[currentConfig.alarmTune])));
+              strcpy_P(sngbuf, (char*)pgm_read_dword(&(Melodies[currentConfig.cfg.alarmTune])));
               anyrtttl::nonblocking::begin(alarmPin, sngbuf);
             }
           }
@@ -1809,6 +1826,7 @@ void loop()
         switch (screenToShow)
         {
         case STEPS:
+          displaySteps();
           break;
         case ROWS:
           printRowCount(currentRowCount, false);
@@ -1858,12 +1876,4 @@ void loop()
       errorStateHandling();
   }
 
-}
-
-// ------------------------------------------------------------------------
-// ISR: Regulate LCD backlight intensity
-// (TIMER0 compare match mode)
-SIGNAL(TIMER0_COMPA_vect)
-{
-  lcdBacklightISR();
 }
