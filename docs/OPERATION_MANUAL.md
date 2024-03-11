@@ -198,7 +198,7 @@ You find some additional, less important options in the menu:
 - Reset all<br>
   Resets all firmware parameters to default. Please restart control box afterwards via the `REBOOT` button.
 
-## 7. Troublshooting
+## 7. Troubleshooting
 
 | Error message | Description                                 | Solution                                    |
 | :----         | :-----                                      | :-----                                      |
