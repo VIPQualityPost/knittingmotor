@@ -5,7 +5,7 @@ This project intends to provide a knitting motor for the common Brother flat bed
 
 It provides currently the following features:
 
-*User features:*
+*Features:*
 - manual knitting with simple row counter
 - automatic knitting a pre-defined no. of rows
 - foot pedal control (single row / continuous knitting)
@@ -15,11 +15,11 @@ It provides currently the following features:
 - user definable speed setting
 
 *Machine operation and safety features:*
-- high resolution stepper motor drive
-- electronic endstops
-- mechanic (spring driven) coupler for the carriage
-- (optional) yarn and knot sensor
+- high resolution stepper motor driver
+- electronic endstops and carriage transport overload protection
+- mechanic (spring driven) carriage coupler (additionally to overload protection)
+- yarn and knot sensor (optional)
 
 Building this device is not for the faint-hearted, because you will have to solder, crimp connectors, even deal with mains connections (! PLEASE BE CAREFUL ! I AM NOT RESPONSIBLE IF SOMETHING GOES WRONG HERE !), building and uploading the firmware to the Arduino, and in the end, debug the whole thing if something does not work as expected.
 
-So, if you are not familiar with doing things like this, please ask a friend with the appropriate knowledge for help.
+So, if you are not familiar with doing things like this, please ask a friend with appropriate skills for help.
