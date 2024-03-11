@@ -204,7 +204,7 @@ You find some additional, less important options in the menu:
 | :----         | :-----                                      | :-----                                      |
 | HIT 1 - MAX   | Endstop in maximum position was activated   | press `SELECT` to clear, re-home carriage   |
 | HIT 2 - HOME  | Endstop in zero position was activated      | press `SELECT` to clear, re-home carriage   |
-| YARN 3 - MAIN | Yarn sensor main color activated            | check, if knot in yarn or ran out           |
-| YARN 4 - SEC  | Yarn sensor secondary color activated       | check, if knot in yarn or ran out           |
+| YARN 3 - MAIN | Yarn sensor main color activated            | check, if knot in yarn or run out           |
+| YARN 4 - SEC  | Yarn sensor secondary color activated       | check, if knot in yarn or run out           |
 | ERR 1 - FOOT  | No foot switch attached                     | attach foot switch                          |
 | ERR 2 - OVRL  | Overload sensor activated                   | clear blockage or carrier, re-home carriage |

@@ -8,7 +8,7 @@ I try to describe how I wired everything together the best I can. Sorry, no sche
 
 See `HardwareConfig.h` for the pin assignment defaults.
 
-The minimum sensing pins you have to use are:
+The minimum sensor (aka switch) pins you have to use are:
 - home endstop
 - max endstop
 - foot switch
@@ -31,24 +31,24 @@ If you want to change the pin assignment to the Arduino for any reason, you will
 
 ## Common connection rails
 
-### GND connections rail
+### GND connection rail
 
     Arduino / LCD Shield
     all switches
     rotary encoder
     passive buzzer
 
-### VIN (+5V) connections rail
+### VIN (+5V) connection rail
 
     rotary encoder
-    TB6600 Ena+
-    TB6600 Dir+
-    TB6600 Pul+
+    TB6600/DM542T Ena+
+    TB6600/DM542T Dir+
+    TB6600/DM542T Pul+
     passive buzzer
 
 ## Power supply
 
-    24V volt to TB6600
+    24V volt to TB6600/DM542T
     24V volt to LM2596 Buck (In)
 
 **Set Buck converter to 9 Volt.**
@@ -69,33 +69,34 @@ Because of the design of the upper housing, you will have to solder wire connect
 
 ## LCD Keypad Shield
 
-    D13: TB6600 Ena-
-    D12: TB6600 Dir-
-    D11: TB6600 Pul-
-    D3:  Rotary Encoder B
-    D2:  Rotary Encoder A
-    D1:  overload sensor (normally closed)
     D0:  passive buzzer
-    A5:  endstop zero (normally open)
-    A4:  endstop max  (normally open)
-    A3:  footswitch   (normally closed)
-    A2:  yarn sensor main (normally closed)
-    A1:  yarn sensor secondary (normally closed)
+    D1:  overload sensor (normally closed)
+    D2:  Rotary Encoder A
+    D3:  Rotary Encoder B
+    D11: TB6600/DM542T Pul-
+    D12: TB6600/DM542T Dir-
+    D13: TB6600/DM542T Ena-
 
-## DM542T / TB6600
+    A1:  yarn sensor secondary (normally closed)
+    A2:  yarn sensor main (normally closed)
+    A3:  footswitch   (normally closed)
+    A4:  endstop max  (normally closed)
+    A5:  endstop zero (normally closed)
+
+## TB6600 / DM542T
 
 Use a GX16 connector.
 
-(Only outgoing connections described, see VIN rail and LCD Keypad Shield for the rest of the connections)
+(Only outgoing connections described, see VIN rail and LCD Keypad Shield for the rest of the connections.)
 
 A+ / A- / B+ / B-: to stepper motor via GX16 connector
 
 *Hint:<br>
 To find out, which cables belong to which phase, simply hold two wires together and try to turn the motor by hand. If you feel quite a lot of resistance while the cables are held together, you found a phase ;-)*
 
-After you hooked up the motor, you will have to check, if your wiring leads to the correct turning direction of the stepper. As a hint, if you mount the GT2 pulley to the motor and look right at it, the motor has to turn CCW when going to the zero position and CW to the max.
+After you hooked up the motor, you will have to check, if your wiring leads to the correct turning direction of the stepper. As a hint, if you mount the GT2 pulley to the motor and look right at it, the motor has to turn CCW when moving the carrier to the zero (right) position and CW to the max (left).
 
-If the motor turns the opposite way, then simply rewire the cables on motor connector on the TB6600 the other way around.
+If the motor turns the opposite way, then simply rewire the cables on motor connector on the driver the other way around.
 
 See this as example for rewiring the direction:
 
@@ -116,8 +117,11 @@ Use a GX16 connector.
     GREEN: D2
     WHITE: D3
 
-## Endstops and sensor pin
+## Endstops and sensor pins
 
-Use stereo connectors.
+Use the stereo connectors.
 
-See description under **Endstop connectors** on top of the document. There is nothing more to it.
+See description under **LCD Keypad Shield** to find out where every switch has to be connected to. They are all tied to GND.
+
+Only the yarn sensor will have all three contacts involved, as one cable will transport both signals for main and secondary yarn sensor. After everything is connected you may have to check if you used the right connections for main and secondary. In case they are flipped you simply have to swap the two signal cables accordingly.
+
