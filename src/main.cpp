@@ -26,6 +26,21 @@
   #define VERSION 0.0.1-dbg
 #endif // VERSION
 
+// possible debug macros
+// #define DEBUG_APPMODE
+// #define DEBUG_POSITION
+// #define DEBUG_DISPLAY
+
+#ifdef DEBUG_APPMODE
+#define DEBUG
+#endif
+#ifdef DEBUG_POSITION
+#define DEBUG
+#endif
+#ifdef DEBUG_DISPLAY
+#define DEBUG
+#endif
+
 // define macros for debug output
 #ifdef DEBUG
   #define DBG_PRINT(...)    Serial.print(__VA_ARGS__)     //DBGPRINT is a macro, debug print
@@ -36,9 +51,6 @@
   #define DBG_PRINTLN(...)   //now defines a blank line
 #endif
 
-// further possible debug macros
-// #define DEBUG_APPMODE
-// #define DEBUG_POSITION
 
 #define STEP_CW 1
 #define STEP_CCW -1
@@ -80,9 +92,10 @@ enum Screens : byte
 };
 
 // Rotary encoder params
-long oldEncPosition  = 0;
-long newEncPosition = 0;
-int encDir = STEP_STOP;
+volatile unsigned int oldEncPosition  = 0;
+volatile unsigned int newEncPosition = 0;
+volatile int encDir = STEP_STOP;
+volatile int oldEncDir = STEP_STOP;
 
 // Stepper pins params
 long stepperMaxPos = 0;     // max endstop
@@ -105,7 +118,6 @@ char strbuf[LCD_COLS + 1]; // one line of lcd display
 // knitting related
 unsigned int currentRowCount = 0;
 unsigned int oldRowCount = 0;
-unsigned int rowsKnit = 0;
 volatile byte knitRow = 0;         // switch to knit 1 row
 volatile byte knitContinuous = 0;  // switch to control continuous knitting
 byte fpHit = 0;           // footpedal hit switch
@@ -115,7 +127,7 @@ unsigned long menuStartTime;
 byte arrowShown = 0;    // arrow on display?
 byte startupDisplayed = 0;  // is showing startup display
 byte errorDisplayed = 0;  // controls blinking of error message
-byte errorSymbolDisplayed = 0; // show continue screen after error
+byte displayErrorSymbol = 0; // show continue screen after error
 
 MoToStepper myStepper( stepsPerRev, STEPDIR );
 LiquidCrystal lcd(rsPin, enablePin, d0Pin, d1Pin, d2Pin, d3Pin);
@@ -221,12 +233,10 @@ void toRefPoint()
 
   // home endstop reached, stop
   myStepper.stop();
-  // myStepper.rotate(STEP_STOP);
-  while ( myStepper.moving() );     // wait for deceleration ramp;
-  
+  delay(10); // give stepper driver time to reenable - UNO R4 is too fast :-)!
   // slow backup until endstop releases
-  myStepper.setSpeedSteps( slowSpeedSteps );
   myStepper.setRampLen(0);
+  myStepper.setSpeedSteps( slowSpeedSteps );
   myStepper.rotate(STEP_CW);
   while ( digitalRead( homePin ) == signalLevel );
   
@@ -256,12 +266,10 @@ void toMaxPoint()
 
   // home endstop reached, stop
   myStepper.stop();
-  // myStepper.rotate(STEP_STOP);
-  while ( myStepper.moving() );     // wait for deceleration ramp;
-  
+  delay(10);  // give stepper driver time to reenable - UNO R4 is too fast :-)!
   // slow backup until endstop releases
-  myStepper.setSpeedSteps( slowSpeedSteps );
   myStepper.setRampLen(0);
+  myStepper.setSpeedSteps( slowSpeedSteps );
   myStepper.rotate(STEP_CCW);
   while ( digitalRead( maxPin ) == signalLevel );
   
@@ -281,20 +289,10 @@ void readEncoder()
 { 
   if (newEncPosition != oldEncPosition) 
   {
-    if (oldEncPosition < newEncPosition) 
-    {
-      encDir = STEP_CCW;
-    } 
-    else 
-    {
-      encDir = STEP_CW;
-    }
     oldEncPosition = newEncPosition;
-
     updLcd = 1;
   }
 }
-
 
 #ifdef DEBUG_POSITION
 // ------------------------------------------------------------------------
@@ -402,6 +400,43 @@ void printRowCount(unsigned int rowCount, bool withTopic)
   // char tmpbuf[17];
   byte bdPad = 0; 
 
+  #ifdef DEBUG_DISPLAY
+  DBG_PRINTLN("-------");
+  DBG_PRINTLN("printRowCount()");
+  DBG_PRINT("oldEncDir: ");
+  DBG_PRINTLN(oldEncDir);
+  DBG_PRINT("oldEncPosition: ");
+  DBG_PRINTLN(oldEncPosition);
+  DBG_PRINT("newEncPosition: ");
+  DBG_PRINTLN(newEncPosition);
+  DBG_PRINT("rowcount: ");
+  DBG_PRINTLN(rowCount);
+  DBG_PRINT("currAppM:");
+  DBG_PRINTLN(currentAppMode);
+  DBG_PRINT("nextAppM:");
+  DBG_PRINTLN(nextAppMode);
+  #endif
+
+  // acquire direction, but only if stepper is moving
+  if (myStepper.moving())
+  {
+    // carriage going right
+    if (newEncPosition < oldEncPosition)
+    {
+      encDir = STEP_CCW;
+    }
+    // carriage going left
+    if (newEncPosition > oldEncPosition)
+    {
+      encDir = STEP_CW;
+    }
+  }
+
+  #ifdef DEBUG_DISPLAY
+  DBG_PRINT("encDir: ");
+  DBG_PRINTLN(encDir);
+  #endif
+
   if (updLcd == 1) 
   {
 
@@ -445,7 +480,13 @@ void printRowCount(unsigned int rowCount, bool withTopic)
     // if (myStepper.moving()) 
     // {
 
-    rpad (strbuf, strbuf); // if strbuf is not padded, one cannot put an arrow at the end
+    rpad(strbuf, strbuf); // if strbuf is not padded to full length, one cannot put an arrow at the end
+
+    #ifdef DEBUG_DISPLAY
+    DBG_PRINT("RPad    : '");
+    DBG_PRINT(strbuf);
+    DBG_PRINTLN("'");
+    #endif
 
     // show [C->] if boundaries are defined
     if (currentConfig.cfg.leftBoundary != 0 || currentConfig.cfg.rightBoundary != 0)
@@ -478,23 +519,22 @@ void printRowCount(unsigned int rowCount, bool withTopic)
       strbuf[LCD_COLS-2-bdPad] = 0b01000011; // for continuous
     }
 
-    if (errorSymbolDisplayed == 1)
+    if (displayErrorSymbol == 1)
     {
-      errorSymbolDisplayed = 0;
+      displayErrorSymbol = 0;
       strbuf[LCD_COLS-1-bdPad] = 0b01000101; // show E for continue after error
     }
     else
     {
       if (encDir == STEP_CW) 
       {
-        strbuf[LCD_COLS-1-bdPad] = 0b01111110; // forward array
+        DBG_PRINTLN("Display direction: STEP_CW <-");
+        strbuf[LCD_COLS-1-bdPad] = 0b01111111; // forward array
       } 
       else if (encDir == STEP_CCW) 
       {
-        strbuf[LCD_COLS-1-bdPad] = 0b01111111;    // back arrow
-      } else
-      {
-        strbuf[LCD_COLS-1-bdPad] = 0b00000010;    // blank
+        DBG_PRINTLN("Display direction: STEP_CCW ->");
+        strbuf[LCD_COLS-1-bdPad] = 0b01111110;    // back arrow
       }
     }
 
@@ -502,6 +542,15 @@ void printRowCount(unsigned int rowCount, bool withTopic)
     // }
 
     lcd.print(strbuf);
+
+    #ifdef DEBUG_DISPLAY
+    DBG_PRINT("LCDPrint: '");
+    DBG_PRINT(strbuf);
+    DBG_PRINTLN("'");
+    DBG_PRINTLN("-------");
+    #endif
+
+    updLcd = 0;
   }
 }
 
@@ -1149,11 +1198,11 @@ void errorStateHandling()
             break;
           case HIT_YARN1:
             lcd.print(MAIN_err3);
-            errorSymbolDisplayed = 1;
+            displayErrorSymbol = 1;
             break;
           case HIT_YARN2:
             lcd.print(MAIN_err4);
-            errorSymbolDisplayed = 1;
+            displayErrorSymbol = 1;
             break;
           case MISS_FOOT:
             lcd.print(MAIN_err5);
@@ -1187,7 +1236,7 @@ void errorStateHandling()
         nok = 0;
       } 
       
-      if (currentAppMode != APP_PRE_CHECK)
+      if (currentAppMode != APP_PRE_CHECK && currentAppMode != APP_PGMSTART)
       {
         // only clear error after overload sensor reset
         if (digitalRead(overloadPin) != signalLevel) 
@@ -1348,25 +1397,36 @@ void knitLeft() {
     myStepper.moveTo(stepperMaxPos-endstopOffset);
     DBG_PRINTLN(stepperMaxPos-endstopOffset);
   }
+   // we have to delay here, because the
+   // encoder interrupt is not able to catch up
+   // the direction and so printRowCount gets the
+   // wrong carriage direction for display
+  delayMicroseconds(6000); // we have to de
 }
 
 // ------------------------------------------------------------------------
 void knitRight() {
-    DBG_PRINT(F("-> knitting to the right pos: "));
-    if (currentConfig.cfg.rightBoundary != 0) {
-      myStepper.moveTo(currentConfig.cfg.rightBoundary);
-      DBG_PRINTLN(currentConfig.cfg.rightBoundary);
-    } 
-    else 
-    {
-      myStepper.moveTo(0+endstopOffset);
-      DBG_PRINTLN(0+endstopOffset);
-    }
+  DBG_PRINT(F("-> knitting to the right pos: "));
+  if (currentConfig.cfg.rightBoundary != 0) {
+    myStepper.moveTo(currentConfig.cfg.rightBoundary);
+    DBG_PRINTLN(currentConfig.cfg.rightBoundary);
+  } 
+  else 
+  {
+    myStepper.moveTo(0+endstopOffset);
+    DBG_PRINTLN(0+endstopOffset);
+  }
+   // we have to delay here, because the
+   // encoder interrupt is not able to catch up
+   // the direction and so printRowCount gets the
+   // wrong carriage direction for display
+  delayMicroseconds(6000);
 }
 
 // ------------------------------------------------------------------------
 void loop() 
 {
+
   char sngbuf[longest_tune+1];
 
   readEncoder();
@@ -1462,7 +1522,7 @@ void loop()
   if (errorState == OK) 
   {
 
-      // reset direction arrow on display if not moving
+    // reset direction arrow on display if not moving
     if (!currentConfig.cfg.arrowMode) {
       if (!myStepper.moving() && arrowShown ==1)
       {
@@ -1483,7 +1543,6 @@ void loop()
       #ifdef DEBUG_POSITION
       debugReportSteps();
       #endif
-
     }
 
     // menu branching
@@ -1502,18 +1561,17 @@ void loop()
           startupScreen();
         }
 
-        if (btn == BUTTON_SELECT_SHORT_RELEASE || btn == BUTTON_SELECT_LONG_PRESSED || btn == BUTTON_SELECT_LONG_RELEASE) 
+        if (btn == BUTTON_SELECT_SHORT_RELEASE) 
         {
           homing();
-          btn = 0;    // reset button state explicitely for program start after homing
           currentAppMode = APP_DISP_UPD;
           nextAppMode = APP_NORMAL_MODE;
           screenToShow = ROWS_WITH_HEADER;
         }
-
+        break;
       // ----------------------------------
       // normal operation, menu closed
-      case APP_NORMAL_MODE :
+      case APP_NORMAL_MODE:
         #ifdef DEBUG_APPMODE
         DBG_PRINTLN("appMode: APP_NORMAL_MODE");
         #endif
@@ -1649,8 +1707,11 @@ void loop()
         // foot pedal hit?
         if (fpHit == 1) {
           if (currentConfig.cfg.footMode) {
-            knitRow = 1;
-            currentAppMode = APP_CARRIAGE_RUNNING;
+            if (!myStepper.moving()) {
+              knitRow = 1;
+              screenToShow = ROWS_WITH_HEADER;
+              currentAppMode = APP_CARRIAGE_RUNNING;
+            }
           } 
           else
           {
@@ -1668,7 +1729,6 @@ void loop()
         DBG_PRINTLN("appMode: APP_CARRIAGE_RUNNING");
         #endif
 
-        // foot pedal hit
         if (knitRow == 1) 
         {
           if (!myStepper.moving()) 
@@ -1677,6 +1737,8 @@ void loop()
 
             if (errPreservedDir != STEP_STOP)  // stepper stopped on error
             {
+              DBG_PRINT(F("errPreservedDir: "));
+              DBG_PRINTLN(errPreservedDir);
               switch(errPreservedDir)
               {
                 case STEP_CW:
@@ -1707,12 +1769,15 @@ void loop()
             {
               // count rows up or down regarding modus
               if (currentConfig.cfg.opMode) {
-                if (currentRowCount > 0) {
+                if (currentRowCount > 0) 
+                {
                   currentRowCount -= 1;
                   DBG_PRINT(F("Remaining rows: "));
                   DBG_PRINTLN(currentRowCount);
                 }
-              } else {
+              } 
+              else
+              {
                 currentRowCount += 1;
                 DBG_PRINT(F("Rows already knit: "));
                 DBG_PRINTLN(currentRowCount);
@@ -1729,8 +1794,8 @@ void loop()
               }
             }
 
-            knitRow = 0;
           }
+          knitRow = 0;
         }
 
         // deactivate continuous?
@@ -1783,8 +1848,6 @@ void loop()
           nextAppMode = APP_NORMAL_MODE;
         }
 
-        readEncoder();
-
         // save current row count, update display
         if (oldRowCount != currentRowCount)
         {
@@ -1793,7 +1856,7 @@ void loop()
 
           oldRowCount = currentRowCount;
           // currentAppMode = APP_DISP_UPD;
-          screenToShow = ROWS_WITH_HEADER;
+          screenToShow = ROWS;
 
           if (currentRowCount <= 0)
           {
@@ -1812,9 +1875,6 @@ void loop()
         // {
         currentAppMode = APP_DISP_UPD;
         // }
-       
-        // counter if carriage moved
-        rowsKnit += 1;
         break;
 
       // ----------------------------------
