@@ -35,6 +35,7 @@ enum knittingMenuCommandId
   mnuCmdYarnSec,
   mnuCmdOverloadsensor,
   mnuCmdArrowMode,
+  mnuCmdNavMode,
   mnuCmdButtonBeep,
   mnuCmdAlarmTune,
   mnuCmdDisplayBrightness,
@@ -66,7 +67,8 @@ PROGMEM const char knittingMenu_4_7[] = MENU_4_7;
 PROGMEM const char knittingMenu_4_8[] = MENU_4_8;
 PROGMEM const char knittingMenu_4_9[] = MENU_4_9;
 PROGMEM const char knittingMenu_4_10[] = MENU_4_10;
-PROGMEM const MenuItem knittingMenu_List_4[] = {{mnuCmdOpMode, knittingMenu_4_1}, {mnuCmdFootMode, knittingMenu_4_2}, {mnuCmdCarSpeed, knittingMenu_4_3}, {mnuCmdYarnMain, knittingMenu_4_4}, {mnuCmdYarnSec, knittingMenu_4_5}, {mnuCmdOverloadsensor, knittingMenu_4_6}, {mnuCmdArrowMode, knittingMenu_4_7}, {mnuCmdButtonBeep, knittingMenu_4_8}, {mnuCmdAlarmTune, knittingMenu_4_9}, {mnuCmdDisplayBrightness, knittingMenu_4_10}, {mnuCmdBack, knittingMenu_back}};
+PROGMEM const char knittingMenu_4_11[] = MENU_4_11;
+PROGMEM const MenuItem knittingMenu_List_4[] = {{mnuCmdOpMode, knittingMenu_4_1}, {mnuCmdFootMode, knittingMenu_4_2}, {mnuCmdNavMode, knittingMenu_4_3}, {mnuCmdCarSpeed, knittingMenu_4_4}, {mnuCmdYarnMain, knittingMenu_4_5}, {mnuCmdYarnSec, knittingMenu_4_6}, {mnuCmdOverloadsensor, knittingMenu_4_7}, {mnuCmdArrowMode, knittingMenu_4_8}, {mnuCmdButtonBeep, knittingMenu_4_9}, {mnuCmdAlarmTune, knittingMenu_4_10}, {mnuCmdDisplayBrightness, knittingMenu_4_11}, {mnuCmdBack, knittingMenu_back}};
 
 PROGMEM const char knittingMenu_1[] = MENU_1;
 PROGMEM const char knittingMenu_2[] = MENU_2;

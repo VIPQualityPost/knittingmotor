@@ -82,7 +82,7 @@ enum Screens : byte
 // Rotary encoder params
 long oldEncPosition  = 0;
 long newEncPosition = 0;
-short encDir = STEP_STOP;
+int encDir = STEP_STOP;
 
 // Stepper pins params
 long stepperMaxPos = 0;     // max endstop
@@ -402,7 +402,6 @@ void printRowCount(unsigned int rowCount, bool withTopic)
   // char tmpbuf[17];
   byte bdPad = 0; 
 
-//  if (updLcd == 1 && currentAppMode == APP_DISP_UPD) 
   if (updLcd == 1) 
   {
 
@@ -446,46 +445,60 @@ void printRowCount(unsigned int rowCount, bool withTopic)
     // if (myStepper.moving()) 
     // {
 
-      rpad (strbuf, strbuf); // if strbuf is not padded, one cannot put an arrow at the end
+    rpad (strbuf, strbuf); // if strbuf is not padded, one cannot put an arrow at the end
 
-      // show [C->] if boundaries are defined
-      if (currentConfig.cfg.leftBoundary != 0 || currentConfig.cfg.rightBoundary != 0)
+    // show [C->] if boundaries are defined
+    if (currentConfig.cfg.leftBoundary != 0 || currentConfig.cfg.rightBoundary != 0)
+    {
+      bdPad = 1;
+      if (knitContinuous == 1) 
       {
-        bdPad = 1;
-        if (knitContinuous == 1) 
+        // left boundary symbol
+        if (currentConfig.cfg.leftBoundary != 0)
         {
           strbuf[LCD_COLS-4] = 0b01011011;
-        } 
-        else 
+        }
+      } 
+      else 
+      {
+        if (currentConfig.cfg.leftBoundary != 0)
         {
           strbuf[LCD_COLS-3] = 0b01011011;
         }
+      }
+      // right boundary symbol
+      if (currentConfig.cfg.rightBoundary != 0)
+      {
         strbuf[LCD_COLS-1] = 0b01011101;
       }
+    }
 
-      if (knitContinuous == 1) 
-      {
-        strbuf[LCD_COLS-2-bdPad] = 0b01000011; // for continuous
-      }
+    if (knitContinuous == 1) 
+    {
+      strbuf[LCD_COLS-2-bdPad] = 0b01000011; // for continuous
+    }
 
-      if (errorSymbolDisplayed == 1)
+    if (errorSymbolDisplayed == 1)
+    {
+      errorSymbolDisplayed = 0;
+      strbuf[LCD_COLS-1-bdPad] = 0b01000101; // show E for continue after error
+    }
+    else
+    {
+      if (encDir == STEP_CW) 
       {
-        errorSymbolDisplayed = 0;
-        strbuf[LCD_COLS-1-bdPad] = 0b01000101; // show E for continue after error
-      }
-      else
+        strbuf[LCD_COLS-1-bdPad] = 0b01111110; // forward array
+      } 
+      else if (encDir == STEP_CCW) 
       {
-        if (encDir == STEP_CW) 
-        {
-          strbuf[LCD_COLS-1-bdPad] = 0b01111110; // forward array
-        } 
-        else if (encDir == STEP_CCW) 
-        {
-          strbuf[LCD_COLS-1-bdPad] = 0b01111111;    // back arrow
-        }
+        strbuf[LCD_COLS-1-bdPad] = 0b01111111;    // back arrow
+      } else
+      {
+        strbuf[LCD_COLS-1-bdPad] = 0b00000010;    // blank
       }
+    }
 
-      arrowShown = 1;
+    arrowShown = 1;
     // }
 
     lcd.print(strbuf);
@@ -840,6 +853,21 @@ byte processMenuCommand(byte cmdId)
       else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
       {
         currentConfig.cfg.overloadsensorEnable = false;
+      }
+      else
+      {
+        configChanged = false;
+      }
+      break;
+    case mnuCmdNavMode:
+      configChanged = true;
+      if (btn == BUTTON_UP_PRESSED || btn == BUTTON_UP_LONG_PRESSED)
+      {
+        currentConfig.cfg.navMode = true;
+      }
+      else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
+      {
+        currentConfig.cfg.navMode = false;
       }
       else
       {
@@ -1221,7 +1249,7 @@ void setup()
   // oldRowCount = currentRowCount;
   operationRPM = currentConfig.cfg.carriageSpeed * 10;
 
-  Timer1.initialize(10000);
+  Timer1.initialize(4000);
   Timer1.attachInterrupt(lcdBacklightISR);
 
   setBacklightBrightness(currentConfig.cfg.displayBrightness);
@@ -1317,8 +1345,8 @@ void knitLeft() {
   } 
   else 
   {
-    myStepper.moveTo(stepperMaxPos);
-    DBG_PRINTLN(stepperMaxPos);
+    myStepper.moveTo(stepperMaxPos-endstopOffset);
+    DBG_PRINTLN(stepperMaxPos-endstopOffset);
   }
 }
 
@@ -1332,7 +1360,7 @@ void knitRight() {
     else 
     {
       myStepper.moveTo(0+endstopOffset);
-      DBG_PRINTLN(0);
+      DBG_PRINTLN(0+endstopOffset);
     }
 }
 
@@ -1515,11 +1543,38 @@ void loop()
         {
           if (!myStepper.moving())
           {
-            if (myStepper.currentPosition() > (0+endstopOffset))
+            screenToShow = ROWS_WITH_HEADER;
+            if (currentConfig.cfg.navMode == true)    // navMode = maximum
             {
-              myStepper.moveTo(0+endstopOffset);
-              screenToShow = ROWS_WITH_HEADER;
-              show2secMessage(F(MAIN_goingto), F(MAIN_zero), APP_DISP_UPD);
+              if (myStepper.currentPosition() > (0+endstopOffset))
+              {
+                  myStepper.moveTo(0+endstopOffset);
+                  show2secMessage(F(MAIN_goingto), F(MAIN_zero), APP_DISP_UPD);
+              }
+            }
+            else          // navMode = boundary
+            {
+              if (myStepper.currentPosition() > (0+endstopOffset))
+              {
+                if (currentConfig.cfg.rightBoundary != 0)
+                {
+                  if (myStepper.currentPosition() == currentConfig.cfg.rightBoundary)
+                  {
+                    myStepper.moveTo(0+endstopOffset);
+                    show2secMessage(F(MAIN_goingto), F(MAIN_zero), APP_DISP_UPD);
+                  }
+                  else
+                  {
+                    myStepper.moveTo(currentConfig.cfg.rightBoundary);
+                    show2secMessage(F(MAIN_goingto), F(MAIN_rbnd), APP_DISP_UPD);
+                  }
+                }
+                else
+                {
+                  myStepper.moveTo(0+endstopOffset);
+                  show2secMessage(F(MAIN_goingto), F(MAIN_zero), APP_DISP_UPD);
+                }
+              }
             }
           }
         }
@@ -1528,11 +1583,38 @@ void loop()
         {
           if (!myStepper.moving())
           {
-            if (myStepper.currentPosition() < (stepperMaxPos-endstopOffset))
+            screenToShow = ROWS_WITH_HEADER;
+            if (currentConfig.cfg.navMode == true)    // navMode = maximum
             {
-              myStepper.moveTo(stepperMaxPos-endstopOffset);
-              screenToShow = ROWS_WITH_HEADER;
-              show2secMessage(F(MAIN_goingto), F(MAIN_max), APP_DISP_UPD);
+              if (myStepper.currentPosition() < (stepperMaxPos-endstopOffset))
+              {
+                myStepper.moveTo(stepperMaxPos-endstopOffset);
+                show2secMessage(F(MAIN_goingto), F(MAIN_max), APP_DISP_UPD);
+              }
+            }
+            else  // navMode = boundary
+            {
+              if (myStepper.currentPosition() < (stepperMaxPos-endstopOffset))
+              {
+                if (currentConfig.cfg.leftBoundary != 0)
+                {
+                  if (myStepper.currentPosition() == currentConfig.cfg.leftBoundary)
+                  {
+                    myStepper.moveTo(stepperMaxPos-endstopOffset);
+                    show2secMessage(F(MAIN_goingto), F(MAIN_max), APP_DISP_UPD);
+                  }
+                  else
+                  {
+                    myStepper.moveTo(currentConfig.cfg.leftBoundary);
+                    show2secMessage(F(MAIN_goingto), F(MAIN_lbnd), APP_DISP_UPD);
+                  }
+                }
+                else
+                {
+                  myStepper.moveTo(stepperMaxPos-endstopOffset);
+                  show2secMessage(F(MAIN_goingto), F(MAIN_max), APP_DISP_UPD);
+                }
+              }
             }
           }
         }
@@ -1593,7 +1675,8 @@ void loop()
           {
             DBG_PRINT(F("Request to knit 1 row: "));
 
-            if (errPreservedDir != STEP_STOP) {   // stepper stopped on error
+            if (errPreservedDir != STEP_STOP)  // stepper stopped on error
+            {
               switch(errPreservedDir)
               {
                 case STEP_CW:
@@ -1700,6 +1783,8 @@ void loop()
           nextAppMode = APP_NORMAL_MODE;
         }
 
+        readEncoder();
+
         // save current row count, update display
         if (oldRowCount != currentRowCount)
         {
@@ -1708,7 +1793,7 @@ void loop()
 
           oldRowCount = currentRowCount;
           // currentAppMode = APP_DISP_UPD;
-          screenToShow = ROWS;
+          screenToShow = ROWS_WITH_HEADER;
 
           if (currentRowCount <= 0)
           {

@@ -84,6 +84,16 @@ char *Config::getFormattedStr(byte cmdId)
         fmt(strbuf, 1, CFG_continuous);
       }
       break;
+    case mnuCmdNavMode :
+      if (cfg.navMode)
+      {
+        fmt(strbuf, 1, CFG_max);
+      }
+      else
+      {
+        fmt(strbuf, 1, CFG_boundary);
+      }
+      break;
     case mnuCmdYarnMain :
       if (cfg.yarnsensorMainEnable)
       {
@@ -172,6 +182,7 @@ void Config::setDefaults()
   cfg.overloadsensorEnable = false;
   cfg.carriageSpeed = 80;
   cfg.opMode = true;
+  cfg.navMode = true;
   cfg.arrowMode = true;
 }
 

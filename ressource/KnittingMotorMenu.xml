@@ -23,6 +23,7 @@
       <MenuItems>
         <Item Id="OpMode"   Name="Operation mode"/>
         <Item Id="FootMode"   Name="Foot pedal mode"/>
+        <Item Id="NavMode"   Name="Navigation mode"/>
         <Item Id="CarSpeed"   Name="Carriage speed"/>
         <Item Id="YarnMain" Name="Yarn sensor main"/>
         <Item Id="YarnSec"  Name="Yarn sensor sec"/>
