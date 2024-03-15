@@ -92,10 +92,9 @@ enum Screens : byte
 };
 
 // Rotary encoder params
-volatile unsigned int oldEncPosition  = 0;
+unsigned int oldEncPosition  = 0;
 volatile unsigned int newEncPosition = 0;
-volatile int encDir = STEP_STOP;
-volatile int oldEncDir = STEP_STOP;
+int encDir = STEP_STOP;
 
 // Stepper pins params
 long stepperMaxPos = 0;     // max endstop
@@ -105,11 +104,9 @@ int operationRPM = 0;
 
 long posFromEnc = 0;  // calculated stepper position from encoder
 
-byte updLcd = 1; // update LCD after encoder value changed
-
 // error relevant variables
-volatile byte errorState = OK;  // endstops/sensors hit? (0=ok,1=max endstop,2=home endstop,3=yarnsensor)
-volatile short errPreservedDir = STEP_STOP;   // preserve old direction in case of an error
+byte errorState = OK;  // endstops/sensors hit? (0=ok,1=max endstop,2=home endstop,3=yarnsensor)
+short errPreservedDir = STEP_STOP;   // preserve old direction in case of an error
 
 // temporary button request, later changed with menu
 const char EmptyStr[] = "";
@@ -118,8 +115,8 @@ char strbuf[LCD_COLS + 1]; // one line of lcd display
 // knitting related
 unsigned int currentRowCount = 0;
 unsigned int oldRowCount = 0;
-volatile byte knitRow = 0;         // switch to knit 1 row
-volatile byte knitContinuous = 0;  // switch to control continuous knitting
+byte knitRow = 0;         // switch to knit 1 row
+byte knitContinuous = 0;  // switch to control continuous knitting
 byte fpHit = 0;           // footpedal hit switch
 
 // error and display related
@@ -147,8 +144,8 @@ byte btn;  // menu button
 
 // timed actions always like this (!)
 const unsigned long REFRESH_INTERVAL = 600; // display refresh when blinking in ms
-unsigned long lastRefreshTime = 0;
 /*
+  static unsigned long lastRefreshTime = 0;
     ....
     if(millis() - lastRefreshTime >= REFRESH_INTERVAL){
       lastRefreshTime += REFRESH_INTERVAL;
@@ -290,7 +287,6 @@ void readEncoder()
   if (newEncPosition != oldEncPosition) 
   {
     oldEncPosition = newEncPosition;
-    updLcd = 1;
   }
 }
 
@@ -403,8 +399,6 @@ void printRowCount(unsigned int rowCount, bool withTopic)
   #ifdef DEBUG_DISPLAY
   DBG_PRINTLN("-------");
   DBG_PRINTLN("printRowCount()");
-  DBG_PRINT("oldEncDir: ");
-  DBG_PRINTLN(oldEncDir);
   DBG_PRINT("oldEncPosition: ");
   DBG_PRINTLN(oldEncPosition);
   DBG_PRINT("newEncPosition: ");
@@ -417,6 +411,7 @@ void printRowCount(unsigned int rowCount, bool withTopic)
   DBG_PRINTLN(nextAppMode);
   #endif
 
+/*
   // acquire direction, but only if stepper is moving
   if (myStepper.moving())
   {
@@ -431,127 +426,119 @@ void printRowCount(unsigned int rowCount, bool withTopic)
       encDir = STEP_CW;
     }
   }
-
+*/
   #ifdef DEBUG_DISPLAY
   DBG_PRINT("encDir: ");
   DBG_PRINTLN(encDir);
   #endif
 
-  if (updLcd == 1) 
+  if (withTopic == true)
   {
-
-    if (withTopic == true)
+    lcd.clear();
+    lcd.setCursor(0,0);
+    if (currentConfig.cfg.opMode) {
+      lcd.print(F(MAIN_rtk));
+    } 
+    else
     {
-      lcd.clear();
-      lcd.setCursor(0,0);
-      if (currentConfig.cfg.opMode) {
-        lcd.print(F(MAIN_rtk));
-      } 
-      else
-      {
-        lcd.print(F(MAIN_rk));
-      }
+      lcd.print(F(MAIN_rk));
     }
+  }
 
-    lcd.setCursor(0,1);
+  lcd.setCursor(0,1);
 
-    inttostr(intbuf, rowCount);
-    char tmpbuf[LCD_COLS + 1];
+  inttostr(intbuf, rowCount);
+  char tmpbuf[LCD_COLS + 1];
 
-    if (nextAppMode == APP_ALARM) {
-      strlcpy(tmpbuf, PSTR(MAIN_done), sizeof(tmpbuf));
-      rpad(strbuf, tmpbuf);
+  if (nextAppMode == APP_ALARM) {
+    strlcpy(tmpbuf, PSTR(MAIN_done), sizeof(tmpbuf));
+    rpad(strbuf, tmpbuf);
+  } 
+  else 
+  {
+    if (rowCount == 1)
+    {
+      strlcpy(tmpbuf, PSTR(MAIN_row), sizeof(tmpbuf));
+      fmt(strbuf, 2, intbuf, tmpbuf);
     } 
     else 
     {
-      if (rowCount == 1)
-      {
-        strlcpy(tmpbuf, PSTR(MAIN_row), sizeof(tmpbuf));
-        fmt(strbuf, 2, intbuf, tmpbuf);
-      } 
-      else 
-      {
-        strlcpy(tmpbuf, PSTR(MAIN_rows), sizeof(tmpbuf));
-        fmt(strbuf, 2, intbuf, tmpbuf);
-      }
+      strlcpy(tmpbuf, PSTR(MAIN_rows), sizeof(tmpbuf));
+      fmt(strbuf, 2, intbuf, tmpbuf);
     }
-
-    // add small arrows to indicate direction
-    // if (myStepper.moving()) 
-    // {
-
-    rpad(strbuf, strbuf); // if strbuf is not padded to full length, one cannot put an arrow at the end
-
-    #ifdef DEBUG_DISPLAY
-    DBG_PRINT("RPad    : '");
-    DBG_PRINT(strbuf);
-    DBG_PRINTLN("'");
-    #endif
-
-    // show [C->] if boundaries are defined
-    if (currentConfig.cfg.leftBoundary != 0 || currentConfig.cfg.rightBoundary != 0)
-    {
-      bdPad = 1;
-      if (knitContinuous == 1) 
-      {
-        // left boundary symbol
-        if (currentConfig.cfg.leftBoundary != 0)
-        {
-          strbuf[LCD_COLS-4] = 0b01011011;
-        }
-      } 
-      else 
-      {
-        if (currentConfig.cfg.leftBoundary != 0)
-        {
-          strbuf[LCD_COLS-3] = 0b01011011;
-        }
-      }
-      // right boundary symbol
-      if (currentConfig.cfg.rightBoundary != 0)
-      {
-        strbuf[LCD_COLS-1] = 0b01011101;
-      }
-    }
-
-    if (knitContinuous == 1) 
-    {
-      strbuf[LCD_COLS-2-bdPad] = 0b01000011; // for continuous
-    }
-
-    if (displayErrorSymbol == 1)
-    {
-      displayErrorSymbol = 0;
-      strbuf[LCD_COLS-1-bdPad] = 0b01000101; // show E for continue after error
-    }
-    else
-    {
-      if (encDir == STEP_CW) 
-      {
-        DBG_PRINTLN("Display direction: STEP_CW <-");
-        strbuf[LCD_COLS-1-bdPad] = 0b01111111; // forward array
-      } 
-      else if (encDir == STEP_CCW) 
-      {
-        DBG_PRINTLN("Display direction: STEP_CCW ->");
-        strbuf[LCD_COLS-1-bdPad] = 0b01111110;    // back arrow
-      }
-    }
-
-    arrowShown = 1;
-    // }
-
-    lcd.print(strbuf);
-
-    #ifdef DEBUG_DISPLAY
-    DBG_PRINT("LCDPrint: '");
-    DBG_PRINT(strbuf);
-    DBG_PRINTLN("'");
-    DBG_PRINTLN("-------");
-    #endif
-
-    updLcd = 0;
   }
+
+  rpad(strbuf, strbuf); // if strbuf is not padded to full length, one cannot put an arrow at the end
+
+  #ifdef DEBUG_DISPLAY
+  DBG_PRINT("RPad    : '");
+  DBG_PRINT(strbuf);
+  DBG_PRINTLN("'");
+  #endif
+
+  // show [ and/or ] if boundaries are defined
+  if (currentConfig.cfg.leftBoundary != 0 || currentConfig.cfg.rightBoundary != 0)
+  {
+    bdPad = 1;
+    if (knitContinuous == 1)
+    {
+      // left boundary symbol
+      if (currentConfig.cfg.leftBoundary != 0)
+      {
+        strbuf[LCD_COLS-4] = 0b01011011;
+      }
+    } 
+    else 
+    {
+      if (currentConfig.cfg.leftBoundary != 0)
+      {
+        strbuf[LCD_COLS-3] = 0b01011011;
+      }
+    }
+    // right boundary symbol
+    if (currentConfig.cfg.rightBoundary != 0)
+    {
+      strbuf[LCD_COLS-1] = 0b01011101;
+    }
+  }
+
+  // show C for continuous knitting
+  if (knitContinuous == 1) 
+  {
+    strbuf[LCD_COLS-2-bdPad] = 0b01000011; 
+  }
+
+  // show E, if yarn sensor engaged
+  if (displayErrorSymbol == 1)
+  {
+    displayErrorSymbol = 0;
+    strbuf[LCD_COLS-1-bdPad] = 0b01000101; // show E for continue after error
+  }
+  else
+  {
+    if (encDir == STEP_CW) 
+    {
+      DBG_PRINTLN("Display direction: STEP_CW <-");
+      strbuf[LCD_COLS-1-bdPad] = 0b01111111; // forward array
+    } 
+    else if (encDir == STEP_CCW) 
+    {
+      DBG_PRINTLN("Display direction: STEP_CCW ->");
+      strbuf[LCD_COLS-1-bdPad] = 0b01111110;    // back arrow
+    }
+  }
+
+  arrowShown = 1;
+
+  lcd.print(strbuf);
+
+  #ifdef DEBUG_DISPLAY
+  DBG_PRINT("LCDPrint: '");
+  DBG_PRINT(strbuf);
+  DBG_PRINTLN("'");
+  DBG_PRINTLN("-------");
+  #endif
+
 }
 
 //----------------------------------------------------------------------
@@ -1068,14 +1055,14 @@ void homing()
 
   // if somehow boundaries are not correct in relation
   // to mid point, zero them out
-  if (currentConfig.cfg.leftBoundary < stepperMidPos && currentConfig.cfg.leftBoundary != 0) {
+  if ((currentConfig.cfg.leftBoundary > stepperMaxPos) || (stepperMidPos > currentConfig.cfg.leftBoundary)) {
     currentConfig.cfg.leftBoundary = 0;
     currentConfig.cfg.rightBoundary = 0;
     currentConfig.save();
     DBG_PRINTLN(F("Zeroing boundaries, left out of bounds"));
   }
 
-  if (currentConfig.cfg.rightBoundary > stepperMidPos && currentConfig.cfg.rightBoundary != 0) {
+  if ((currentConfig.cfg.rightBoundary > stepperMidPos)) {
     currentConfig.cfg.leftBoundary = 0;
     currentConfig.cfg.rightBoundary = 0;
     currentConfig.save();
@@ -1115,42 +1102,39 @@ void displaySteps()
   char intbuf2[7];  // buffer for encoder and steps
 
   // first display line
-  if (updLcd == 1) 
-  {
-    lcd.print(rpad(strbuf, EmptyStr));
-    lcd.setCursor(0, 0);
-    snprintf(intbuf,sizeof(intbuf),"%ld",myStepper.currentPosition());  // (use "%ld" for longs)
-    fmt(strbuf, 2, "Steps ", intbuf);
-    rpad (strbuf, strbuf); // if strbuf is not padded, one cannot put an arrow at the end
-    // add small arrows to indicate direction
-    if (myStepper.moving()) 
-    {
-      if (knitContinuous == 1) 
-      {
-        strbuf[LCD_COLS-2] = 0b01000011; // for continuous
-      }
-      if (encDir == STEP_CW) 
-      {
-        strbuf[LCD_COLS-1] = 0b01111110; // formward array
-      } 
-      else if (encDir == STEP_CCW) 
-      {
-        strbuf[LCD_COLS-1] = 0b01111111;    // back arrow
-      }
-    }
-    lcd.print(strbuf);
 
-  // second display line
-    lcd.print(rpad(strbuf, EmptyStr));
-    lcd.setCursor(0, 1);
-    snprintf(intbuf,sizeof(intbuf),"%ld",newEncPosition);  // (use "%ld" for longs)
-    snprintf(intbuf2,sizeof(intbuf2),"%ld",posFromEnc);
-    // inttostr(intbuf, newEncPosition);
-    fmt(strbuf, 4, "E", intbuf,"/C",intbuf2);
-    rpad(strbuf,strbuf);
-    lcd.print(strbuf);
-    updLcd = 0;
+  lcd.print(rpad(strbuf, EmptyStr));
+  lcd.setCursor(0, 0);
+  snprintf(intbuf,sizeof(intbuf),"%ld",myStepper.currentPosition());  // (use "%ld" for longs)
+  fmt(strbuf, 2, "Steps ", intbuf);
+  rpad (strbuf, strbuf); // if strbuf is not padded, one cannot put an arrow at the end
+  // add small arrows to indicate direction
+  if (myStepper.moving()) 
+  {
+    if (knitContinuous == 1) 
+    {
+      strbuf[LCD_COLS-2] = 0b01000011; // for continuous
+    }
+    if (encDir == STEP_CW) 
+    {
+      strbuf[LCD_COLS-1] = 0b01111110; // formward array
+    } 
+    else if (encDir == STEP_CCW) 
+    {
+      strbuf[LCD_COLS-1] = 0b01111111;    // back arrow
+    }
   }
+  lcd.print(strbuf);
+
+// second display line
+  lcd.print(rpad(strbuf, EmptyStr));
+  lcd.setCursor(0, 1);
+  snprintf(intbuf,sizeof(intbuf),"%ld",newEncPosition);  // (use "%ld" for longs)
+  snprintf(intbuf2,sizeof(intbuf2),"%ld",posFromEnc);
+  // inttostr(intbuf, newEncPosition);
+  fmt(strbuf, 4, "E", intbuf,"/C",intbuf2);
+  rpad(strbuf,strbuf);
+  lcd.print(strbuf);
 
 }
 
@@ -1172,6 +1156,7 @@ void startupScreen()
 // handler errorState events (endstops, yarnsensor)
 void errorStateHandling() 
 {
+  static unsigned long lastRefreshTime = 0;
   byte nok = 1;
 
   while (errorState != OK) 
@@ -1401,7 +1386,8 @@ void knitLeft() {
    // encoder interrupt is not able to catch up
    // the direction and so printRowCount gets the
    // wrong carriage direction for display
-  delayMicroseconds(6000); // we have to de
+  // delayMicroseconds(6000); // we have to de
+  encDir = STEP_CW;
 }
 
 // ------------------------------------------------------------------------
@@ -1420,7 +1406,8 @@ void knitRight() {
    // encoder interrupt is not able to catch up
    // the direction and so printRowCount gets the
    // wrong carriage direction for display
-  delayMicroseconds(6000);
+  // delayMicroseconds(6000);
+  encDir = STEP_CCW;
 }
 
 // ------------------------------------------------------------------------
@@ -1449,7 +1436,8 @@ void loop()
   {
     errorState = MISS_FOOT;
   } 
-  else if (currentAppMode == APP_PRE_CHECK) {
+  else if (currentAppMode == APP_PRE_CHECK) 
+  {
       errorState = OK;
       currentAppMode = APP_PGMSTART;
       nextAppMode = APP_PGMSTART;
@@ -1709,7 +1697,6 @@ void loop()
           if (currentConfig.cfg.footMode) {
             if (!myStepper.moving()) {
               knitRow = 1;
-              screenToShow = ROWS_WITH_HEADER;
               currentAppMode = APP_CARRIAGE_RUNNING;
             }
           } 
@@ -1741,10 +1728,10 @@ void loop()
               DBG_PRINTLN(errPreservedDir);
               switch(errPreservedDir)
               {
-                case STEP_CW:
+                case STEP_CCW:
                   knitRight();
                   break;
-                case STEP_CCW:
+                case STEP_CW:
                   knitLeft();
                   break;
               }
@@ -1855,14 +1842,10 @@ void loop()
           currentConfig.save();
 
           oldRowCount = currentRowCount;
-          // currentAppMode = APP_DISP_UPD;
           screenToShow = ROWS;
 
           if (currentRowCount <= 0)
           {
-            // currentConfig.cfg.rowCount = 0;
-            // currentConfig.save();
-            // currentRowCount = currentConfig.cfg.rowCount;
             nextAppMode = APP_ALARM;
             if ( !anyrtttl::nonblocking::isPlaying() )
             {
@@ -1870,11 +1853,10 @@ void loop()
               anyrtttl::nonblocking::begin(alarmPin, sngbuf);
             }
           }
-        } // if (oldRowCount != currentRowCount)
-        // else if (oldRowCount == 0)
-        // {
+        } 
+
         currentAppMode = APP_DISP_UPD;
-        // }
+
         break;
 
       // ----------------------------------
@@ -1891,6 +1873,7 @@ void loop()
           currentAppMode = APP_DISP_UPD;
           nextAppMode = APP_NORMAL_MODE;
           screenToShow = ROWS_WITH_HEADER;
+          myStepper.setSpeed( operationRPM ); // in case we moved the stepper
         } 
         else 
         {
@@ -1907,6 +1890,7 @@ void loop()
             currentAppMode = APP_DISP_UPD;
             nextAppMode = APP_NORMAL_MODE;
             screenToShow = ROWS_WITH_HEADER;
+            myStepper.setSpeed( operationRPM ); // in case we moved the stepper
           }
           else if (menuMode == MENU_INVOKE_ITEM)
           {
@@ -1962,29 +1946,6 @@ void loop()
         break;
 
       // ----------------------------------
-      // display handling
-      case APP_DISP_UPD:
-        #ifdef DEBUG_APPMODE
-        DBG_PRINTLN("appMode: APP_DISP_UPD");
-        #endif
-
-        switch (screenToShow)
-        {
-        case STEPS:
-          displaySteps();
-          break;
-        case ROWS:
-          printRowCount(currentRowCount, false);
-          break;
-        case ROWS_WITH_HEADER:
-          printRowCount(currentRowCount, true);
-          break;
-        }
-
-        currentAppMode = nextAppMode;
-        break;
-
-      // ----------------------------------
       // mode is called after entering a menu item
       case APP_PROCESS_MENU_CMD:
         {
@@ -2010,6 +1971,29 @@ void loop()
           }
           break;
         } // case APP_PROCESS_MENU_CMD:
+
+      // ----------------------------------
+      // display handling
+      case APP_DISP_UPD:
+        #ifdef DEBUG_APPMODE
+        DBG_PRINTLN("appMode: APP_DISP_UPD");
+        #endif
+
+        switch (screenToShow)
+        {
+        case STEPS:
+          displaySteps();
+          break;
+        case ROWS:
+          printRowCount(currentRowCount, false);
+          break;
+        case ROWS_WITH_HEADER:
+          printRowCount(currentRowCount, true);
+          break;
+        }
+
+        currentAppMode = nextAppMode;
+        break;
 
         default:
           break;

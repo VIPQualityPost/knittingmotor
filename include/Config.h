@@ -4,15 +4,15 @@
 #include <Arduino.h>
 
 
-const char NameAndVersion[] = "Knitting Motor Configuration V1.8";
+const char NameAndVersion[] = "Knitting Motor Configuration V1.9";
 
 extern long addToVal(short delta, long timeval, long minval = 1, long maxval = 1);
 
 struct cfgparams {
   char appNameAndVersion[sizeof(NameAndVersion)];
   unsigned int rowCount;        // setup row counts
-  unsigned int leftBoundary;    // knitting boundaries
-  unsigned int rightBoundary;   // knitting boundaries
+  long leftBoundary;            // knitting boundaries
+  long rightBoundary;           // knitting boundaries
   byte alarmTune;               // sing no.
   byte buttonBeep;              // true/false
   byte displayBrightness;       // 1=33%, 2=66%, 3=100%
@@ -21,7 +21,7 @@ struct cfgparams {
   byte overloadsensorEnable;    // true/false
   byte opMode;                  // operation mode true=row count down (auto), false=row count up (manual)
   byte footMode;                // foot pedal mode: single / continuous
-  byte navMode;               // navigation with left/right buttons: max or boundary
+  byte navMode;                 // navigation with left/right buttons: max or boundary
   byte arrowMode;               // show arrow after knitting true/false
   unsigned int carriageSpeed;   // see myStepper.setSpeed( 800 );  // 80 Rev/Min ( if stepsPerRev is set correctly )
 };
