@@ -24,13 +24,11 @@ stages:
  - upload
  - release
 
-before_script:
-  - "pip install --upgrade pip"
-  - "pip install -U platformio"
-
 test:
   stage: test
   script:
+    - "pip install --upgrade pip"
+    - "pip install -U platformio"
     - "pio run -e r4wifi_en"
     - "pio run -e r4wifi_de"
   artifacts:
@@ -47,6 +45,8 @@ test:
 build:
   stage: build
   script:
+    - "pip install --upgrade pip"
+    - "pip install -U platformio"
     - mkdir bin
     - "pio run -e r4wifi_en"
     - cp .pio/build/r4wifi_en/firmware.bin bin/${UNOR4WIFI_EN_RELEASE}
