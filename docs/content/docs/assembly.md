@@ -33,7 +33,7 @@ Regarding the 3D printed parts, I will use the names of the STL files wherever a
 
 |Frame only|
 | :--:|
-|{{< figure src="images/CAD_frame.png" link="images/CAD_frame.png" target="blank" title="(click to zoom)" height="40%" width="40%" >}}|
+|{{< figure src="/knittingmotor/images/CAD_frame.png" link="/knittingmotor/images/CAD_frame.png" target="blank" title="(click to zoom)" height="40%" width="40%" >}}|
 
 I left out the knitting machine in this picture for better visual clarity. In reality, because of the table clamps, the machine has to be in place already, because you simply cannot screw down the clamps to the table and fit the machine afterwards as you might already know.
 
@@ -48,13 +48,13 @@ Assembling the frame first and bolting everything to the table later is totally 
 
 |Post back|
 | :--: |
-|{{< figure src="images/CAD_post_back.png" link="images/CAD_post_back.png" target="blank" title="(click to zoom)" height="200px" width="200px">}}|
+|{{< figure src="/knittingmotor/images/CAD_post_back.png" link="/knittingmotor/images/CAD_post_back.png" target="blank" title="(click to zoom)" height="200px" width="200px">}}|
 
 - Slide the two `belt slider.stl` over the top of the mount posts and see if everything fits together nicely. The two sliders are for general protection and to hide the cable for the max endstop later.
 
 |Post back with slider|
 | :--: |
-|{{< figure src="images/CAD_post_back_with_belt_slider.png" link="images/CAD_post_back_with_belt_slider.png" target="blank" title="(click to zoom)" height="200px" width="200px" >}}|
+|{{< figure src="/knittingmotor/images/CAD_post_back_with_belt_slider.png" link="/knittingmotor/images/CAD_post_back_with_belt_slider.png" target="blank" title="(click to zoom)" height="200px" width="200px" >}}|
 
 - Add the last two corner brackets to the top groove of the front rest bar and slide them both to the middle of the bar. Their upright edges have to point away from each other.
 
@@ -71,13 +71,13 @@ Assembling the frame first and bolting everything to the table later is totally 
 
 |Front rest with clamp|
 | :--: |
-|{{< figure src="images/CAD_front_rest_with_with_clamp.png" link="images/CAD_front_rest_with_with_clamp.png" target="blank" title="(click to zoom)" height="200px" width="200px" >}}|
+|{{< figure src="/knittingmotor/images/CAD_front_rest_with_with_clamp.png" link="/knittingmotor/images/CAD_front_rest_with_with_clamp.png" target="blank" title="(click to zoom)" height="200px" width="200px" >}}|
 
 ## 2) Carriage mover
 
 |Mover front | Mover back |
 | :--: | :--: |
-|{{< figure src="images/CAD_mover_front.png" link="images/CAD_mover_front.png" target="blank" title="(click to zoom)" height="300px" width="300px" >}}|{{< figure src="images/CAD_mover_back.png" link="images/CAD_mover_back.png" target="blank" title="(click to zoom)" height="500px" width="500px" >}}|
+|{{< figure src="/knittingmotor/images/CAD_mover_front.png" link="/knittingmotor/images/CAD_mover_front.png" target="blank" title="(click to zoom)" height="300px" width="300px" >}}|{{< figure src="/knittingmotor/images/CAD_mover_back.png" link="/knittingmotor/images/CAD_mover_back.png" target="blank" title="(click to zoom)" height="500px" width="500px" >}}|
 
 See the following pictures on how to assemble the mover.
 
@@ -92,13 +92,13 @@ If you bought a 4-wheel 2020 gantry, simply reassemble it to a 3-wheel version.
 
 |Mover assembly front|
 | :--: |
-|{{< figure src="images/CAD_mover_assembly_front.png" link="images/CAD_mover_assembly_front.png" target="blank" title="(click to zoom)" height="400px" width="400px" >}}|
+|{{< figure src="/knittingmotor/images/CAD_mover_assembly_front.png" link="/knittingmotor/images/CAD_mover_assembly_front.png" target="blank" title="(click to zoom)" height="400px" width="400px" >}}|
 
 - You don't have to attach the `overload sensor mount.stl` and the little switch right now. You can add it later while assembling the electronics. The switch cable though has to be guided on the left side around the `mover plate.stl`to the front and can then be positioned under the `endstop bracket.stl` and guided to the top of the plate. If this makes no sense to you atm, wait until we assemble the electronics.
 
 |Mover assembly back|
 | :--: |
-|{{< figure src="images/CAD_mover_assembly_back.png" link="images/CAD_mover_assembly_back.png" target="blank" title="(click to zoom)" height="400px" width="400px" >}}|
+|{{< figure src="/knittingmotor/images/CAD_mover_assembly_back.png" link="/knittingmotor/images/CAD_mover_assembly_back.png" target="blank" title="(click to zoom)" height="400px" width="400px" >}}|
 
 - The small `spring presser.stl`, which helps compressing the spring with the tensioner screw, is shown only once on the pictures. If you find that your compression spring is not strong enough, before grabbing a new one, add a second `spring presser.stl` on the top of the spring. This might help already.
 
