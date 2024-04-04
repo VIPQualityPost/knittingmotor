@@ -49,6 +49,7 @@ pages:
     - pages
   script:
     - apk add --no-cache go curl bash nodejs
+    - cd docs
     - hugo
   artifacts:
     paths:
