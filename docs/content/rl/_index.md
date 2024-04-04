@@ -8,7 +8,7 @@ index: false
 {{< figure src="/knittingmotor/images/OKM_build_view.jpg" link="/knittingmotor/images/OKM_build_view.jpg" target="blank" title="(click to zoom)"
  height="60%" width="60%" >}}
 
-## So, what do you think? Is it working?
+## So, what do you think?
 
 No worries, I can assure you, it is working as of now. Here you find a bunch of pictures I took during the build of the actual machine itself. I hope, you find them useful in the
 process of building your own motor.
