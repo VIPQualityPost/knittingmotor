@@ -6,8 +6,8 @@ theme = 'techdoc'
 [params]
 # Documentation Menu section
 # Menu style settings
-#menu_style = "slide-menu" # "open-menu" or "slide-menu" or "" blank is as no sidebar
-menu_style = ""
+menu_style = "slide-menu" # "open-menu" or "slide-menu" or "" blank is as no sidebar
+#menu_style = ""
 custom_background_color = "#636361"
 #custom_font_color = "black"
 custom_font_color = "#f7e8d0"
