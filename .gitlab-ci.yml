@@ -37,7 +37,7 @@ pages:
     - cd docs
     - mkdir themes
     - git clone $THEME_URL themes/techdoc
-    - git clone $GALLERY_URL themes/
+    - git clone $GALLERY_URL themes/hugo-shortcode-gallery
     - hugo
   artifacts:
     expire_in: 2 days
@@ -48,6 +48,7 @@ pages:
     - if: $CI_COMMIT_REF_NAME
       changes:
         - docs/**/*
+        - .gitlab-ci.yml
 
 test:
   image: python:3.11
