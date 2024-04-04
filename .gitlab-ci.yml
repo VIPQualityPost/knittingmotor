@@ -34,6 +34,7 @@ test:
     - "pio run -e r4wifi_en"
     - "pio run -e r4wifi_de"
   artifacts:
+    expire_in: 2 days
     paths:
       - .pio/build/r4wifi_de/
       - .pio/build/r4wifi_en/
