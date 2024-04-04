@@ -42,7 +42,7 @@ pages_pre:
       changes:
         - docs/**/*
 
-pages_main:
+pages:
   stage: website
   image: registry.gitlab.com/pages/hugo/hugo_extended:latest
   tags:
