@@ -42,10 +42,10 @@ pages:
       - docs/public
   publish: docs/public
   when: manual
-#  rules:
-#    - if: $CI_COMMIT_REF_NAME
-#      changes:
-#        - docs/**/*
+  rules:
+    - if: $CI_COMMIT_REF_NAME
+      changes:
+        - docs/**/*
 
 test:
   image: python:3.11

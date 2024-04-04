@@ -1,4 +1,4 @@
-baseURL = 'https://pages.open-mind.space/'
+baseURL = 'https://pages.open-mind.space/knittingmotor'
 languageCode = 'en-us'
 title = 'Open Knitting Motor Project'
 theme = 'techdoc'
@@ -14,6 +14,7 @@ custom_font_color = "#f7e8d0"
 
 # Global menu section
 # See https://gohugo.io/content-management/menus/
+
 [menu]
     [[menu.main]]
         name = "Home"
