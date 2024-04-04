@@ -4,7 +4,7 @@
 #include <LiquidCrystal.h>
 #include <MobaTools.h>
 #include <anyrtttl.h>
-#include <Pitches.h>
+#include <pitches.h>
 #include <Bounce2.h>
 #include "LcdKeypad.h"
 #include "MenuData.h"
