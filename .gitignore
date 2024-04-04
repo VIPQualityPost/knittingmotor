@@ -3,6 +3,9 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+**/.DS_Store
+**/.hugo_build.lock
 firmware/*/
 logs
-public
+docs/public/
+docs/themes/techdoc

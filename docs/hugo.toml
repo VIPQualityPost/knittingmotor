@@ -1,0 +1,42 @@
+baseURL = 'https://pages.open-mind.space/'
+languageCode = 'en-us'
+title = 'Open Knitting Motor Project'
+theme = 'techdoc'
+
+[params]
+# Documentation Menu section
+# Menu style settings
+#menu_style = "slide-menu" # "open-menu" or "slide-menu" or "" blank is as no sidebar
+menu_style = ""
+custom_background_color = "#636361"
+#custom_font_color = "black"
+custom_font_color = "#f7e8d0"
+
+# Global menu section
+# See https://gohugo.io/content-management/menus/
+[menu]
+    [[menu.main]]
+        name = "Home"
+        url = "/"
+        weight = 1
+        identifier = 'home'
+        pre = "<i class='fa fa-ruler-combined'></i>&nbsp;"
+
+    [[menu.main]]
+        name = "License"
+        url = "/docs/LICENSE.txt"
+        weight = 100
+        identifier = 'license'
+
+
+# Markup configure section
+# See https://gohugo.io/getting-started/configuration-markup/
+[markup]
+    defaultMarkdownHandler = "goldmark"
+    [markup.goldmark.renderer]
+        unsafe= true
+    [markup.tableOfContents]
+        startLevel = 1
+        endLevel = 6
+        ordered = false
+

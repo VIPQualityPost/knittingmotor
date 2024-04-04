@@ -1,4 +1,12 @@
-# Open Knitting Motor - Wiring
+---
+title: "Wiring"
+date:  "2024-03-18"
+menu:
+  main:
+      parent: Build your own!
+TableOfContents: true
+weight: 9
+---
 
 ## How to wire all parts?
 
@@ -91,7 +99,7 @@ Use a GX16 connector.
 
 A+ / A- / B+ / B-: to stepper motor via GX16 connector
 
-*Hint:<br>
+*Hint:
 To find out, which cables belong to which phase, simply hold two wires together and try to turn the motor by hand. If you feel quite a lot of resistance while the cables are held together, you found a phase ;-)*
 
 After you hooked up the motor, you will have to check, if your wiring leads to the correct turning direction of the stepper. As a hint, if you mount the GT2 pulley to the motor and look right at it, the motor has to turn CCW when moving the carrier to the zero (right) position and CW to the max (left).
