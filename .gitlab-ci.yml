@@ -38,6 +38,7 @@ pages:
     - git clone $THEME_URL themes/techdoc
     - hugo
   artifacts:
+    expire_in: 2 days
     paths:
       - docs/public
   publish: docs/public
