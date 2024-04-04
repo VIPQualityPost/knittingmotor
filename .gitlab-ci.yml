@@ -9,6 +9,7 @@ variables:
   PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/unor4wifiv2/${PACKAGE_VERSION}"
   HUGO_ENV: production
   THEME_URL: "https://github.com/thingsym/hugo-theme-techdoc"
+  GALLERY_URL: "https://github.com/mfg92/hugo-shortcode-gallery.git"
 
 cache:
   paths:
@@ -36,6 +37,7 @@ pages:
     - cd docs
     - mkdir themes
     - git clone $THEME_URL themes/techdoc
+    - git clone $GALLERY_URL themes/
     - hugo
   artifacts:
     expire_in: 2 days
