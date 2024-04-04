@@ -1,0 +1,40 @@
+image: python:3.11
+
+cache:
+  paths:
+    - ~/.cache/pip
+    - ~/.platformio/.cache
+
+stages:
+ - build_en
+ - build_de
+
+default:
+  tags:
+    - docker
+
+before_script:
+  - "pip install --upgrade pip"
+  - "pip install -U platformio"
+
+build_en:
+  stage: build_en
+  script: "pio run -e r4wifi_en"
+  artifacts:
+    paths:
+      - .pio/build/r4wifi_en/
+  environment: firmware_en
+  rules:
+    - if: $CI_COMMIT_BRANCH == "r4wifiv2"
+      when: manual
+
+build_de:
+  stage: build_de
+  script: "pio run -e r4wifi_de"
+  artifacts:
+    paths:
+      - .pio/build/r4wifi_de/
+  environment: firmware_de
+  rules:
+    - if: $CI_COMMIT_BRANCH == "r4wifiv2"
+      when: manual
