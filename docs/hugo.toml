@@ -25,7 +25,7 @@ custom_font_color = "#f7e8d0"
 
     [[menu.main]]
         name = "License"
-        url = "/docs/LICENSE.txt"
+        url = "/docs/license.txt"
         weight = 100
         identifier = 'license'
 
