@@ -26,22 +26,6 @@ stages:
  - release
  - website
 
-pages_pre:
-  stage: website
-  image: registry.gitlab.com/pages/hugo/hugo_extended:latest
-  tags:
-    - pages
-  script:
-    - cd docs
-    - mkdir themes
-    - cd themes
-    - git clone $THEME_URL
-  when: manual
-#  rules:
-#    - if: $CI_COMMIT_REF_NAME
-#      changes:
-#        - docs/**/*
-
 pages:
   stage: website
   image: registry.gitlab.com/pages/hugo/hugo_extended:latest
@@ -50,12 +34,13 @@ pages:
   script:
     - apk add --no-cache go curl bash nodejs
     - cd docs
+    - mkdir themes
+    - git clone $THEME_URL themes/techdoc
     - hugo
   artifacts:
     paths:
       - docs/public
   publish: docs/public
-  needs: ["pages_pre"]
   when: manual
 #  rules:
 #    - if: $CI_COMMIT_REF_NAME
