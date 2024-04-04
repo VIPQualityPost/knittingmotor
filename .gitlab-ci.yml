@@ -19,22 +19,24 @@ before_script:
 
 build_en:
   stage: build_en
-  script: "pio run -e r4wifi_en"
+  script:
+    - "pio run -e r4wifi_en"
+    - cp .pio/build/r4wifi_de/firmware.bin .pio/build/r4wifi_de/firmware_en.bin
   artifacts:
     paths:
-      - .pio/build/r4wifi_en/
+      - .pio/build/r4wifi_en/firmware_en.bin
   environment: firmware_en
   rules:
     - if: $CI_COMMIT_BRANCH == "r4wifiv2"
-      when: manual
 
 build_de:
   stage: build_de
-  script: "pio run -e r4wifi_de"
+  script: 
+    - "pio run -e r4wifi_de"
+    - cp .pio/build/r4wifi_de/firmware.bin .pio/build/r4wifi_de/firmware_de.bin
   artifacts:
     paths:
-      - .pio/build/r4wifi_de/
+      - .pio/build/r4wifi_de/firmware_de.bin
   environment: firmware_de
   rules:
     - if: $CI_COMMIT_BRANCH == "r4wifiv2"
-      when: manual
