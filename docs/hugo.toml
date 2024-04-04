@@ -1,7 +1,7 @@
 baseURL = 'https://pages.open-mind.space/knittingmotor'
 languageCode = 'en-us'
 title = 'Open Knitting Motor Project'
-theme = 'techdoc'
+theme = ['techdoc', 'hugo-shortcode-gallery']
 
 [params]
 # Documentation Menu section

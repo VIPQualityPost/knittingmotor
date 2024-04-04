@@ -11,15 +11,15 @@ index: false
 
 ## Techdocs
 
-- [Parts list](/docs/parts_list/)
+- [Parts list](/knittingmotor/build/parts_list/)
 
-- [Firmware description](/docs/firmware/)
+- [Firmware description](/knittingmotor/build/firmware/)
 
-- [Electronics and Wiring](/docs/wiring/)
+- [Electronics and Wiring](/knittingmotor/build/wiring/)
 
-- [Assembly](/docs/assembly/)
+- [Assembly](/knittingmotor/build/assembly/)
 
-- [Changelog](/docs/changelog/)
+- [Changelog](/knittingmotor/build/changelog/)
 
 ------
 

@@ -8,4 +8,5 @@
 firmware/*/
 logs
 docs/public/
+docs/resources/
 docs/themes/techdoc
