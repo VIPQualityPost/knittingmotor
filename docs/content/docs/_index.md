@@ -1,5 +1,5 @@
 ---
-title: "Overview"
+title: "Build your own!"
 date:  "2024-03-18"
 weight: 2
 index: false
@@ -9,9 +9,7 @@ index: false
 
 ---
 
-## Documentation overview
-
-- [Operation manual](/docs/operation_manual)
+## Techdocs
 
 - [Parts list](/docs/parts_list/)
 
@@ -22,7 +20,6 @@ index: false
 - [Assembly](/docs/assembly/)
 
 - [Changelog](/docs/changelog/)
-
 
 ------
 

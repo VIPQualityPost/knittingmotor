@@ -1,9 +1,9 @@
 ---
 title: "Firmware"
 date:  "2024-03-18"
-menu:
-  main:
-      parent: Build your own!
+#menu:
+#  main:
+#      parent: Build your own!
 weight: 8
 TableOfContents: true
 index: false

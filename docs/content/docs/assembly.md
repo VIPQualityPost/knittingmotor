@@ -1,9 +1,9 @@
 ---
 title: "Assembly"
 date:  "2024-03-18"
-menu:
-  main:
-      parent: Build your own!
+#menu:
+#  main:
+#      parent: Build your own!
 weight: 7
 TableOfContents: true
 index: false

@@ -1,9 +1,9 @@
 ---
 title: "Wiring"
 date:  "2024-03-18"
-menu:
-  main:
-      parent: Build your own!
+#menu:
+#  main:
+#      parent: Build your own!
 TableOfContents: true
 weight: 9
 index: false
