@@ -12,6 +12,6 @@ Welcome to my
 
 # Open Knitting Motor Project
 
-<p><img src="/knittingmotor/images/CAD_OKM.png" style="display: block;margin-left: auto;margin-right: auto;;zoom:33%;" /></p>
+{{< figure src="/knittingmotor/images/CAD_OKM.png" link="/knittingmotor/images/CAD_OKM.png" target="blank" title="(click to zoom)" height="33%" width="33%" >}}
 
 Here you find every information you need to build and use your own custom flatbed knitting machine motor.
