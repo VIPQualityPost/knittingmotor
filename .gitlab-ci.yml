@@ -21,7 +21,7 @@ build_en:
   stage: build_en
   script:
     - "pio run -e r4wifi_en"
-    - cp .pio/build/r4wifi_de/firmware.bin .pio/build/r4wifi_de/firmware_en.bin
+    - cp .pio/build/r4wifi_en/firmware.bin .pio/build/r4wifi_en/firmware_en.bin
   artifacts:
     paths:
       - .pio/build/r4wifi_en/firmware_en.bin
