@@ -39,6 +39,8 @@ test:
   environment: develop
   rules:
     - if: ($CI_COMMIT_BRANCH == "r4wifiv2")
+      changes:
+        - include/Version.h
     - if: $CI_COMMIT_TAG
       when: never
 
