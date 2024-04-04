@@ -37,10 +37,10 @@ pages_pre:
     - cd themes
     - git clone $THEME_URL
   when: manual
-  rules:
-    - if: $CI_COMMIT_REF_NAME
-      changes:
-        - docs/**/*
+#  rules:
+#    - if: $CI_COMMIT_REF_NAME
+#      changes:
+#        - docs/**/*
 
 pages:
   stage: website
@@ -56,10 +56,10 @@ pages:
   publish: docs/public
   needs: ["pages_pre"]
   when: manual
-  rules:
-    - if: $CI_COMMIT_REF_NAME
-      changes:
-        - docs/**/*
+#  rules:
+#    - if: $CI_COMMIT_REF_NAME
+#      changes:
+#        - docs/**/*
 
 test:
   image: python:3.11
