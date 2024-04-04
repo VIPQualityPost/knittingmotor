@@ -36,9 +36,9 @@ pages_pre:
     - mkdir themes
     - cd themes
     - git clone $THEME_URL
+  when: manual
   rules:
-    - if: $CI_COMMIT_BRANCH
-      when: manual
+    - if: $CI_COMMIT_REF_NAME
       changes:
         - docs/**/*
 
@@ -55,9 +55,9 @@ pages:
       - docs/public
   publish: docs/public
   needs: ["pages_pre"]
+  when: manual
   rules:
-    - if: $CI_COMMIT_BRANCH
-      when: manual
+    - if: $CI_COMMIT_REF_NAME
       changes:
         - docs/**/*
 
