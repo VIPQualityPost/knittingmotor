@@ -1,42 +1,83 @@
 image: python:3.11
 
+variables:
+  # Package version can only contain numbers (0-9), and dots (.).
+  # Must be in the format of X.Y.Z, i.e. should match /\A\d+\.\d+\.\d+\z/ regular expresion.
+  # See https://docs.gitlab.com/ee/user/packages/generic_packages/#publish-a-package-file
+  PACKAGE_VERSION: "0.0.1"
+  UNOR4WIFI_DE_RELEASE: "firmware_de-${CI_COMMIT_TAG}.bin"
+  UNOR4WIFI_EN_RELEASE: "firmware_en-${CI_COMMIT_TAG}.bin"
+  PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/unor4wifiv2/${PACKAGE_VERSION}"
+
 cache:
   paths:
     - ~/.cache/pip
     - ~/.platformio/.cache
 
-stages:
- - build_en
- - build_de
-
 default:
   tags:
     - docker
+
+stages:
+ - test
+ - build
+ - upload
+ - release
 
 before_script:
   - "pip install --upgrade pip"
   - "pip install -U platformio"
 
-build_en:
-  stage: build_en
+test:
+  stage: test
   script:
     - "pio run -e r4wifi_en"
-    - cp .pio/build/r4wifi_en/firmware.bin .pio/build/r4wifi_en/firmware_en.bin
-  artifacts:
-    paths:
-      - .pio/build/r4wifi_en/firmware_en.bin
-  environment: firmware_en
-  rules:
-    - if: $CI_COMMIT_BRANCH == "r4wifiv2"
-
-build_de:
-  stage: build_de
-  script: 
     - "pio run -e r4wifi_de"
-    - cp .pio/build/r4wifi_de/firmware.bin .pio/build/r4wifi_de/firmware_de.bin
   artifacts:
     paths:
-      - .pio/build/r4wifi_de/firmware_de.bin
-  environment: firmware_de
+      - .pio/build/r4wifi_de/
+      - .pio/build/r4wifi_en/
+  environment: develop
   rules:
-    - if: $CI_COMMIT_BRANCH == "r4wifiv2"
+    - if: ($CI_COMMIT_BRANCH == "r4wifiv2")
+    - if: $CI_COMMIT_TAG
+      when: never
+
+build:
+  stage: build
+  script:
+    - mkdir bin
+    - "pio run -e r4wifi_en"
+    - cp .pio/build/r4wifi_en/firmware.bin bin/${UNOR4WIFI_EN_RELEASE}
+    - "pio run -e r4wifi_de"
+    - cp .pio/build/r4wifi_de/firmware.bin bin/${UNOR4WIFI_DE_RELEASE}
+  artifacts:
+    paths:
+      - bin/
+  environment: production
+  rules:
+    - if: ($CI_COMMIT_BRANCH == "r4wifiv2") && $CI_COMMIT_TAG
+
+upload:
+  stage: upload
+  image: curlimages/curl:latest
+  rules:
+    - if: ($CI_COMMIT_BRANCH == "r4wifiv2") && $CI_COMMIT_TAG
+  script:
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file bin/${UNOR4WIFI_DE_RELEASE} "${PACKAGE_REGISTRY_URL}/${UNOR4WIFI_DE_RELEASE}"
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file bin/${UNOR4WIFI_EN_RELEASE} "${PACKAGE_REGISTRY_URL}/${UNOR4WIFI_EN_RELEASE}"
+
+release:
+  # Caution, as of 2021-02-02 these assets links require a login, see:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/299384
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: ($CI_COMMIT_BRANCH == "r4wifiv2") && $CI_COMMIT_TAG
+  script:
+    - |
+      release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
+        --assets-link "{\"name\":\"${UNOR4WIFI_DE_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${UNOR4WIFI_DE_RELEASE}\"}" \
+        --assets-link "{\"name\":\"${UNOR4WIFI_EN_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${UNOR4WIFI_EN_RELEASE}\"}"
