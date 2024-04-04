@@ -6,6 +6,7 @@ menu:
       parent: Build your own!
 weight: 8
 TableOfContents: true
+index: false
 ---
 
 The project is being developed under Visual Studio Code with the PlatformIO plugin. If you use the same IDE, you should not have any problems compiling and flashing the firmware to the Arduino, as all necessary external libraries will be configured via `platformio.ini`.

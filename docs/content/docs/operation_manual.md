@@ -4,6 +4,7 @@ date: "2024-03-18"
 menu: "main"
 weight: 4
 TableOfContents: true
+index: false
 ---
 
 # Open Knitting Motor Project - Operation manual

@@ -5,6 +5,7 @@ menu:
   main:
       parent: Build your own!
 weight: 10
+index: false
 ---
 
 | FW Version | Gitlab branch | Comment |

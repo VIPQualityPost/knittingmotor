@@ -6,6 +6,7 @@ menu:
       parent: Build your own!
 TableOfContents: true
 weight: 9
+index: false
 ---
 
 ## How to wire all parts?
