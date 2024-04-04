@@ -32,7 +32,7 @@ custom_font_color = "#f7e8d0"
     [[menu.main]]
         name = "Firmware download"
         url = "https://gitlab.open-mind.space/pages/knittingmotor/-/releases/permalink/latest"
-        weight = 500
+        weight = 50
         identifier = 'download_fw'
 
 # Markup configure section
