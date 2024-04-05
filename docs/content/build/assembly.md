@@ -103,7 +103,7 @@ If you bought a 4-wheel 2020 gantry, simply reassemble it to a 3-wheel version.
 
 - The small `spring presser.stl`, which helps compressing the spring with the tensioner screw, is shown only once on the pictures. If you find that your compression spring is not strong enough, before grabbing a new one, add a second `spring presser.stl` on the top of the spring. This might help already.
 
-If everything went together well, try to slide it over the run bar to see if it runs smoothely and without any wobble or wiggle. If it is too tight or too loose, you have to adjust the position of the rolers. If you don't know how, [OpenBuilds setup video on YT, beginning 2:38](https://www.youtube.com/watch?v=pMtHy7sDNG4) is your friend, but as a hint, normally, some of the rolers are mounted excentrically and you can adjust their position.
+If everything went together well, try to slide it over the run bar to see if it runs smoothely and without any wobble or wiggle. If it is too tight or too loose, you have to adjust the position of the rolers. If you don't know how, [OpenBuilds setup video on YT, beginning 2:38](https://youtu.be/pMtHy7sDNG4?t=159) is your friend, but as a hint, normally, some of the rolers are mounted excentrically and you can adjust their position.
 
 {{< youtube "pMtHy7sDNG4?start=158" >}}
 

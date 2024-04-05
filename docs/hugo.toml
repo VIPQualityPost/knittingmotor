@@ -3,10 +3,24 @@ languageCode = 'en-us'
 title = 'Open Knitting Motor Project'
 theme = ['techdoc', 'hugo-shortcode-gallery']
 
+[privacy]
+  [privacy.disqus]
+    disable = true
+  [privacy.googleAnalytics]
+    disable = true
+  [privacy.instagram]
+    disable = true
+  [privacy.twitter]
+    disable = true
+  [privacy.vimeo]
+    disable = true
+  [privacy.youtube]
+    disable = true
+
 [params]
 # Documentation Menu section
 # Menu style settings
-menu_style = "slide-menu" # "open-menu" or "slide-menu" or "" blank is as no sidebar
+menu_style = "open-menu" # "open-menu" or "slide-menu" or "" blank is as no sidebar
 #menu_style = ""
 custom_background_color = "#636361"
 #custom_font_color = "black"
@@ -24,12 +38,6 @@ custom_font_color = "#f7e8d0"
         pre = "<i class='fa fa-ruler-combined'></i>&nbsp;"
 
     [[menu.main]]
-        name = "License"
-        url = "/docs/license.txt"
-        weight = 100
-        identifier = 'license'
-
-    [[menu.main]]
         name = "Source files"
         url = "https://gitlab.open-mind.space/pages/knittingmotor"
         weight = 40
@@ -40,6 +48,13 @@ custom_font_color = "#f7e8d0"
         url = "https://gitlab.open-mind.space/pages/knittingmotor/-/releases/permalink/latest"
         weight = 50
         identifier = 'download_fw'
+
+    [[menu.main]]
+        name = "Impressum"
+        url = "/impressum"
+        weight = 1000
+        identifier = 'impressum'
+
 
 # Markup configure section
 # See https://gohugo.io/getting-started/configuration-markup/
