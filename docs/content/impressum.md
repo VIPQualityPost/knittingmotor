@@ -1,5 +1,5 @@
 ---
-title: "Impressum"
+title: "Impressum/Imprint"
 date: 2024-04-05
 lastmod: 2024-04-05
 publishdate: 2024-04-05

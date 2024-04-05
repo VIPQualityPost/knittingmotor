@@ -50,7 +50,7 @@ custom_font_color = "#f7e8d0"
         identifier = 'download_fw'
 
     [[menu.main]]
-        name = "Impressum"
+        name = "Impressum/Imprint"
         url = "/impressum"
         weight = 1000
         identifier = 'impressum'

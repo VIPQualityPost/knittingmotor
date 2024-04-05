@@ -1,5 +1,5 @@
 ---
-title: "Is it just fantasy?"
+title: "See it - believe it"
 date:  "2024-04-04"
 weight: 3
 index: false
@@ -10,8 +10,7 @@ index: false
 
 ## So, what do you think?
 
-No worries, I can assure you, it is working as of now. Here you find a bunch of pictures I took during the build of the actual machine itself. I hope, you find them useful in the
-process of building your own motor.
+No worries, I can assure you, it is working as of now. Here you find a bunch of pictures I took during the build of the actual machine itself. I hope, you find them useful in the process of building your own motor.
 <p></p>
 
 ---
