@@ -38,6 +38,7 @@ pages:
     - mkdir themes
     - git clone $THEME_URL themes/techdoc
     - git clone $GALLERY_URL themes/hugo-shortcode-gallery
+    - cp -a theme_mod/. themes/techdoc/
     - hugo
   artifacts:
     expire_in: 2 days

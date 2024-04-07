@@ -5,7 +5,10 @@ weight: 2
 index: false
 ---
 
-{{< figure src="/knittingmotor/images/CAD_OKM.png" link="/knittingmotor/images/CAD_OKM.png" target="blank" title="(click to zoom)" height="33%" width="33%" >}}
+
+
+| {{< figure src="/knittingmotor/images/CAD_OKM.png" link="/knittingmotor/images/CAD_OKM.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} | {{< figure src="/knittingmotor/images/CAD_OKM_back.png" link="/knittingmotor/images/CAD_OKM_back.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
 
 ---
 

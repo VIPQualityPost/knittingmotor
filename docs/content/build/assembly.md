@@ -1,5 +1,5 @@
 ---
-title: "Assembly"
+title: "Component assembly"
 date:  "2024-03-18"
 #menu:
 #  main:
@@ -24,8 +24,6 @@ But as a rule of thumb
 Depart from that, I will be more precise in case it is necessary to maintain functionality.
 
 If your T-nuts can only be slid in from the sides of the extrusion, make sure that you have enough T-nuts in place before beginning to screw things down. Don't ask me how I know, that you would have to disassemble more or less parts again, if a T-nut is missing...
-
-Regarding the 3D printed parts, I will use the names of the STL files wherever a 3D printed part has to be placed. That should make it easier to identify their usage.
 
 ------
 
@@ -105,9 +103,88 @@ If you bought a 4-wheel 2020 gantry, simply reassemble it to a 3-wheel version.
 
 If everything went together well, try to slide it over the run bar to see if it runs smoothely and without any wobble or wiggle. If it is too tight or too loose, you have to adjust the position of the rolers. If you don't know how, [OpenBuilds setup video on YT, beginning 2:38](https://youtu.be/pMtHy7sDNG4?t=159) is your friend, but as a hint, normally, some of the rolers are mounted excentrically and you can adjust their position.
 
-{{< youtube "pMtHy7sDNG4?start=158" >}}
 
-## 3) Stepper and rotary encoder
+## 4) Yarn sensor
+
+|Yarn sensor assembly|
+| :--: |
+|{{< figure src="/knittingmotor/images/CAD_yarn_sensor.png" link="/knittingmotor/images/CAD_yarn_sensor.png" target="blank" title="(click to zoom)" height="400px" width="400px" >}}|
+
+The yarn sensor is the most complex and intricate build of the whole system. As it would be a bit hard to describe how everything goes together,  I suggest taking a closer look at the photos to see how it is done.
+
+### How does it work?
+
+The yarn sensor is capable of sensing a) yarn runout and b) knots in the yarn for the main (right) and the secondary (left)  thread. To achieve this, there are four reed (aka magnetic) contacts on the underside of the sensor which act in combination with the four levers, which are equipped with a small magnet each. Every lever / reed contact combination will theirfor form a single switch and the two sensors (front and back) on each of the sides will form a unit, which means both sides are measured independently, but always the front and the back sensor element together.
+So, if either the right runout sensor lever (front) or the right knot sensor lever (back) is engaged, the control box will report an error regarding the right (main) yarn sensor - same for the left (secondary) side.
+
+**Yarn runout**
+The switch in the front will be closed when yarn is fed through the sensor, as the thread will hold the corresponding lever up, which will close the reed contact. If the yarn runs out, the lever will drop, which will open the contact and can then be sensed by the control box.<br>
+*-> The contacts in the front are "**normally open**" reed contacts.*
+
+**Knot sensing**
+If a not comes up from the cone it will be trapped in the small slit in the back lever, raise the lever and, in this case, open the reed contact. This will also lead to a message on the display of the control box.<br>
+*-> The contacts in the front are "**normally closed**" reed contacts.*
+
+|Yarn sensor top |Yarn sensor bottom |
+| :--: | :--: |
+|{{< figure src="/knittingmotor/images/CAD_yarn_sensor_assembly.png" link="/knittingmotor/images/CAD_yarn_sensor_assembly.png" target="blank" title="(click to zoom)" height="300px" width="300px" >}}|{{< figure src="/knittingmotor/images/CAD_yarn_sensor_assembly_underside.png" link="/knittingmotor/images/CAD_yarn_sensor_assembly_underside.png" target="blank" title="(click to zoom)" height="300px" width="300px" >}}|
+
+I recommend taking a look at the [pictures](/knittingmotor/rl/) I took during the build so that you can see how the reed contacts have been placed and how the wiring is done.
+
+### Assembly
+
+- First, glue the reed contacts into place (small recesses). That means, the two "normally open" contacts in the front and the two "normally closed" ones two the back. Double check that you are about to glue the right ones into place!
+- Then, on either side, connect the front contact two the back contact. If you take a look at the [photo](/knittingmotor/rl/pictures/yarn_sensor_build_1.jpg) I took during the build you can see, that I put a little piece of adhesive aluminium tape under the connection and soldered both contacts as flat as possible together. If you want to do it the same way, keep in mind, that you solder above plastic.
+- Next, begin to attach the cables to the contacts. See [this photo](/knittingmotor/rl/pictures/yarn_sensor_build_2.jpg) how I did that. Guide the front cables to the back, then attach the back cables. You should secure the cables by glueing them right to main sensor plate, so that they will not interfere with the levers. There is not much room for everything, but I think you get the point. I used a little bit of shrink tube to make sure nothing comes in contact with each other.
+- After that, it is just a matter of a bit of smart cable management - I used a little bit of a somewhat stiffer shrink tube to [*model* the way the cables go](/knittingmotor/rl/pictures/yarn_sensor_build_3.jpg) between the back lever arms. As soon as the shrink tube cooles down, the cables will be fixed and won't interfere with anything anymore.
+- The main plate consists of two parts, `yarn sensor base.stl` and `yarn sensor base screw mount.stl` to make it easier to print. You have to insert the `yarn sensor base screw mount.stl`from the top of the base plate (mind its orientation, the fin has to point to the rear of the plate!) and glue it in place. Make sure it is sitting flush and straight in its position.
+- Now, assemble the levers and add the magnets to the little tubes, but don't glue them into place right now, we have to fine tune their position first.
+
+*(If you take a look at the CAD images you will see that assembling the moving parts actually is quite straight forward. I used nylon washers between everything to have as little friction as possible. You can also use thin metal washers, but you cannot omit them completely.)*
+
+#### Adjust the mechanical play
+Use a nylon lock nut along with the central screw to adjust the play of the lever movement. The four levers should move up and down freely, but make sure that they don't wiggle around sideways, as this will lead to unreliable behaviour, especally with the back (knot) sensor elements. Using a lock nut is a good way to adjust the play in very small steps, as the difference  between too loose and too tight is rather small.
+
+#### Fine tuning of the magnet positions
+
+The magnets have to be placed inside the small tubes of the front and back levers in a way that moving the levers up and down will engage or disengage the corresponding reed contact directly above them. I can only give a general advice for calibrating the magnet position,  because I don't know the actual strength of the magnets you bought, but you have to position the magnets in such a way, that
+
+- the front levers can actually move a little bit up and down without disengaging the reed contact, but open the contact when you let them swing down completely
+- the back levers (which have much less room to move up and down!) should open the reed contact *only* when the lever is really close or touching the reed contact
+
+If the force of the magnets is too strong, it can help to move them sideways in relation to the reed contact inside the tube to reduce the magnetic field impact. Use a multimeter connected to the back and front reed contact to see if it works. The multimeter should detect a closed connection when a) the front lever is in up and b) the corresponding back lever in its down position.
+
+If you are happy with how everything works, simply glue the magnets in place so that they cannot leave their calibrated position anymore. To even more secure the magnets you can insert one of the small caps on either side of the tube and glue them into place, too.
+
+## 3) Stepper and rotary encoder assembly
+
+|Stepper assembly|Rotary encoder assembly|
+| :--: | :--: |
+| {{< figure src="/knittingmotor/images/CAD_stepper_assembly.png" link="/knittingmotor/images/CAD_stepper_assembly.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} | {{< figure src="/knittingmotor/images/CAD_rotary_encoder_assembly_detail.png" link="/knittingmotor/images/CAD_rotary_encoder_assembly_detail.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} |
+
+Assembling the attachement for the rotary encoder and completing the whole stepper motor setup is really straight forward. Although the coupler between the rear motor shaft and the rotary encoder will allow for some misalignment, try to make sure that there is no play in the back assembly and that everything is tight and straight.
+
+### Regarding the rotary encoder bracket
+
+The bracket consists of three parts for easier and support-less printing:
+- `rotary encoder bracket base left.stl`
+- `rotary encoder bracket base right.stl`
+- `rotary encoder bracket bridge.stl`
+
+It can be a bit fiddly to get all three parts together and you will have to bend the legs of the bridge a bit until everything snaps together. As a hint, you should first insert the legs of the bridge into the base parts from the top and then lightly force everything into place. I assure you it will work, work slowly and carefully.
 
 ## 4) Control box
+
+|Assembly views| |
+| :--: | :--: |
+| {{< figure src="/knittingmotor/images/CAD_control_box_assembly.png" link="/knittingmotor/images/CAD_control_box_assembly.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} | {{< figure src="/knittingmotor/images/CAD_control_box_upper_parts_connection.png" link="/knittingmotor/images/CAD_control_box_upper_parts_connection.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} |
+| {{< figure src="/knittingmotor/images/CAD_control_box_upper_part_inside_view.png" link="/knittingmotor/images/CAD_control_box_upper_part_inside_view.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} | {{< figure src="/knittingmotor/images/CAD_control_box_upper_part_1.png" link="/knittingmotor/images/CAD_control_box_upper_part_1.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} |
+
+From looking at the CAD images it should be obvious where everything belongs inside the control box. To attach the display mount to the main upper housing, simply slide the two small tabs in the front of the display mount in position and put in the screws to hold the mains connector in place, this will fix everything nice and tidy. It is a bit hard to describe, but take a look at the second image and you should see how this is going together.
+
+The stepper driver is held in place by friction. If your tolerances are a bit too loose you can use a bit of double sided tape to hold it in place.
+
+The power supply is just laying down inside the box. As you would not turn everything upside down or shake the control box like crazy, there is simply no need for screws to hold it in place.
+
+As a sidenote, I know that there is not much room between the mains connector and the underside of the stereo jacks but this is no problem as long as you seriously take care of isolating every single connector. I used relatively thick shrink tubes around everything and it works just fine.
 
