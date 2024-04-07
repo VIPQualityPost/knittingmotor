@@ -13,7 +13,13 @@ This document hopefully lists all the needed parts to build the open knitting mo
 
 ## 3D printed parts
 
-Print all of the parts you find in the `Kitting machine motor.3mf`. I used 6 walls, with 35% infill at 0.2mm layer height and tree support where needed. If you have a Bambulab X1C printer, you should be able to use the 3MF file directly without any further modifications.
+If you have a Bambulab X1C printer and  use BambuStudio as your preferred slicer, print all of the parts you find in the `Open knitting motor.3mf`without any further modifications. I positioned every item the same way I printed them myself. 
+
+If you have to use the single STL files, then, as a rule of thumb, 
+
+- use 6 walls
+- with 35% infill at 0.2mm layer height
+- tree support where needed.
 
 Regarding the housing, you have to choose between TB6600 and DM542T because of the stepper driver.
 

@@ -42,14 +42,14 @@ Assembling the frame first and bolting everything to the table later is totally 
 
 - The frame is straightforward. Use the corner brackets to connect the front rest, feet and mount post extrusions and make sure everything is square. I only used the corner brackets, but for added stability you could drill holes in the front rest, cut threads into the feet and screw them together. But it really isn't necessary.
   Regarding the mount posts, you can start about 105mm from the front rest bar as a starting point. You will have to fine adjust their horizontal (back to front) position later, when the carriage mover is attached.
-- Add the `T-joining plate.stl`s at the sides for stability and stiffness.
-- Loosely screw the `barclamp.stl`s in combination with the `vertical stiffner left.stl` and  `vertical stiffner right.stl` (naming is according to looking at them from beind the machine) to the top run bar, then slide the clamps over the mount posts on both sides, leaving about 5mm of the mount post free above. Lock the barclamps and stiffners down, but make sure, the run bar is positioned equally distant over the knitting machine. The position is only a starting point. You may have to adjust the height of the run bar later when attaching the carriage mover though.
+- Add the `frame T-joining plate.stl`s at the sides for stability and stiffness.
+- Loosely screw the `frame barclamp.stl`s in combination with the `frame vertical stiffner left.stl` and  `frame vertical stiffner right.stl` (naming is according to looking at them from beind the machine) to the top run bar, then slide the clamps over the mount posts on both sides, leaving about 5mm of the mount post free above. Lock the barclamps and stiffners down, but make sure, the run bar is positioned equally distant over the knitting machine. The position is only a starting point. You may have to adjust the height of the run bar later when attaching the carriage mover though.
 
 |Post back|
 | :--: |
 |{{< figure src="/knittingmotor/images/CAD_post_back.png" link="/knittingmotor/images/CAD_post_back.png" target="blank" title="(click to zoom)" height="200px" width="200px">}}|
 
-- Slide the two `belt slider.stl` over the top of the mount posts and see if everything fits together nicely. The two sliders are for general protection and to hide the cable for the max endstop later.
+- Slide the two `frame belt slider.stl` over the top of the mount posts and see if everything fits together nicely. The two sliders are for general protection and to hide the cable for the max endstop later.
 
 |Post back with slider|
 | :--: |
@@ -66,7 +66,7 @@ Assembling the frame first and bolting everything to the table later is totally 
 
 - Slide the two corner brackets in the top groove outwards until they hit the ribber clamps and lock them down - they won't have to be removed later, if you want to disassemble the motor frame.
 
-- Slide  `main clamp left.stl` and `main clamp right.stl`into place and screw them down with an M5 bolt, supported via a `M5_screw_knob.stl`. These two have those nice knobs so that it is easy to remove the whole frame later for disassembly.
+- Slide  `frame main clamp left.stl` and `frame main clamp right.stl`into place and screw them down with an M5 bolt, supported via a `M5_screw_knob.stl`. These two have those nice knobs so that it is easy to remove the whole frame later for disassembly.
 
 |Front rest with clamp|
 | :--: |
@@ -82,8 +82,8 @@ See the following pictures on how to assemble the mover.
 
 - The screws I left intentionally in the picture have to be M6.
 - The gantry is fixed by using M5 screws.
-- For the `belt holders left/right.stl` use M3 screws and support them with washers.
-- The `overload sensor mount.stl` does need an addtional M3 screw, but this one can be screwed in to the plastic.
+- For the `mover belt holders left/right.stl` use M3 screws and support them with washers.
+- The `mover overload sensor mount.stl` does need an addtional M3 screw, but this one can be screwed in to the plastic.
 
 If you bought a 4-wheel 2020 gantry, simply reassemble it to a 3-wheel version.
 
@@ -93,13 +93,13 @@ If you bought a 4-wheel 2020 gantry, simply reassemble it to a 3-wheel version.
 | :--: |
 |{{< figure src="/knittingmotor/images/CAD_mover_assembly_front.png" link="/knittingmotor/images/CAD_mover_assembly_front.png" target="blank" title="(click to zoom)" height="400px" width="400px" >}}|
 
-- You don't have to attach the `overload sensor mount.stl` and the little switch right now. You can add it later while assembling the electronics. The switch cable though has to be guided on the left side around the `mover plate.stl`to the front and can then be positioned under the `endstop bracket.stl` and guided to the top of the plate. If this makes no sense to you atm, wait until we assemble the electronics.
+- You don't have to attach the `mover overload sensor mount.stl` and the little switch right now. You can add it later while assembling the electronics. The switch cable though has to be guided on the left side around the `mover plate.stl`to the front and can then be positioned under the `mover endstop bracket.stl` and guided to the top of the plate. If this makes no sense to you atm, wait until we assemble the electronics.
 
 |Mover assembly back|
 | :--: |
 |{{< figure src="/knittingmotor/images/CAD_mover_assembly_back.png" link="/knittingmotor/images/CAD_mover_assembly_back.png" target="blank" title="(click to zoom)" height="400px" width="400px" >}}|
 
-- The small `spring presser.stl`, which helps compressing the spring with the tensioner screw, is shown only once on the pictures. If you find that your compression spring is not strong enough, before grabbing a new one, add a second `spring presser.stl` on the top of the spring. This might help already.
+- The small `mover spring presser.stl`, which helps compressing the spring with the tensioner screw, is shown only once on the pictures. If you find that your compression spring is not strong enough, before grabbing a new one, add a second `mover spring presser.stl` on the top of the spring. This might help already.
 
 If everything went together well, try to slide it over the run bar to see if it runs smoothely and without any wobble or wiggle. If it is too tight or too loose, you have to adjust the position of the rolers. If you don't know how, [OpenBuilds setup video on YT, beginning 2:38](https://youtu.be/pMtHy7sDNG4?t=159) is your friend, but as a hint, normally, some of the rolers are mounted excentrically and you can adjust their position.
 
@@ -153,7 +153,7 @@ The magnets have to be placed inside the small tubes of the front and back lever
 
 If the force of the magnets is too strong, it can help to move them sideways in relation to the reed contact inside the tube to reduce the magnetic field impact. Use a multimeter connected to the back and front reed contact to see if it works. The multimeter should detect a closed connection when a) the front lever is in up and b) the corresponding back lever in its down position.
 
-If you are happy with how everything works, simply glue the magnets in place so that they cannot leave their calibrated position anymore. To even more secure the magnets you can insert one of the small caps on either side of the tube and glue them into place, too.
+If you are happy with how everything works, simply glue the magnets in place so that they cannot leave their calibrated position anymore. To even more secure the magnets you can insert one of the small `yarn sensor magnet plug.stl` on either side of the tube and glue them into place, too
 
 ## 3) Stepper and rotary encoder assembly
 
@@ -161,7 +161,7 @@ If you are happy with how everything works, simply glue the magnets in place so 
 | :--: | :--: |
 | {{< figure src="/knittingmotor/images/CAD_stepper_assembly.png" link="/knittingmotor/images/CAD_stepper_assembly.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} | {{< figure src="/knittingmotor/images/CAD_rotary_encoder_assembly_detail.png" link="/knittingmotor/images/CAD_rotary_encoder_assembly_detail.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} |
 
-Assembling the attachement for the rotary encoder and completing the whole stepper motor setup is really straight forward. Although the coupler between the rear motor shaft and the rotary encoder will allow for some misalignment, try to make sure that there is no play in the back assembly and that everything is tight and straight.
+Assembling the attachement for the rotary encoder and completing the whole stepper motor setup is really straight forward. Although the `rotary encoder shaft coupler` between the rear motor shaft and the rotary encoder will allow for some misalignment, try to make sure that there is no play in the back assembly and that everything is tight and straight.
 
 ### Regarding the rotary encoder bracket
 
