@@ -25,6 +25,8 @@ Depart from that, I will be more precise in case it is necessary to maintain fun
 
 If your T-nuts can only be slid in from the sides of the extrusion, make sure that you have enough T-nuts in place before beginning to screw things down. Don't ask me how I know, that you would have to disassemble more or less parts again, if a T-nut is missing...
 
+I will describe the main components here a bit more in depth, but will omit everything regarding how to lead the belt around the frame, etc. because this should be obvious if you look at the overall design and the photos here on the webpage. As I said, the built is not for the faint-hearted :D
+
 ------
 
 ## 1) Frame
@@ -32,11 +34,18 @@ If your T-nuts can only be slid in from the sides of the extrusion, make sure th
 
 |Frame only|
 | :--:|
-|{{< figure src="/knittingmotor/images/CAD_frame.png" link="/knittingmotor/images/CAD_frame.png" target="blank" title="(click to zoom)" height="40%" width="40%" >}}|
+|{{< figure src="/knittingmotor/images/CAD_frame.png" link="/knittingmotor/images/CAD_frame.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}}|
 
 I left out the knitting machine in this picture for better visual clarity. In reality, because of the table clamps, the machine has to be in place already, because you simply cannot screw down the clamps to the table and fit the machine afterwards as you might already know.
 
 Assembling the frame first and bolting everything to the table later is totally possible though. I screwed the whole frame together, fixed  the machine to the table and positioned the frame. Here is how...
+
+*Wording, or how I call the extrusions to name them independently:*
+
+- *top horizontal long extrusion: run bar*
+- *bottom horizontal long extrusion: rest bar*
+- *right/left horizontal short extrusions: feet*
+- *right/left upright short extrusions: posts*
 
 <u>The frame itself</u>
 
@@ -47,36 +56,40 @@ Assembling the frame first and bolting everything to the table later is totally 
 
 |Post back|
 | :--: |
-|{{< figure src="/knittingmotor/images/CAD_post_back.png" link="/knittingmotor/images/CAD_post_back.png" target="blank" title="(click to zoom)" height="200px" width="200px">}}|
+|{{< figure src="/knittingmotor/images/CAD_post_back.png" link="/knittingmotor/images/CAD_post_back.png" target="blank" title="(click to zoom)" height="40%" width="40%">}}|
 
-- Slide the two `frame belt slider.stl` over the top of the mount posts and see if everything fits together nicely. The two sliders are for general protection and to hide the cable for the max endstop later.
+- Slide the two `frame belt slider.stl` over the top of the posts and see if everything fits together nicely. The two sliders are for general protection and to hide the cables for the endstops later.
 
 |Post back with slider|
 | :--: |
-|{{< figure src="/knittingmotor/images/CAD_post_back_with_belt_slider.png" link="/knittingmotor/images/CAD_post_back_with_belt_slider.png" target="blank" title="(click to zoom)" height="200px" width="200px" >}}|
+|{{< figure src="/knittingmotor/images/CAD_post_back_with_belt_slider.png" link="/knittingmotor/images/CAD_post_back_with_belt_slider.png" target="blank" title="(click to zoom)" height="40%" width="40%" >}}|
 
-- Add the last two corner brackets to the top groove of the front rest bar and slide them both to the middle of the bar. Their upright edges have to point away from each other.
+- Add the last two corner brackets to the top groove of the rest bar and slide them both to the middle of the bar. Their upright edges have to point away from each other.
 
 <u>Mounting everything to the table</u>
 
 - Use the ribber clamps to fix the knitting machine to the table.
 
-- Now positions the frame over the machine, so that the front rest bar sits on the machine clamp (see picture) and that the machine is evenly spaced between the feet of the the frame.
-  And before you ask, yes, that will tilt the whole assembly a slight amount to the back and that's fine :-)
+- Now positions the frame over the machine, so that the rest bar sits on the machine clamp (see picture) and that the machine is evenly spaced between the feet of the frame.
+  And before you ask, yes, that will tilt the whole assembly a slight amount to the back and that's totally fine :-)
 
-- Slide the two corner brackets in the top groove outwards until they hit the ribber clamps and lock them down - they won't have to be removed later, if you want to disassemble the motor frame.
+- Slide the two corner brackets in the top groove outwards until they hit the ribber clamps, screw them down.
 
-- Slide  `frame main clamp left.stl` and `frame main clamp right.stl`into place and screw them down with an M5 bolt, supported via a `M5_screw_knob.stl`. These two have those nice knobs so that it is easy to remove the whole frame later for disassembly.
+- Slide  `frame main clamp left.stl` and `frame main clamp right.stl`into place and screw them down with an M5 bolt, for convenience supported via a `M5_screw_knob.stl`. These nice knobs will will make removing the whole frame later for disassembly much easier.
 
 |Front rest with clamp|
 | :--: |
-|{{< figure src="/knittingmotor/images/CAD_front_rest_with_with_clamp.png" link="/knittingmotor/images/CAD_front_rest_with_with_clamp.png" target="blank" title="(click to zoom)" height="200px" width="200px" >}}|
+|{{< figure src="/knittingmotor/images/CAD_front_rest_with_with_clamp.png" link="/knittingmotor/images/CAD_front_rest_with_with_clamp.png" target="blank" title="(click to zoom)" height="40%" width="40%" >}}|
+
+### Positioning of the left and right endstop switches
+
+At first mount the endstop switches to the `endstop_mount.stl` and then loosely fit them to the left and right end of the run bar. Later after having positioned the whole frame you will have to adjust their position so that the carriage can be moved over the whole bed from left to right or even a bit further, i.e. to use a color changer.
 
 ## 2) Carriage mover
 
 |Mover front | Mover back |
 | :--: | :--: |
-|{{< figure src="/knittingmotor/images/CAD_mover_front.png" link="/knittingmotor/images/CAD_mover_front.png" target="blank" title="(click to zoom)" height="300px" width="300px" >}}|{{< figure src="/knittingmotor/images/CAD_mover_back.png" link="/knittingmotor/images/CAD_mover_back.png" target="blank" title="(click to zoom)" height="500px" width="500px" >}}|
+|{{< figure src="/knittingmotor/images/CAD_mover_front.png" link="/knittingmotor/images/CAD_mover_front.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}}|{{< figure src="/knittingmotor/images/CAD_mover_back.png" link="/knittingmotor/images/CAD_mover_back.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}}|
 
 See the following pictures on how to assemble the mover.
 
@@ -91,24 +104,28 @@ If you bought a 4-wheel 2020 gantry, simply reassemble it to a 3-wheel version.
 
 |Mover assembly front|
 | :--: |
-|{{< figure src="/knittingmotor/images/CAD_mover_assembly_front.png" link="/knittingmotor/images/CAD_mover_assembly_front.png" target="blank" title="(click to zoom)" height="400px" width="400px" >}}|
+|{{< figure src="/knittingmotor/images/CAD_mover_assembly_front.png" link="/knittingmotor/images/CAD_mover_assembly_front.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}}|
 
 - You don't have to attach the `mover overload sensor mount.stl` and the little switch right now. You can add it later while assembling the electronics. The switch cable though has to be guided on the left side around the `mover plate.stl`to the front and can then be positioned under the `mover endstop bracket.stl` and guided to the top of the plate. If this makes no sense to you atm, wait until we assemble the electronics.
 
 |Mover assembly back|
 | :--: |
-|{{< figure src="/knittingmotor/images/CAD_mover_assembly_back.png" link="/knittingmotor/images/CAD_mover_assembly_back.png" target="blank" title="(click to zoom)" height="400px" width="400px" >}}|
+|{{< figure src="/knittingmotor/images/CAD_mover_assembly_back.png" link="/knittingmotor/images/CAD_mover_assembly_back.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}}|
 
 - The small `mover spring presser.stl`, which helps compressing the spring with the tensioner screw, is shown only once on the pictures. If you find that your compression spring is not strong enough, before grabbing a new one, add a second `mover spring presser.stl` on the top of the spring. This might help already.
 
 If everything went together well, try to slide it over the run bar to see if it runs smoothely and without any wobble or wiggle. If it is too tight or too loose, you have to adjust the position of the rolers. If you don't know how, [OpenBuilds setup video on YT, beginning 2:38](https://youtu.be/pMtHy7sDNG4?t=159) is your friend, but as a hint, normally, some of the rolers are mounted excentrically and you can adjust their position.
+
+### Overload sensor position adjustment
+
+You will have noticed, that you can adjust the position of the overload sensor closer to the spring lever or more far away from it. This helps to get the moment where it triggers just right. Its main function is to stop the mover when there is a blockage of the carriage and the coupler has disconnected. As this depends on spring tension and how you setup the strength of the spring lever action, I can only give a general advice here. You have to setup the sensor trigger point in a way that it is engaged in the moment the spring lever is raised up and has disenganged the mechanical coupling to the carriage.
 
 
 ## 4) Yarn sensor
 
 |Yarn sensor assembly|
 | :--: |
-|{{< figure src="/knittingmotor/images/CAD_yarn_sensor.png" link="/knittingmotor/images/CAD_yarn_sensor.png" target="blank" title="(click to zoom)" height="400px" width="400px" >}}|
+|{{< figure src="/knittingmotor/images/CAD_yarn_sensor.png" link="/knittingmotor/images/CAD_yarn_sensor.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}}|
 
 The yarn sensor is the most complex and intricate build of the whole system. As it would be a bit hard to describe how everything goes together,  I suggest taking a closer look at the photos to see how it is done.
 
@@ -127,7 +144,7 @@ If a not comes up from the cone it will be trapped in the small slit in the back
 
 |Yarn sensor top |Yarn sensor bottom |
 | :--: | :--: |
-|{{< figure src="/knittingmotor/images/CAD_yarn_sensor_assembly.png" link="/knittingmotor/images/CAD_yarn_sensor_assembly.png" target="blank" title="(click to zoom)" height="300px" width="300px" >}}|{{< figure src="/knittingmotor/images/CAD_yarn_sensor_assembly_underside.png" link="/knittingmotor/images/CAD_yarn_sensor_assembly_underside.png" target="blank" title="(click to zoom)" height="300px" width="300px" >}}|
+|{{< figure src="/knittingmotor/images/CAD_yarn_sensor_assembly.png" link="/knittingmotor/images/CAD_yarn_sensor_assembly.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}}|{{< figure src="/knittingmotor/images/CAD_yarn_sensor_assembly_underside.png" link="/knittingmotor/images/CAD_yarn_sensor_assembly_underside.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}}|
 
 I recommend taking a look at the [pictures](/knittingmotor/rl/) I took during the build so that you can see how the reed contacts have been placed and how the wiring is done.
 
@@ -159,9 +176,11 @@ If you are happy with how everything works, simply glue the magnets in place so 
 
 |Stepper assembly|Rotary encoder assembly|
 | :--: | :--: |
-| {{< figure src="/knittingmotor/images/CAD_stepper_assembly.png" link="/knittingmotor/images/CAD_stepper_assembly.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} | {{< figure src="/knittingmotor/images/CAD_rotary_encoder_assembly_detail.png" link="/knittingmotor/images/CAD_rotary_encoder_assembly_detail.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} |
+| {{< figure src="/knittingmotor/images/CAD_stepper_assembly.png" link="/knittingmotor/images/CAD_stepper_assembly.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}} | {{< figure src="/knittingmotor/images/CAD_rotary_encoder_assembly_detail.png" link="/knittingmotor/images/CAD_rotary_encoder_assembly_detail.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}} |
 
-Assembling the attachement for the rotary encoder and completing the whole stepper motor setup is really straight forward. Although the `rotary encoder shaft coupler` between the rear motor shaft and the rotary encoder will allow for some misalignment, try to make sure that there is no play in the back assembly and that everything is tight and straight.
+Assembling the attachement for the rotary encoder and completing the whole stepper motor setup is really straight forward. Although the `rotary encoder shaft coupler.stl` between the rear motor shaft and the rotary encoder will allow for some misalignment, try to make sure that there is no play in the back assembly and that everything is tight and straight.
+
+As a last step, slide the `frame stepper mount.stl`over the right end of the run bar. The stepper assembly has to point to the back. At first, just barely screw it down. After having attached the timing belt you can then first pull the stepper assembly outward and screw it down to pre-tension the belt before further tensioning of the belt with the belt tensioner on the left.
 
 ### Regarding the rotary encoder bracket
 
@@ -172,18 +191,26 @@ The bracket consists of three parts for easier and support-less printing:
 
 It can be a bit fiddly to get all three parts together and you will have to bend the legs of the bridge a bit until everything snaps together. As a hint, you should first insert the legs of the bridge into the base parts from the top and then lightly force everything into place. I assure you it will work, work slowly and carefully.
 
-## 4) Control box
+## 4) Belt tensioner
+
+|Belt tensioner|
+| :--: |
+|{{< figure src="/knittingmotor/images/CAD_belt_tensioner.png" link="/knittingmotor/images/CAD_belt_tensioner.png" target="blank" title="(click to zoom)" height="40%" width="40%" >}}|
+
+Use M5 screws, washers and nuts to assemble everything. Take a close look at the picture to find out the correct direction of the arms left and right. The tensioner screw has to go on the underside of the run bar. If you screw the tensioner screw inwards, it pushes against the `belt_tensioner_pusher.stl` and will then move the idler pulley outward. This will tension the belt.
+
+## 5) Control box
 
 |Assembly views| |
 | :--: | :--: |
-| {{< figure src="/knittingmotor/images/CAD_control_box_assembly.png" link="/knittingmotor/images/CAD_control_box_assembly.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} | {{< figure src="/knittingmotor/images/CAD_control_box_upper_parts_connection.png" link="/knittingmotor/images/CAD_control_box_upper_parts_connection.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} |
-| {{< figure src="/knittingmotor/images/CAD_control_box_upper_part_inside_view.png" link="/knittingmotor/images/CAD_control_box_upper_part_inside_view.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} | {{< figure src="/knittingmotor/images/CAD_control_box_upper_part_1.png" link="/knittingmotor/images/CAD_control_box_upper_part_1.png" target="blank" title="(click to zoom)" height="100%" width="100%" >}} |
+| {{< figure src="/knittingmotor/images/CAD_control_box_assembly.png" link="/knittingmotor/images/CAD_control_box_assembly.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}} | {{< figure src="/knittingmotor/images/CAD_control_box_upper_parts_connection.png" link="/knittingmotor/images/CAD_control_box_upper_parts_connection.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}} |
+| {{< figure src="/knittingmotor/images/CAD_control_box_upper_part_inside_view.png" link="/knittingmotor/images/CAD_control_box_upper_part_inside_view.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}} | {{< figure src="/knittingmotor/images/CAD_control_box_upper_part_1.png" link="/knittingmotor/images/CAD_control_box_upper_part_1.png" target="blank" title="(click to zoom)" height="60%" width="60%x" >}} |
 
-From looking at the CAD images it should be obvious where everything belongs inside the control box. To attach the display mount to the main upper housing, simply slide the two small tabs in the front of the display mount in position and put in the screws to hold the mains connector in place, this will fix everything nice and tidy. It is a bit hard to describe, but take a look at the second image and you should see how this is going together.
+- To attach the display mount to the main upper housing, simply slide the two small tabs in the front of the display mount in position and put in the screws to hold the mains connector in place, this will fix everything nice and tidy. It is a bit hard to describe, but take a look at the second image and you should see how this is going together.
+- The stepper driver is held in place by friction. If your tolerances are a bit too loose you can use a bit of double sided tape to hold it in place.
+- The fan has to blow the air out of the housing to achieve a good airflow.
+- The power supply is just laying down inside the box. As I do not expect anyone to turn the control box upside down or shake it like crazy, there is simply no need for screws to hold it in place.
+- I added two additional holes for GX16 connectors to the upper housing on purpose, which are not in use atm. Close them with two `control_box_GX16_blind_plug.stl`. On the other hand, you could substitute the stereo jack connectors with GX16 connectors if you want,  but you will have to adapt the wiring in this case.
 
-The stepper driver is held in place by friction. If your tolerances are a bit too loose you can use a bit of double sided tape to hold it in place.
-
-The power supply is just laying down inside the box. As you would not turn everything upside down or shake the control box like crazy, there is simply no need for screws to hold it in place.
-
-As a sidenote, I know that there is not much room between the mains connector and the underside of the stereo jacks but this is no problem as long as you seriously take care of isolating every single connector. I used relatively thick shrink tubes around everything and it works just fine.
+As a sidenote, I know that there is not much room between the mains connector and the underside of the stereo jacks but this is no problem as long as you take care of isolating every single connector seriously. I used relatively thick shrink tubes around everything and it works without any problems.
 
