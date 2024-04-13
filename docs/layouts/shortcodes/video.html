@@ -1,0 +1,25 @@
+<div class="container">
+  <div style="padding: 0; margin: 0; list-style: none; display: flex; justify-content: left;">
+  <div class="embed-responsive embed-responsive-16by9">
+    <div id="player-container" class="embed-responsive-item"></div>
+  </div>
+  </div>
+</div>
+
+<script 
+  type="text/javascript" 
+  src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"
+>
+</script>
+
+<script>
+  new Clappr.Player({
+    source: {{ .Get 0 }},
+    mute: false,
+    autoPlay: false,
+    width: 640,
+    height: 360,
+    parentId: '#player-container'
+  });
+</script>
+

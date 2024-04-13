@@ -11,4 +11,5 @@ docs/public/
 docs/resources/
 docs/themes/techdoc
 docs/themes/hugo-shortcode-gallery
-
+docs/content/video/*.md-videolocal
+docs/content/video/videos/

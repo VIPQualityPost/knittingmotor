@@ -15,7 +15,8 @@ theme = ['techdoc', 'hugo-shortcode-gallery']
   [privacy.vimeo]
     disable = true
   [privacy.youtube]
-    disable = true
+    disable = false
+    privacyEnhanced = true
 
 [params]
 # Documentation Menu section

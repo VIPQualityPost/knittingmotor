@@ -1,7 +1,7 @@
 ---
 title: "Pictures from the build"
 date:  "2024-04-04"
-weight: 3
+weight: 30
 index: false
 ---
 
