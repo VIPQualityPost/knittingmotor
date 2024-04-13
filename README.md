@@ -25,6 +25,8 @@ It provides currently the following features:
 
 Current documentation: https://pages.open-mind.space/knittingmotor
 
+Firmware release overview: https://gitlab.open-mind.space/pages/knittingmotor/-/releases
+
 Building this device is not for the faint-hearted, because you will have to solder, crimp connectors, even deal with mains connections (! PLEASE BE CAREFUL ! I AM NOT RESPONSIBLE IF SOMETHING GOES WRONG HERE !), building and uploading the firmware to the Arduino, and in the end, debug the whole thing if something does not work as expected.
 
 So, if you are not familiar with doing things like this, please ask a friend with appropriate skills for help.

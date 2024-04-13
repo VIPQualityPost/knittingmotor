@@ -84,6 +84,7 @@ build:
     - "pio run -e r4wifi_de"
     - cp .pio/build/r4wifi_de/firmware.bin bin/${UNOR4WIFI_DE_RELEASE}
   artifacts:
+    expire_in: 2 days
     paths:
       - bin/
   environment: production
