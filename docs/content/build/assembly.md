@@ -11,21 +11,23 @@ index: false
 
 ## What you'll find here and what not...
 
-Most of the time I will not give an exact type, length or amount of screws, nuts and bolts. It is up to you to choose the right parts, especially the lengths of the screws.
+This assembly guide is not the "a) connect this to that b) now screw together blabla" type of guide, but more an overview of how things go together in general. I.e. I will not give an exact type, length or amount of screws, nuts and bolts for most of the parts, especially because sizes are not *that* critical in most cases or because, for some people, metric hardware won't be easily available in some countries.
 
 But as a rule of thumb
 
 - use washers wherever appropriate (don't force the screw heads into the plastic)
 - screws for the basic frame are M5
 - the carriage mover needs M3-M6
-- the belt tensioner M4
-- most of the other parts M3. 
+- the belt tensioner depends on M4
+- most of the other and smaller parts, like endstop mounts, yarn sensor, control box, etc. need M3. 
 
-Depart from that, I will be more precise in case it is necessary to maintain functionality.
+Many of you will already have a decent assortment of screws, nuts and washers in different sizes at home, so it is up to you. If you really run into problems and don't know what to do, feel free to contact me via [Printables](https://www.printables.com).
+
+Depart from that, in case it is necessary to maintain functionality I will be more precise.
 
 If your T-nuts can only be slid in from the sides of the extrusion, make sure that you have enough T-nuts in place before beginning to screw things down. Don't ask me how I know, that you would have to disassemble more or less parts again, if a T-nut is missing...
 
-I will describe the main components here a bit more in depth, but will omit everything regarding how to lead the belt around the frame, etc. because this should be obvious if you look at the overall design and the photos here on the webpage. As I said, the built is not for the faint-hearted :D
+I will describe the main components a bit more in depth now, but you will have to take a decent look at the photos and CAD drawings to get the whole picture of how it is done. As I said, the built is not for the faint-hearted :D
 
 ------
 
@@ -118,7 +120,11 @@ If everything went together well, try to slide it over the run bar to see if it 
 
 ### Overload sensor position adjustment
 
-You will have noticed, that you can adjust the position of the overload sensor closer to the spring lever or more far away from it. This helps to get the moment where it triggers just right. Its main function is to stop the mover when there is a blockage of the carriage and the coupler has disconnected. As this depends on spring tension and how you setup the strength of the spring lever action, I can only give a general advice here. You have to setup the sensor trigger point in a way that it is engaged in the moment the spring lever is raised up and has disenganged the mechanical coupling to the carriage.
+You will have noticed, that you can adjust the position of the overload sensor closer to the spring lever or more far away from it. This helps to get the moment where it triggers just right. Its main function is to stop the mover when there is a blockage of the carriage and the coupler has disconnected. As this depends on spring tension and how you setup the strength of the spring lever action, I can only give a general advice here. You have to setup the sensor trigger point in a way that it will be activated in the moment the spring lever is raised up and has disconnected the mechanical coupling to the carriage.
+
+### Overload spring adjustment
+
+This has to be adjusted in combination with the belt tension and can the most accurate way is by knitting a test piece with the tightest stich possible.<br>Start with the lowest spring tension possible. The spring lever should not wiggle around freely, but be firmly pressed against the spring. If you find that the mover disconnects from the carriage too easily while knitting your test piece, increase the tension of the spring. It should be tight enough so that you are able to knit everything you want, but not so tight that the mover won't disconnect in case of a blockage of the carriage, which on the other hand will lead to the timing belt slipping. 
 
 
 ## 4) Yarn sensor
@@ -153,8 +159,8 @@ I recommend taking a look at the [pictures](/knittingmotor/rl/) I took during th
 - The main plate consists of two parts, `yarn sensor base.stl` and `yarn sensor base screw mount.stl` to make it easier to print. You have to insert the `yarn sensor base screw mount.stl`from the top of the base plate (mind its orientation, the fin has to point to the rear of the plate!) and glue it in place. Make sure it is sitting flush and straight in its position.
 - Glue the reed contacts into place (small recesses). That means, the two "normally open" contacts in the front and the two "normally closed" ones two the back. Double check that you are about to glue the right ones into place!
 - Then, on either side, connect the front contact two the back contact. If you take a look at the [photo](/knittingmotor/rl/pictures/yarn_sensor_build_1.jpg) I took during the build you can see, that I put a little piece of adhesive aluminium tape under the connection and soldered both contacts as flat as possible together. If you want to do it the same way, keep in mind, that you solder above plastic.
-- Next, begin to attach the cables to the contacts. See [this photo](/knittingmotor/rl/pictures/yarn_sensor_build_2.jpg) how I did that. Guide the front cables to the back, then attach the back cables. You should secure the cables by glueing them right to the base plate, so that they will not interfere with the levers. There is not much room for everything, but I think you get the point. I used a little bit of shrink tube to make sure nothing comes in contact with each other. You can now connect the two cables coming from the front of either side together, but leave the two cables from the back separated, so that you now have 3 connections which will later be attached to the stereo jack: the two single cables to tip (main) and ring (secondary), and the two connected ones to the sleeve contact.
-- After that, it is just a matter of a bit of smart cable management - I used a little bit of a somewhat stiffer shrink tube to [*model* the way the cables go](/knittingmotor/rl/pictures/yarn_sensor_build_3.jpg) between the back lever arms. As soon as the shrink tube cooles down, the cables will be fixed and won't interfere with anything anymore. You can also see there what I meant by 3 cable contacts that I mentioned earlier.
+- Next, begin to attach the cables to the contacts. See [this photo](/knittingmotor/rl/pictures/yarn_sensor_build_2.jpg) how I did that. Guide the front cables to the back, then attach the back cables. You should secure the cables by glueing them right to the base plate, so that they will not interfere with the levers. There is not much room for everything, but I think you get the point. I used a little bit of shrink tubing to make sure nothing comes in contact with each other. You can now connect the two cables coming from the front of either side together, but leave the two cables from the back separated, so that you now have 3 connections which will later be attached to the stereo jack: the two single cables to tip (main) and ring (secondary), and the two connected ones to the sleeve contact.
+- After that, it is just a matter of a bit of smart cable management - I used a little bit of a somewhat stiffer shrink tubing to [*model* the way the cables go](/knittingmotor/rl/pictures/yarn_sensor_build_3.jpg) between the back lever arms. As soon as the shrink tubing cooles down, the cables will be fixed and won't interfere with anything anymore. You can also see there what I meant by 3 cable contacts that I mentioned earlier.
 - Now, assemble the levers. I used nylon washers between everything to have as little friction as possible. You can also use thin metal washers, but you cannot omit them completely, as the tolerances between all parts account for them.
 - Add the magnets to the little tubes, but don't glue them into place right now, we have to fine tune their position first.
 
@@ -163,9 +169,9 @@ Use a nylon lock nut along with the central screw to adjust the play of the leve
 
 #### Fine tuning of the magnet positions
 
-The magnets have to be placed inside the small tubes of the front and back levers in a way that moving the levers up and down will engage or disengage the corresponding reed contact directly above them. I can only give a general advice for calibrating the magnet position,  because I don't know the actual strength of the magnets you bought, but you have to position the magnets in such a way, that
+The magnets have to be placed inside the small tubes of the front and back levers in a way that moving the levers up and down will activate or deactivate the corresponding reed contact directly above them. I can only give a general advice for calibrating the magnet position,  because I don't know the actual strength of the magnets you bought, but you have to position the magnets in such a way, that
 
-- the front levers can actually move a little bit up and down without disengaging the reed contact, but open the contact when you let them swing down completely
+- the front levers can actually move a little bit up and down without deactivating the reed contact, but open the contact when you let them swing down completely
 - the back levers (which have much less room to move up and down!) should open the reed contact *only* when the lever is really close or touching the reed contact
 
 If the force of the magnets is too strong, it can help to move them sideways in relation to the reed contact inside the tube to reduce the magnetic field impact. Use a multimeter connected to the back and front reed contact to see if it works. The multimeter should detect a closed connection when a) the front lever is in up and b) the corresponding back lever in its down position.
@@ -197,7 +203,28 @@ It can be a bit fiddly to get all three parts together and you will have to bend
 | :--: |
 |{{< figure src="/knittingmotor/images/CAD_belt_tensioner.png" link="/knittingmotor/images/CAD_belt_tensioner.png" target="blank" title="(click to zoom)" height="40%" width="40%" >}}|
 
-Use M5 screws, washers and nuts to assemble everything. Take a close look at the picture to find out the correct direction of the arms left and right. The tensioner screw has to go on the underside of the run bar. If you screw the tensioner screw inwards, it pushes against the `belt_tensioner_pusher.stl` and will then move the idler pulley outward. This will tension the belt.
+Use M4 screws, washers and nuts to assemble everything. Take a close look at the picture to find out the correct direction of the arms left and right. The tensioner screw has to go on the underside of the run bar. If you screw the tensioner screw inwards, it pushes against the `belt_tensioner_pusher.stl` and will then move the idler pulley outward. This will tension the belt.
+
+I know that the bore hole of the GT2 idler pulley is 5mm, but we are using M4 screws here. This hasn't led to any problems in my setup. If you are worried about that, simply widen the slot where the screw is sliding up and down in the arms and use a M5 screw instead.
+
+### Attaching and tensioning the belt
+
+- Unscrew the tensioner screw the whole way out
+
+- Attach the belt to one side of the carriage mover by sliding a small loop into the belt holder - the belt will be secured by friction and grabbing itself, use the `GT2_clip.stl`to secure it
+
+- Now guide the belt around the frame - it has to run through the upper and lower groove of the aluminium extrusion - *thread* it through the tensioner and the stepper mount
+
+- Take out the slack as good as possible and attach the loose end to the other side of the carriage mover, use the `GT2_clip.stl`to secure it
+
+- Now tighten the tensioner screw again to further tighten the belt, but please don't overtighten it!
+
+**As a guideline:**<br>
+The belt tension and the tension of the overload spring on the carriage mover depend on each other. The whole adjustment should be set up in a way that, under normal conditions, the belt doesn't slip while knitting and it shouldn't slip also when the carriage is blocked, so that the coupler mechanism can disconnect the carriage from the mover. But if your overload spring is too tight, then the belt might slip anyhow and the carriage will never be disconnected.
+
+- If the belt feels quite tight, knit a test piece with the tightest stich setting.  If the carriage mover starts to slip while knitting normally, re-tighten the belt.<br><br>
+
+  - Try to block the carriage during its movement with your hands - do that without having any needles engaged, just for safety. If the belt slips before the carriage coupler disconnects the carriage, re-tighten the belt.
 
 ## 5) Control box
 
@@ -208,9 +235,9 @@ Use M5 screws, washers and nuts to assemble everything. Take a close look at the
 
 - To attach the display mount to the main upper housing, simply slide the two small tabs in the front of the display mount in position and put in the screws to hold the mains connector in place, this will fix everything nice and tidy. It is a bit hard to describe, but take a look at the second image and you should see how this is going together.
 - The stepper driver is held in place by friction. If your tolerances are a bit too loose you can use a bit of double sided tape to hold it in place.
-- The fan has to blow the air out of the housing to achieve a good airflow.
+- The fan has to blow the air *out* of the housing to achieve a good airflow.
 - The power supply is just laying down inside the box. As I do not expect anyone to turn the control box upside down or shake it like crazy, there is simply no need for screws to hold it in place.
 - I added two additional holes for GX16 connectors to the upper housing on purpose, which are not in use atm. Close them with two `control_box_GX16_blind_plug.stl`. On the other hand, you could substitute the stereo jack connectors with GX16 connectors if you want,  but you will have to adapt the wiring in this case.
 
-As a sidenote, I know that there is not much room between the mains connector and the underside of the stereo jacks but this is no problem as long as you take care of isolating every single connector seriously. I used relatively thick shrink tubes around everything and it works without any problems.
+*As a sidenote, I know that there is not much room between the mains connector and the underside of the stereo jacks but this is no problem as long as you take care of isolating every single connector seriously. I used relatively thick shrink tubing around everything and it works without any problems.*
 
