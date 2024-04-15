@@ -11,14 +11,15 @@ index: false
 
 The project is being developed under Visual Studio Code with the PlatformIO plugin. If you use the same IDE, you should not have any problems compiling and flashing the firmware to the Arduino, as all necessary external libraries will be configured via `platformio.ini`.
 
-## 1. Choosing the right firmware branch
+## 1. Pre-built firmware download
 
 The firmware is (theoretically) available in two different versions:
-- Arduino R3 support (`master` branch) - NOT SUPPORTED ANYMORE - ONLY FOR REFERENCE - DONT USE!
-- Arduino R4 support (`r4wifiv2` branch)
-  - [Get latest release here](https://gitlab.open-mind.space/pages/knittingmotor/-/releases/permalink/latest)
 
-Choose the firmware branch according the Arduino UNO type you are using. The branches are not cross-compatible, so you cannot simply compile the `master` branch and use it wth the Arduino R4. This simply won't work.
+- Arduino R4 support (`r4wifiv2` branch)
+- (Arduino R3 support (`master` branch) - OLD - NOT SUPPORTED ANYMORE - ONLY FOR REFERENCE - DONT USE!)
+
+[-> Always get latest firmware release here!](https://gitlab.open-mind.space/pages/knittingmotor/-/releases/permalink/latest)
+
 
 ## 2. Firmware pre-build configuration
 

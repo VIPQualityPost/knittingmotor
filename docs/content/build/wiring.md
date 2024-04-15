@@ -11,7 +11,7 @@ index: false
 
 ## How to wire all parts?
 
-I try to describe how I wired everything together the best I can. Sorry, no schematic available, but it should not be too complicated.
+I try to describe how I wired everything together the best I can. Sorry, no schematic available atm, but it should not be too complicated. If I find the time I will try to add schematics.
 
 ## PIN defaults
 
@@ -25,6 +25,9 @@ The minimum sensor (aka switch) pins you have to use are:
 *Regarding yarn sensor / overload sensor pins:
 You HAVE to assign valid pin numbers, even though you do not have to use the sensors as of the current firmware implementation.*
 
+### Changing the PIN assignment
+If you want to change the pin assignment to the Arduino for any reason, you will have to change the associated values in `include\HardwareConfig.h` and recompile the firmware.
+
 ## External connectors
 
     GX16 4pin                   : stepper motor connection
@@ -34,9 +37,6 @@ You HAVE to assign valid pin numbers, even though you do not have to use the sen
     Stereo plug (GND + Tip)     : foot switch
     Stereo plug (GND + Tip)     : overload sensor
     Stereo plug (GND, Ring, Tip): yarn sensor (main+secondary)
-
-### PIN assignment
-If you want to change the pin assignment to the Arduino for any reason, you will have to change the associated values in `include\HardwareConfig.h` and recompile the firmware.
 
 ## Common connection rails
 
@@ -85,7 +85,7 @@ Because of the design of the upper housing, you will have to solder wire connect
     D11: TB6600/DM542T Pul-
     D12: TB6600/DM542T Dir-
     D13: TB6600/DM542T Ena-
-
+    
     A1:  yarn sensor secondary (normally closed)
     A2:  yarn sensor main (normally closed)
     A3:  footswitch   (normally closed)

@@ -38,23 +38,23 @@ I will describe the main components a bit more in depth now, but you will have t
 | :--:|
 |{{< figure src="/knittingmotor/images/CAD_frame.png" link="/knittingmotor/images/CAD_frame.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}}|
 
-I left out the knitting machine in this picture for better visual clarity. In reality, because of the table clamps, the machine has to be in place already, because you simply cannot screw down the clamps to the table and fit the machine afterwards as you might already know.
+I left out the knitting machine in this picture for better visual clarity. In reality, because of the table clamps, you start by fixing the knitting machine to the table, because you simply place the frame around it.
 
 Assembling the frame first and bolting everything to the table later is totally possible though. I screwed the whole frame together, fixed  the machine to the table and positioned the frame. Here is how...
 
 *Wording, or how I call the extrusions to name them independently:*
 
 - *top horizontal long extrusion: run bar*
-- *bottom horizontal long extrusion: rest bar*
+- *bottom horizontal long extrusion: front rest bar*
 - *right/left horizontal short extrusions: feet*
 - *right/left upright short extrusions: posts*
 
 <u>The frame itself</u>
 
-- The frame is straightforward. Use the corner brackets to connect the front rest, feet and mount post extrusions and make sure everything is square. I only used the corner brackets, but for added stability you could drill holes in the front rest, cut threads into the feet and screw them together. But it really isn't necessary.
-  Regarding the mount posts, you can start about 105mm from the front rest bar as a starting point. You will have to fine adjust their horizontal (back to front) position later, when the carriage mover is attached.
+- The frame is straightforward. Use the corner brackets to connect the front rest, feet and mount post extrusions and make sure everything is square. I only used the corner brackets, but for added stability you could drill holes in the front rest bar, cut threads into the feet and screw them together. But it really isn't necessary.
+  Regarding position of the posts, you can start about 105mm from the front rest bar as a starting point. You will have to fine adjust their horizontal (back to front) position later, when the carriage mover is attached.
 - Add the `frame T-joining plate.stl`s at the sides for stability and stiffness.
-- Loosely screw the `frame barclamp.stl`s in combination with the `frame vertical stiffner left.stl` and  `frame vertical stiffner right.stl` (naming is according to looking at them from beind the machine) to the top run bar, then slide the clamps over the mount posts on both sides, leaving about 5mm of the mount post free above. Lock the barclamps and stiffners down, but make sure, the run bar is positioned equally distant over the knitting machine. The position is only a starting point. You may have to adjust the height of the run bar later when attaching the carriage mover though.
+- Loosely screw the `frame barclamp.stl`s in combination with the `frame vertical stiffner left.stl` and  `frame vertical stiffner right.stl` (naming is according to looking at them from behind the machine) to the run bar, then slide the clamps over the posts on both sides, leaving about 5mm of each post free above the clamps. Lock the barclamps and stiffners down, make sure, the run bar is positioned equally distant over the knitting machine. The height is a starting point. You may have to adjust the height of the run bar later when attaching the carriage mover though.
 
 |Post back|
 | :--: |
@@ -72,12 +72,12 @@ Assembling the frame first and bolting everything to the table later is totally 
 
 - Use the ribber clamps to fix the knitting machine to the table.
 
-- Now positions the frame over the machine, so that the rest bar sits on the machine clamp (see picture) and that the machine is evenly spaced between the feet of the frame.
+- Now position the frame over the machine, so that the rest bar sits on the inward curve of the machine clamp (see picture) and that the machine is evenly spaced between the feet of the frame.
   And before you ask, yes, that will tilt the whole assembly a slight amount to the back and that's totally fine :-)
 
-- Slide the two corner brackets in the top groove outwards until they hit the ribber clamps, screw them down.
+- Slide the two corner brackets in the top groove of the rest bar outwards until they hit the ribber clamps, screw them down.
 
-- Slide  `frame main clamp left.stl` and `frame main clamp right.stl`into place and screw them down with an M5 bolt, for convenience supported via a `M5_screw_knob.stl`. These nice knobs will will make removing the whole frame later for disassembly much easier.
+- Slide  `frame main clamp left.stl` and `frame main clamp right.stl`into place and screw them down with an M5 bolt, for convenience supported via a `M5_screw_knob.stl`. These nice knobs will will make removing the whole frame when disassembling much easier.
 
 |Front rest with clamp|
 | :--: |
@@ -85,30 +85,36 @@ Assembling the frame first and bolting everything to the table later is totally 
 
 ### Positioning of the left and right endstop switches
 
-At first mount the endstop switches to the `endstop_mount.stl` and then loosely fit them to the left and right end of the run bar. Later after having positioned the whole frame you will have to adjust their position so that the carriage can be moved over the whole bed from left to right or even a bit further, i.e. to use a color changer.
+At first mount the endstop switches to the `endstop_mount.stl` and then loosely fit them to the left and right end of the run bar. Later, after you have attached the carriage mover, you will have to adjust their position so that the carriage can be moved over the whole bed from left to right or even a bit further, i.e. to use a color changer.
 
-## 2) Carriage mover
+## 2) Carriage adapter
+
+No CAD images here. Remove the original handle from the carriage by removing the two grub screws. Then slide the carriage adapter plate in position and screw it down. Last, attach the new handle bar.
+
+{{< figure src="/knittingmotor/rl/pictures/carrier_handlebar.jpg" link="/knittingmotor/rl/pictures/carrier_handlebar.jpg" target="blank" title="(click to zoom)" height="60%" width="60%" >}}
+
+## 3) Carriage mover
 
 |Mover front | Mover back |
 | :--: | :--: |
 |{{< figure src="/knittingmotor/images/CAD_mover_front.png" link="/knittingmotor/images/CAD_mover_front.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}}|{{< figure src="/knittingmotor/images/CAD_mover_back.png" link="/knittingmotor/images/CAD_mover_back.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}}|
 
-See the following pictures on how to assemble the mover.
+See the following pictures on how to assemble the carriage mover.
 
 - The screws I left intentionally in the picture have to be M6.
 - The gantry is fixed by using M5 screws.
 - For the `mover belt holders left/right.stl` use M3 screws and support them with washers.
-- The `mover overload sensor mount.stl` does need an addtional M3 screw, but this one can be screwed in to the plastic.
+- The `mover overload sensor mount.stl` does need an addtional M3 screw, this one can be screwed in to the plastic carefully.
 
 If you bought a 4-wheel 2020 gantry, simply reassemble it to a 3-wheel version.
 
-***BEWARE: I MISSED THE `endstop bracket.stl` and the `belt holders left/right.stl` have become a new version instead of the shown ones in the exploded-views, but I think you get the point from the front view picture above.***
+***BEWARE: I MISSED the `endstop bracket.stl` and the `belt holders left/right.stl`  in the exploded-views, but I think you get the point from the front and back images above.***
 
 |Mover assembly front|
 | :--: |
 |{{< figure src="/knittingmotor/images/CAD_mover_assembly_front.png" link="/knittingmotor/images/CAD_mover_assembly_front.png" target="blank" title="(click to zoom)" height="60%" width="60%" >}}|
 
-- You don't have to attach the `mover overload sensor mount.stl` and the little switch right now. You can add it later while assembling the electronics. The switch cable though has to be guided on the left side around the `mover plate.stl`to the front and can then be positioned under the `mover endstop bracket.stl` and guided to the top of the plate. If this makes no sense to you atm, wait until we assemble the electronics.
+- You don't have to attach the `mover overload sensor mount.stl` and the little switch right now. You can add it later while assembling the electronics. The switch cable though has to be guided on the left side around the `mover plate.stl`to the front, can then be guided through the small channel on the backside of `mover endstop bracket.stl` and fed to the top of the plate.
 
 |Mover assembly back|
 | :--: |
@@ -116,15 +122,28 @@ If you bought a 4-wheel 2020 gantry, simply reassemble it to a 3-wheel version.
 
 - The small `mover spring presser.stl`, which helps compressing the spring with the tensioner screw, is shown only once on the pictures. If you find that your compression spring is not strong enough, before grabbing a new one, add a second `mover spring presser.stl` on the top of the spring. This might help already.
 
-If everything went together well, try to slide it over the run bar to see if it runs smoothely and without any wobble or wiggle. If it is too tight or too loose, you have to adjust the position of the rolers. If you don't know how, [OpenBuilds setup video on YT, beginning 2:38](https://youtu.be/pMtHy7sDNG4?t=159) is your friend, but as a hint, normally, some of the rolers are mounted excentrically and you can adjust their position.
+If everything went together well, try to slide the mover over the run bar to see if it runs smoothely and without any wobble or wiggle. If it is too tight or too loose, you have to adjust the position of the rolers. If you don't know how, [OpenBuilds setup video on YT, beginning 2:38](https://youtu.be/pMtHy7sDNG4?t=159) is your friend, but as a hint, two of the rolers are mounted excentrically and you can adjust their position.
+
+### Frame adjustment
+
+Now, with the carriage mover attached to the run bar you can fine tune the whole frame.
+
+- slide the carriage to the middle of the bed
+- slide the carriage mover to the middle of the bed, straight above the carriage
+- add the `carriage bolt.st` to the carriage adapter and see if it couples the carriage to the mover
+- adjust the position of the posts back to front and the height of the run bar, so that the coupling mechanism connects easily and without much play
+- slide both to the far left and far right to see if there are any positional inconsistencies you might have to fix
+
+Take this as reference:
+{{< figure src="/knittingmotor/rl/pictures/carrier_coupling_side_view.jpg" link="/knittingmotor/rl/pictures/carrier_coupling_side_view.jpg" target="blank" title="(click to zoom)" height="30%" width="30%" >}}
+
+### Overload spring adjustment
+
+The tension of the spring has to be adjusted in combination with the belt tension. The most accurate way is by knitting a test piece with the tightest stich possible. Start with the lowest spring tension possible. The spring lever should not wiggle around freely up and down, but should be pressed firmly against the spring. If you find that the mover disconnects from the carriage too easily while knitting your test piece, increase the tension of the spring. It should be tight enough so that you are able to knit everything you want, but not so tight that the mover won't disconnect in case of a blockage of the carriage, which on the other hand can lead to the timing belt slipping or even damaging your carriage. So be careful when dialing in the correct tension. 
 
 ### Overload sensor position adjustment
 
 You will have noticed, that you can adjust the position of the overload sensor closer to the spring lever or more far away from it. This helps to get the moment where it triggers just right. Its main function is to stop the mover when there is a blockage of the carriage and the coupler has disconnected. As this depends on spring tension and how you setup the strength of the spring lever action, I can only give a general advice here. You have to setup the sensor trigger point in a way that it will be activated in the moment the spring lever is raised up and has disconnected the mechanical coupling to the carriage.
-
-### Overload spring adjustment
-
-This has to be adjusted in combination with the belt tension and can the most accurate way is by knitting a test piece with the tightest stich possible.<br>Start with the lowest spring tension possible. The spring lever should not wiggle around freely, but be firmly pressed against the spring. If you find that the mover disconnects from the carriage too easily while knitting your test piece, increase the tension of the spring. It should be tight enough so that you are able to knit everything you want, but not so tight that the mover won't disconnect in case of a blockage of the carriage, which on the other hand will lead to the timing belt slipping. 
 
 
 ## 4) Yarn sensor
@@ -178,7 +197,7 @@ If the force of the magnets is too strong, it can help to move them sideways in 
 
 If you are happy with how everything works, simply glue the magnets in place so that they cannot leave their calibrated position anymore. To even more secure the magnets you can insert one of the small `yarn sensor magnet plug.stl` on either side of the tube and glue them into place, too
 
-## 3) Stepper and rotary encoder assembly
+## 5) Stepper and rotary encoder assembly
 
 |Stepper assembly|Rotary encoder assembly|
 | :--: | :--: |
@@ -197,7 +216,7 @@ The bracket consists of three parts for easier and support-less printing:
 
 It can be a bit fiddly to get all three parts together and you will have to bend the legs of the bridge a bit until everything snaps together. As a hint, you should first insert the legs of the bridge into the base parts from the top and then lightly force everything into place. I assure you it will work, work slowly and carefully.
 
-## 4) Belt tensioner
+## 6) Belt tensioner
 
 |Belt tensioner|
 | :--: |
@@ -226,7 +245,7 @@ The belt tension and the tension of the overload spring on the carriage mover de
 
   - Try to block the carriage during its movement with your hands - do that without having any needles engaged, just for safety. If the belt slips before the carriage coupler disconnects the carriage, re-tighten the belt.
 
-## 5) Control box
+## 7) Control box
 
 |Assembly views| |
 | :--: | :--: |
