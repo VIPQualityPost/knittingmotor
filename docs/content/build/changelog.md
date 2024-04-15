@@ -5,7 +5,6 @@ date:  "2024-04-04"
 #  main:
 #      parent: Build your own!
 weight: 10
-index: false
 ---
 
 | FW Version | Gitlab branch | Comment |

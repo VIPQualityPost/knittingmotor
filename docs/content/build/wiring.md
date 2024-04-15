@@ -6,7 +6,6 @@ date:  "2024-03-18"
 #      parent: Build your own!
 TableOfContents: true
 weight: 9
-index: false
 ---
 
 ## How to wire all parts?

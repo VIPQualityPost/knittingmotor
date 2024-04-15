@@ -5,7 +5,6 @@ lastmod: 2024-04-05
 publishdate: 2024-04-05
 description: ""
 weight: 1000
-index: false
 ---
 
 Angaben gemäß § 5 TMG

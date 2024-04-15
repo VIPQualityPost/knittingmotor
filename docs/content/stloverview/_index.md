@@ -2,7 +2,6 @@
 title: "STL overview"
 date:  "2024-04-07"
 weight: 40
-index: false
 ---
 
 ------

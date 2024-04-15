@@ -3,7 +3,6 @@ title: "License"
 date: "2024-03-18"
 weight: 10
 TableOfContents: false
-index: false
 ---
 
 Attribution-NonCommercial-ShareAlike 4.0 International

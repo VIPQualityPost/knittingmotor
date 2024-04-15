@@ -6,7 +6,6 @@ date:  "2024-03-18"
 #      parent: Build your own!
 weight: 6
 TableOfContents: true
-index: false
 ---
 
 This document hopefully lists all the needed parts to build the open knitting motor.

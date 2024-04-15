@@ -6,7 +6,6 @@ date:  "2024-03-18"
 #      parent: Build your own!
 weight: 7
 TableOfContents: true
-index: false
 ---
 
 ## What you'll find here and what not...
