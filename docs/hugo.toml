@@ -51,6 +51,12 @@ custom_font_color = "#f7e8d0"
         identifier = 'download_fw'
 
     [[menu.main]]
+        name = "Videos"
+        url = "https://www.youtube.com/playlist?list=PLf4mh2tju_ITPJRGPDabReALq2cNbygUf"
+        weight = 60
+        identifier = 'yt_playlist'
+
+    [[menu.main]]
         name = "Impressum/Imprint"
         url = "/impressum"
         weight = 1000

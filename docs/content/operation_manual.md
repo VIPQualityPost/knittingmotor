@@ -8,6 +8,12 @@ TableOfContents: true
 
 # Open Knitting Motor Project - Operation manual
 
+## 0. TL;DR
+
+You like videos more? See every menu function of the control box described in detail in this video:<br> [Open Knitting Motor Control box in detail](https://www.youtube.com/watch?v=B765agb7pRA)
+
+But you should definitely come back and read about how to operate the whole system on a daily basis.
+
 ## 1. System startup
 
 After powering on the control box, you will have to reset (aka homing) the knitting carriage once by pressing the `SELECT` button.

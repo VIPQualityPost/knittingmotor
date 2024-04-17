@@ -11,3 +11,4 @@ The following video should give you a comprehensive introduction to my open knit
 <br>
 {{< youtube DNebWPWqzuI >}}
 
+[Follow this link to the complete Youtube playlist with all videos regarding the system!](https://www.youtube.com/playlist?list=PLf4mh2tju_ITPJRGPDabReALq2cNbygUf)
