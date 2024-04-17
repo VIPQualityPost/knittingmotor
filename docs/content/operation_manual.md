@@ -119,8 +119,11 @@ To change any of the following parameters, open the control box menu and go to `
   - `manual`: The machine will only count the rows knitted.
   *Changing this configuration parameter will automatically clear the row count value and set it to 0!*<br><br>
 - Foot pedal mode (default: `single`)<br>
-  - `single`:     The foot switch will start knitting one row.
+  - `single`: The foot switch will start knitting one row.
   - `continuous`: The foot switch will start continuous knitting. Hit the foot switch again to stop continuous knitting after the current row is done.<br><br>
+- Navigation mode (default: `boundary`)<br>
+  - `boundary`: If you press and hold the left/right button on the control box, the carriage will move to the chosen direction up to the boundary (if set) and later, if you do this again, to the maximum or zero position.
+  - `maximum`: The left/right button will always move the carriage to the maximum or zero position, regardless if you set boundaries or not.<br><br>
 - Carriage speed (default: `80`)<br>
   You can raise and lower the carriage speed with a certain range. Please be careful and only raise the value in small steps and try again until it works as desired.<br><br>
 - Yarn sensor main (default: `off`)<br>
