@@ -192,9 +192,12 @@ The magnets have to be placed inside the small tubes of the front and back lever
 - the front levers can actually move a little bit up and down without deactivating the reed contact, but open the contact when you let them swing down completely
 - the back levers (which have much less room to move up and down!) should open the reed contact *only* when the lever is really close or touching the reed contact
 
-If the force of the magnets is too strong, it can help to move them sideways in relation to the reed contact inside the tube to reduce the magnetic field impact. Use a multimeter connected to the back and front reed contact to see if it works. The multimeter should detect a closed connection when a) the front lever is in up and b) the corresponding back lever in its down position.
+If the force of the magnets is too strong, it can help to move them sideways in relation to the reed contact inside the tube to reduce the magnetic field impact. Use a multimeter connected to the back and front reed contact to see if it works.<br>The multimeter should detect a closed connection when 
 
-If you are happy with how everything works, simply glue the magnets in place so that they cannot leave their calibrated position anymore. To even more secure the magnets you can insert one of the small `yarn sensor magnet plug.stl` on either side of the tube and glue them into place, too
+- a) the front lever is in up and 
+- b) the corresponding back lever in its down position.
+
+If you are happy with how everything works, simply glue the magnets in place so that they cannot leave their calibrated position anymore. To even more secure the magnets you can insert one of the small `yarn sensor magnet plug.stl` on either side of the tube and glue them into place, too.
 
 ## 5) Stepper and rotary encoder assembly
 
