@@ -63,7 +63,7 @@ def versioning(source, target, env):
 
       print('Next upload version: ' + version)
 
-# register post build actions
-env.AddPostAction("upload", versioning)
-env.AddPostAction("$BUILD_DIR/firmware.hex", post_program_action)
+# register pre/post build actions
+env.AddPreAction("buildprog", versioning)
+env.AddPreAction("$BUILD_DIR/firmware.hex", post_program_action)
 env.AddPostAction("$BUILD_DIR/firmware.bin", post_program_action)

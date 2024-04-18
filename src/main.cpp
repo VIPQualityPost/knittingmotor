@@ -597,12 +597,12 @@ byte processMenuCommand(byte cmdId)
       {
         if (btn == BUTTON_LEFT_PRESSED)
         {
-          currentConfig.cfg.leftBoundary = addToVal(120, currentConfig.cfg.leftBoundary,stepperMidPos+2,stepperMaxPos);
+          currentConfig.cfg.leftBoundary = addToVal(bndSmallSteps, currentConfig.cfg.leftBoundary,stepperMidPos+2,stepperMaxPos);
           myStepper.moveTo(currentConfig.cfg.leftBoundary);
         }
         if (btn == BUTTON_LEFT_LONG_PRESSED)
         {
-          currentConfig.cfg.leftBoundary = addToVal(600, currentConfig.cfg.leftBoundary,stepperMidPos+2,stepperMaxPos);
+          currentConfig.cfg.leftBoundary = addToVal(bndLargeSteps, currentConfig.cfg.leftBoundary,stepperMidPos+2,stepperMaxPos);
           myStepper.moveTo(currentConfig.cfg.leftBoundary);
         }
       }
@@ -610,12 +610,12 @@ byte processMenuCommand(byte cmdId)
       {
         if (btn == BUTTON_RIGHT_PRESSED)
         {
-          currentConfig.cfg.leftBoundary = addToVal(-120, currentConfig.cfg.leftBoundary,stepperMidPos+2,stepperMaxPos);
+          currentConfig.cfg.leftBoundary = addToVal((-1)*bndSmallSteps, currentConfig.cfg.leftBoundary,stepperMidPos+2,stepperMaxPos);
           myStepper.moveTo(currentConfig.cfg.leftBoundary);
         }
         if (btn == BUTTON_RIGHT_LONG_PRESSED)
         {
-          currentConfig.cfg.leftBoundary = addToVal(-600, currentConfig.cfg.leftBoundary,stepperMidPos+2,stepperMaxPos);
+          currentConfig.cfg.leftBoundary = addToVal((-1)*bndLargeSteps, currentConfig.cfg.leftBoundary,stepperMidPos+2,stepperMaxPos);
           myStepper.moveTo(currentConfig.cfg.leftBoundary);
         }
       }
@@ -624,7 +624,7 @@ byte processMenuCommand(byte cmdId)
         configChanged = false;
       }
 
-      myStepper.setSpeed(1000);
+      myStepper.setSpeed(bndSetupSpeed);
       if (currentConfig.cfg.leftBoundary == 0)
       {
         myStepper.moveTo(stepperMidPos+1);
@@ -644,12 +644,12 @@ byte processMenuCommand(byte cmdId)
       {
         if (btn == BUTTON_LEFT_PRESSED)
         {
-          currentConfig.cfg.rightBoundary = addToVal(120, currentConfig.cfg.rightBoundary,0,stepperMidPos-2);
+          currentConfig.cfg.rightBoundary = addToVal(bndSmallSteps, currentConfig.cfg.rightBoundary,0,stepperMidPos-2);
           myStepper.moveTo(currentConfig.cfg.rightBoundary);
         }
         if (btn == BUTTON_LEFT_LONG_PRESSED)
         {
-          currentConfig.cfg.rightBoundary = addToVal(600, currentConfig.cfg.rightBoundary,0,stepperMidPos-2);
+          currentConfig.cfg.rightBoundary = addToVal(bndLargeSteps, currentConfig.cfg.rightBoundary,0,stepperMidPos-2);
           myStepper.moveTo(currentConfig.cfg.rightBoundary);
         }
       }
@@ -657,12 +657,12 @@ byte processMenuCommand(byte cmdId)
       {
         if (btn == BUTTON_RIGHT_PRESSED)
         {
-          currentConfig.cfg.rightBoundary = addToVal(-120, currentConfig.cfg.rightBoundary,0,stepperMidPos-2);
+          currentConfig.cfg.rightBoundary = addToVal((-1)*bndSmallSteps, currentConfig.cfg.rightBoundary,0,stepperMidPos-2);
           myStepper.moveTo(currentConfig.cfg.rightBoundary);
         }
         if (btn == BUTTON_RIGHT_LONG_PRESSED)
         {
-          currentConfig.cfg.rightBoundary = addToVal(-600, currentConfig.cfg.rightBoundary,0,stepperMidPos-2);
+          currentConfig.cfg.rightBoundary = addToVal((-1)*bndLargeSteps, currentConfig.cfg.rightBoundary,0,stepperMidPos-2);
           myStepper.moveTo(currentConfig.cfg.rightBoundary);
         }
       }
@@ -671,7 +671,7 @@ byte processMenuCommand(byte cmdId)
         configChanged = false;
       }
 
-      myStepper.setSpeed(1000);
+      myStepper.setSpeed(bndSetupSpeed);
       if (currentConfig.cfg.rightBoundary == 0)
       {
         myStepper.moveTo(stepperMidPos-1);
@@ -750,22 +750,22 @@ byte processMenuCommand(byte cmdId)
       {
         if (btn == BUTTON_UP_PRESSED)
         {
-          currentConfig.cfg.rowCount = addToVal(1, currentConfig.cfg.rowCount,1,999);
+          currentConfig.cfg.rowCount = addToVal(1, currentConfig.cfg.rowCount,1,maxRows);
         }
         if (btn == BUTTON_UP_LONG_PRESSED)
         {
-          currentConfig.cfg.rowCount = addToVal(10, currentConfig.cfg.rowCount,1,999);
+          currentConfig.cfg.rowCount = addToVal(10, currentConfig.cfg.rowCount,1,maxRows);
         }
       }
       else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
       {
         if (btn == BUTTON_DOWN_PRESSED)
         {
-          currentConfig.cfg.rowCount = addToVal(-1, currentConfig.cfg.rowCount,1,999);
+          currentConfig.cfg.rowCount = addToVal(-1, currentConfig.cfg.rowCount,1,maxRows);
         }
         if (btn == BUTTON_DOWN_LONG_PRESSED)
         {
-          currentConfig.cfg.rowCount = addToVal(-10, currentConfig.cfg.rowCount,1,999);
+          currentConfig.cfg.rowCount = addToVal(-10, currentConfig.cfg.rowCount,1,maxRows);
         }
       }
       else
@@ -781,22 +781,22 @@ byte processMenuCommand(byte cmdId)
       {
         if (btn == BUTTON_UP_PRESSED)
         {
-          currentConfig.cfg.carriageSpeed = addToVal(1, currentConfig.cfg.carriageSpeed,60,200);
+          currentConfig.cfg.carriageSpeed = addToVal(1, currentConfig.cfg.carriageSpeed,carSpeedMin,carSpeedMax);
         }
         if (btn == BUTTON_UP_LONG_PRESSED)
         {
-          currentConfig.cfg.carriageSpeed = addToVal(10, currentConfig.cfg.carriageSpeed,60,200);
+          currentConfig.cfg.carriageSpeed = addToVal(10, currentConfig.cfg.carriageSpeed,carSpeedMin,carSpeedMax);
         }
       }
       else if (btn == BUTTON_DOWN_PRESSED || btn == BUTTON_DOWN_LONG_PRESSED)
       {
         if (btn == BUTTON_DOWN_PRESSED)
         {
-          currentConfig.cfg.carriageSpeed = addToVal(-1, currentConfig.cfg.carriageSpeed,60,200);
+          currentConfig.cfg.carriageSpeed = addToVal(-1, currentConfig.cfg.carriageSpeed,carSpeedMin,carSpeedMax);
         }
         if (btn == BUTTON_DOWN_LONG_PRESSED)
         {
-          currentConfig.cfg.carriageSpeed = addToVal(-10, currentConfig.cfg.carriageSpeed,60,200);
+          currentConfig.cfg.carriageSpeed = addToVal(-10, currentConfig.cfg.carriageSpeed,carSpeedMin,carSpeedMax);
         }
       }
       else
