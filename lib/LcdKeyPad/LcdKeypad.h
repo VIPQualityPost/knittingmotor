@@ -1,3 +1,28 @@
+/*!`
+ * \file LcdKeypad.h
+ *
+ * This file is part of Open Knitting Motor Project OKMP
+ * and based on the fantastic work of Kashif Baif for his
+ * Arduino LCD Menu Library.
+ *
+ *    OKMP is free software: you can redistribute it and/or modify
+ *    it under the terms of the CC BY-NC-SA license
+ *    as published by Creative Commons, either version 4.0 of the License, or
+ *    (at your option) any later version.
+ *
+ *    OKMP is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    Creative Commons License for more details.
+ *
+ *    You should have received a copy of the Creative Commons License
+ *    along with OKMP.
+ *    If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.en/>.
+ *
+ *    Original Work Copyright Kashif Baig
+ *    https://www.cohesivecomputing.co.uk/hackatronics/arduino-lcd-menu-library/
+ */
+
 #ifndef LCDKEYPAD_H_
 #define LCDKEYPAD_H_
 
