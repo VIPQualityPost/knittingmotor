@@ -164,7 +164,7 @@ The switch in the front will be closed when yarn is fed through the sensor, as t
 
 **Knot sensing**
 If a not comes up from the cone it will be trapped in the small slit in the back lever, raise the lever and, in this case, open the reed contact. This will also lead to a message on the display of the control box.<br>
-*-> The contacts in the front are "**normally closed**" reed contacts.*
+*-> The contacts in the back are "**normally closed**" reed contacts.*
 
 |Yarn sensor top |Yarn sensor bottom |
 | :--: | :--: |
