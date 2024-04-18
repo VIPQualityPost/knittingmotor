@@ -10,7 +10,9 @@ weight: 40
 
 ------
 
-This overview is just for informational purpose. Download the current STL files or the combined 3MF from the [source files](https://gitlab.open-mind.space/pages/knittingmotor).
+This overview is just for informational purpose.
+
+Download the current STL files or the combined 3MF from: [source files](https://gitlab.open-mind.space/pages/knittingmotor)
 
 <br>
 
