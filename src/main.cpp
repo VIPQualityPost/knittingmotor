@@ -2008,10 +2008,16 @@ void loop()
           displaySteps();
           break;
         case ROWS:
-          printRowCount(currentRowCount, false);
+          if (errorState == OK) // avoid unnecessary display updates in case of an error
+          {
+            printRowCount(currentRowCount, false);
+          }
           break;
         case ROWS_WITH_HEADER:
-          printRowCount(currentRowCount, true);
+          if (errorState == OK) // avoid unnecessary display updates in case of an error
+          {
+            printRowCount(currentRowCount, true);
+          }
           break;
         }
 

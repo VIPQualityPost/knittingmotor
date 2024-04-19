@@ -1,7 +1,7 @@
 ---
 title: "License"
 date: "2024-03-18"
-weight: 10
+weight: 70
 TableOfContents: false
 ---
 

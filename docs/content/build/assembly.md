@@ -4,7 +4,7 @@ date:  "2024-03-18"
 #menu:
 #  main:
 #      parent: Build your own!
-weight: 7
+weight: 20
 TableOfContents: true
 ---
 
@@ -155,7 +155,7 @@ The yarn sensor is the most complex and intricate build of the whole system. As 
 
 ### How does it work?
 
-The yarn sensor is capable of sensing a) yarn runout and b) knots in the yarn for the main (right) and the secondary (left)  thread. To achieve this, there are four reed (aka magnetic) contacts on the underside of the sensor which act in combination with the four levers, which are equipped with a small magnet each. Every lever / reed contact combination will theirfor form a single switch and the two sensors (front and back) on each of the sides will form a unit, which means both sides are measured independently, but always the front and the back sensor element together.
+The yarn sensor is capable of sensing a) yarn runout and b) knots in the yarn for the main (right) and the secondary (left)  thread. To achieve this, there are four reed (aka magnetic) contacts on the underside of the sensor which act in combination with the four levers, which are equipped with a small magnet each. Every lever / reed contact combination will therefor form a single switch and the two sensors (front and back) on each of the sides will form a unit, which means both sides are measured independently, but always the front and the back sensor element together.
 So, if either the right runout sensor lever (front) or the right knot sensor lever (back) is engaged, the control box will report an error regarding the right (main) yarn sensor - same for the left (secondary) side.
 
 **Yarn runout**

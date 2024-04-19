@@ -4,7 +4,7 @@ date:  "2024-04-04"
 #menu:
 #  main:
 #      parent: Build your own!
-weight: 10
+weight: 50
 ---
 
 | FW Version | Gitlab branch | Comment |
