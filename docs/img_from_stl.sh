@@ -8,7 +8,7 @@ for i in *.stl; do
   T=__tmp__$i
   B=`basename "$i"`
   echo import\(\"$i\"\)\; > "$T"
-  /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD -o img/"$B".png --autocenter --viewall --imgsize=500,500 "$T"
+  /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD -o "$B".png --autocenter --viewall --imgsize=500,500 "$T"
   rm "$T"
 done
 

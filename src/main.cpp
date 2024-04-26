@@ -1238,7 +1238,7 @@ void errorStateHandling()
 
     if (btn==BUTTON_SELECT_SHORT_RELEASE) 
     {
-      if (currentAppMode == APP_PRE_CHECK && digitalRead(footswitchPin) != signalLevel) // foot switch installed at start
+      if (currentAppMode == APP_PRE_CHECK && digitalRead(footswitchPin) != signalLevel) // foot switch installed at start?
       { 
         currentAppMode = APP_PGMSTART;
         nok = 0;

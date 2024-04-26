@@ -144,6 +144,15 @@ The tension of the spring has to be adjusted in combination with the belt tensio
 
 You will have noticed, that you can adjust the position of the overload sensor closer to the spring lever or more far away from it. This helps to get the moment where it triggers just right. Its main function is to stop the mover when there is a blockage of the carriage and the coupler has disconnected. As this depends on spring tension and how you setup the strength of the spring lever action, I can only give a general advice here. You have to setup the sensor trigger point in a way that it will be activated in the moment the spring lever is raised up and has disconnected the mechanical coupling to the carriage.
 
+### Regarding `mover_plate_v2.stl`
+
+|Mover plate v2|
+| :--: |
+|{{< figure src="/knittingmotor/images/CAD_mover_plate_v2.png" link="/knittingmotor/images/CAD_mover_plate_v2.png" target="blank" title="(click to zoom)" height="40%" width="40%" >}}|
+
+I noticed that fine adjusting the overload spring and overload sensor position can be a bit tricky, if the switch is in the front position (near to the spring), because the spring lever is moving in a wider range up and down at its front than at its back. So I added a second (optional) sensor position more to the back of the lever, where a more finer adjustment of the sensor position will be possible. Choose whatever position is suitable for the spring and switch  combination you bought. 
+
+*Keep in mind, in case of a blockage the goal is to first) have the carriage mechanically disconnect from the mover before second) the switch opens - at least shortly one after the other.*
 
 ## 4) Yarn sensor
 
