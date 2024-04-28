@@ -101,13 +101,13 @@ No CAD images here. Remove the original handle from the carriage by removing the
 See the following pictures on how to assemble the carriage mover.
 
 - The screws I left intentionally in the picture have to be M6.
-- The gantry is fixed by using M5 screws.
+- The gantry is fixed by using M4 screws.
 - For the `mover belt holders left/right.stl` use M3 screws and support them with washers.
 - The `mover overload sensor mount.stl` does need an addtional M3 screw, this one can be screwed in to the plastic carefully.
 
 If you bought a 4-wheel 2020 gantry, simply reassemble it to a 3-wheel version.
 
-***BEWARE: I MISSED the `endstop bracket.stl` and the `belt holders left/right.stl`  in the exploded-views, but I think you get the point from the front and back images above.***
+***BEWARE: I MISSED the `endstop bracket.stl`  in the exploded views, but I think you get the point from the front and back images above.***
 
 |Mover assembly front|
 | :--: |
