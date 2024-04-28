@@ -22,6 +22,5 @@ Although I am quite happy with how the system is working today, things can alway
 
 ### 3D printed parts
 
-- The sensor mount for the overload sensor is currently mounted towards the front end of the spring lever near the spring. This is not the best for real fine adjustment of the sensor as the lever's movements naturally are much bigger at its front end than on its back end. I plan to reposition it to the back of the lever near the bolt so that smaller adjustments of the sensor mounting plate are necessary to cover a wider (and so logically more precise) adjustment range.<br><br>
-
+- ~~The sensor mount for the overload sensor is currently mounted towards the front end of the spring lever near the spring. This is not the best for real fine adjustment of the sensor as the lever's movements naturally are much bigger at its front end than on its back end. I plan to reposition it to the back of the lever near the bolt so that smaller adjustments of the sensor mounting plate are necessary to cover a wider (and so logically more precise) adjustment range.~~ <br>Done. See `mover_plate_v2.stl`<br><br>
 - Due to feedback of the community (Thanks, Klaus!) I might think of offering the possibility to replace the endstop switches with reed switches or even hall effect sensors for contact-less switching. Reed switches could even be placed inside the groove of the aluminium extrusion which would literally make them disappear from the outside frame structure, what I'd prefer here. Have to think about it...
