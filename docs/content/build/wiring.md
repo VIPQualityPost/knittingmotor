@@ -1,6 +1,6 @@
 ---
 title: "Wiring"
-date:  "2024-03-18"
+date:  "2024-04-30"
 #menu:
 #  main:
 #      parent: Build your own!
@@ -14,7 +14,7 @@ I try to describe how I wired everything together the best I can. Sorry, no sche
 
 ## PIN defaults
 
-See `HardwareConfig.h` for the pin assignment defaults.
+See `include\HardwareConfig.h` for the pin assignment defaults.
 
 The minimum sensor (aka switch) pins you have to use are:
 - home endstop
@@ -59,37 +59,37 @@ If you want to change the pin assignment to the Arduino for any reason, you will
     24V volt to TB6600/DM542T
     24V volt to LM2596 Buck (In)
 
-**Set Buck converter to 9 Volt.**
+**Set Buck converter to 9-12 Volt - depends a bit on the fan you use.**
 
 
 ## Buck converter
 
     GND (Out): Arduino/LCD Shield GND
     GND (Out): Fan
-    7V+ (Out): Arduino/LCD Shield VIN
-    7V+ (Out): Fan
+    V+ (Out): Arduino/LCD Shield VIN
+    V+ (Out): Fan
 
 ## Arduino + LCD Keypad Shield
 
 Simply plug them together ;-)
 
-Because of the design of the upper housing, you will have to solder wire connections and plugs to all available connectors on the LCD Keypad Shield, which are (D0-D3,D11-D13,A1-A5).
+Because of the design of the upper housing, you will have to solder wire connections and plugs to all available connectors on the LCD Keypad Shield, which are: D0-D3, D11-D13, A1-A5.
 
 ## LCD Keypad Shield
 
     D0:  passive buzzer
-    D1:  overload sensor (normally closed)
+    D1:  overload sensor
     D2:  Rotary Encoder A
     D3:  Rotary Encoder B
     D11: TB6600/DM542T Pul-
     D12: TB6600/DM542T Dir-
     D13: TB6600/DM542T Ena-
     
-    A1:  yarn sensor secondary (normally closed)
-    A2:  yarn sensor main (normally closed)
-    A3:  footswitch   (normally closed)
-    A4:  endstop max  (normally closed)
-    A5:  endstop zero (normally closed)
+    A1:  yarn sensor secondary
+    A2:  yarn sensor main
+    A3:  footswitch
+    A4:  endstop max
+    A5:  endstop zero
 
 ## TB6600 / DM542T
 
@@ -120,7 +120,7 @@ Regarding DM542T: make sure that the control voltage switch on top is set to 5V,
 Use a GX16 connector.
 
     GND  : Arduino GND **(!IMPORTANT!)**
-    5V   : Arduino 5V (you have to make sure, that your Arduino
+    5V   : Arduino 5V - you have to make sure, that your Arduino
            DOES deliver real 5V, not 4.98V or something **(!IMPORTANT!)**
     GREEN: D2
     WHITE: D3
