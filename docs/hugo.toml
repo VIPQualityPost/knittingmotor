@@ -3,6 +3,12 @@ languageCode = 'en-us'
 title = 'Open Knitting Motor Project'
 theme = ['techdoc', 'hugo-shortcode-gallery']
 
+[sitemap]
+  changeFreq = ''
+  disable = false
+  filename = 'sitemap.xml'
+  priority = -1
+
 [privacy]
   [privacy.disqus]
     disable = true
