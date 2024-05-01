@@ -47,7 +47,7 @@ If you want to change the pin assignment to the Arduino for any reason, you will
     passive buzzer
     main frame and stepper motor
 
-You *can* omit the ground connection to the frame and stepper motor, but I would not recommend ist. The running belt will create some kind of electrostatic charge which will interfere with the endstops. I had the problem that the max endstop triggered just by touching it. After adding a ground wire which connected the frame to one of the mount screws of the stepper motor and then to the main ground rail, this problem was gone. So, keep that in mind!
+You *can* omit the ground connection to the frame and stepper motor, but I would not recommend ist. The running belt will 	create some kind of electrostatic charge which will interfere with the endstops. I had the problem that the max endstop triggered just by touching it. After adding a ground wire which connected the frame to one of the mount screws of the stepper motor and then to the main ground rail, this problem was gone. So, keep that in mind!
 
 ### VIN (+5V) connection rail
 
