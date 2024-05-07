@@ -6,7 +6,7 @@ weight: 20
 
 -----
 
-If you want to build your own knitting motor, you should find enough information in the following documents to achieve that.
+If you want to build your own personal knitting motor, you should find enough information in the following documents to achieve that.
 
 ## Techdocs
 
