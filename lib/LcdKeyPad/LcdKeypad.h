@@ -79,7 +79,7 @@
 
 extern void queueButton(byte button);
 extern byte getButton();
-extern void findButtonValues(LiquidCrystal &LC, uint16_t *&newButtonValues);
+extern void findButtonValues(LiquidCrystal &LC, uint16_t *newButtonValues);
 extern void loadButtonValues(uint16_t newButtonValues[5]);
 
 extern void buttonHandlerCycle(); // Can call in ISR, but will need to modify body of queueButton() method (see method body).

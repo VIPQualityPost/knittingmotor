@@ -218,7 +218,7 @@ const char *getButtonName(int i)
   return buttonNames[i];
 }
 
-void findButtonValues(LiquidCrystal &LC, uint16_t *&newButtonValues)
+void findButtonValues(LiquidCrystal &LC, uint16_t *newButtonValues)
 {
   LC.clear();
   LC.print(F("Map buttons.."));
@@ -296,7 +296,6 @@ void buttonHandlerCycle()
   if (millis() - buttonSampleTime >= 20)
   {
     buttonSampleTime = millis();
-
     byte btnStateNow;
     int analogReading = analogRead(BUTTON_PIN);
 
@@ -304,7 +303,12 @@ void buttonHandlerCycle()
 
     for (int i = 0; i < 5; i++)
     {
-      if (!buttonIdentified && (analogReading > buttonValues[i] - ANALOG_FUZZ && analogReading < buttonValues[i] + ANALOG_FUZZ))
+      uint16_t fuzzedValue = buttonValues[i] > ANALOG_FUZZ ? (buttonValues[i] - ANALOG_FUZZ) : buttonValues[i];
+      uint16_t maxFuzzedValue = buttonValues[i] < (UINT16_MAX - ANALOG_FUZZ) ? (buttonValues[i] + ANALOG_FUZZ) : buttonValues[i];
+      char debugBuf[64];
+      snprintf(debugBuf, sizeof(debugBuf), "%u Anything? %u %u %u ButtonValues: %u", analogReading, fuzzedValue, maxFuzzedValue, buttonIdentified, buttonValues[i]);
+      // Serial.println(debugBuf);
+      if (!buttonIdentified && (buttonValues[i] == analogReading))
       {
         btnStateNow = 1;
         buttonIdentified = 1;

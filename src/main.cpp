@@ -227,7 +227,7 @@ void toRefPoint()
   {
     // ... but only if stepper is not already there
     myStepper.setSpeedSteps(fastSpeedSteps, rampLen);
-    myStepper.rotate(STEP_CCW);
+    myStepper.rotate(STEP_CW);
     while (digitalRead(homePin) != signalLevel)
       ;
   }
@@ -238,7 +238,7 @@ void toRefPoint()
   // slow backup until endstop releases
   myStepper.setRampLen(0);
   myStepper.setSpeedSteps(slowSpeedSteps);
-  myStepper.rotate(STEP_CW);
+  myStepper.rotate(STEP_CCW);
   while (digitalRead(homePin) == signalLevel)
     ;
 
@@ -263,7 +263,7 @@ void toMaxPoint()
   {
     // ... but only if stepper is not already there
     myStepper.setSpeedSteps(fastSpeedSteps, rampLen);
-    myStepper.rotate(STEP_CW);
+    myStepper.rotate(STEP_CCW);
     while (digitalRead(maxPin) != signalLevel)
       ;
   }
@@ -274,7 +274,7 @@ void toMaxPoint()
   // slow backup until endstop releases
   myStepper.setRampLen(0);
   myStepper.setSpeedSteps(slowSpeedSteps);
-  myStepper.rotate(STEP_CCW);
+  myStepper.rotate(STEP_CW);
   while (digitalRead(maxPin) == signalLevel)
     ;
 
@@ -1444,7 +1444,7 @@ void initializeButtons()
   }
   else if (!buttonsLoaded)
   {
-    uint16_t *buttonValues;
+    uint16_t buttonValues[5] = {0, 0, 0, 0, 0};
     findButtonValues(lcd, buttonValues);
     for (int i = 0; i < 5; i++)
     {
