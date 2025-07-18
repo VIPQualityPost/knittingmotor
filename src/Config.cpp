@@ -29,15 +29,15 @@
 #include "Lang.h"
 
 char NotImp[] = CFG_hold;
-static char strbuf[LCD_COLS+1];
-
+static char strbuf[LCD_COLS + 1];
 
 //------------------------------------------------------------------------------
 long addToVal(short delta, long currval, long minval, long maxval)
 {
-  long newval = currval+delta;
+  long newval = currval + delta;
 
-  if (newval >= minval && newval <= maxval) return newval;
+  if (newval >= minval && newval <= maxval)
+    return newval;
 
   return currval;
 }
@@ -46,126 +46,125 @@ long addToVal(short delta, long currval, long minval, long maxval)
 char *Config::getFormattedStr(byte cmdId)
 {
   char intbuf[8];
-  
+
   switch (cmdId)
   {
-    /* case mnuCmdResetToDefaults:
-      strbuf[0] = 0;
-      break;
-    case mnuCmdClearBnd:
-      strbuf[0] = 0;
-      break; */
-    case mnuCmdSetRowCount:
-      fmt(strbuf, 2, inttostr(intbuf, cfg.rowCount), CFG_rows);
-      break;
-    case mnuCmdLeftBnd:
-      fmt(strbuf, 2, inttostr(intbuf, cfg.leftBoundary), CFG_pos);
-      break;
-    case mnuCmdRightBnd:
-      fmt(strbuf, 2, inttostr(intbuf, cfg.rightBoundary), CFG_pos);
-      break;
-    case mnuCmdCarSpeed:
-      fmt(strbuf, 2, inttostr(intbuf, cfg.carriageSpeed), CFG_rpm);
-      break;
-    case mnuCmdArrowMode :
-      if (cfg.arrowMode)
-      {
-        fmt(strbuf, 1, CFG_show);
-      }
-      else
-      {
-        fmt(strbuf, 1, CFG_hide);
-      }
-      break;
-    case mnuCmdButtonBeep :
-      if (cfg.buttonBeep)
-      {
-        fmt(strbuf, 1, CFG_on);
-      }
-      else
-      {
-        fmt(strbuf, 1, CFG_off);
-      }
-      break;
-    case mnuCmdOpMode :
-      if (cfg.opMode)
-      {
-        fmt(strbuf, 1, CFG_auto);
-      }
-      else
-      {
-        fmt(strbuf, 1, CFG_manual);
-      }
-      break;
-    case mnuCmdFootMode :
-      if (cfg.footMode)
-      {
-        fmt(strbuf, 1, CFG_single);
-      }
-      else
-      {
-        fmt(strbuf, 1, CFG_continuous);
-      }
-      break;
-    case mnuCmdNavMode :
-      if (cfg.navMode)
-      {
-        fmt(strbuf, 1, CFG_max);
-      }
-      else
-      {
-        fmt(strbuf, 1, CFG_boundary);
-      }
-      break;
-    case mnuCmdYarnMain :
-      if (cfg.yarnsensorMainEnable)
-      {
-        fmt(strbuf, 1, CFG_on);
-      }
-      else
-      {
-        fmt(strbuf, 1, CFG_off);
-      }
-      break;
-    case mnuCmdYarnSec :
-      if (cfg.yarnsensorSecEnable)
-      {
-        fmt(strbuf, 1, CFG_on);
-      }
-      else
-      {
-        fmt(strbuf, 1, CFG_off);
-      }
-      break;
-    case mnuCmdOverloadsensor :
-      if (cfg.overloadsensorEnable)
-      {
-        fmt(strbuf, 1, CFG_on);
-      }
-      else
-      {
-        fmt(strbuf, 1, CFG_off);
-      }
-      break;
-    case mnuCmdDisplayBrightness :
+  /* case mnuCmdResetToDefaults:
+    strbuf[0] = 0;
+    break;
+  case mnuCmdClearBnd:
+    strbuf[0] = 0;
+    break; */
+  case mnuCmdSetRowCount:
+    fmt(strbuf, 2, inttostr(intbuf, cfg.rowCount), CFG_rows);
+    break;
+  case mnuCmdLeftBnd:
+    fmt(strbuf, 2, inttostr(intbuf, cfg.leftBoundary), CFG_pos);
+    break;
+  case mnuCmdRightBnd:
+    fmt(strbuf, 2, inttostr(intbuf, cfg.rightBoundary), CFG_pos);
+    break;
+  case mnuCmdCarSpeed:
+    fmt(strbuf, 2, inttostr(intbuf, cfg.carriageSpeed), CFG_rpm);
+    break;
+  case mnuCmdArrowMode:
+    if (cfg.arrowMode)
     {
-      byte brightnessPC = ((unsigned short) cfg.displayBrightness * 100) / 3;
-      inttostr(intbuf, brightnessPC);
-      fmt(strbuf, 2, intbuf, "%");
-      break;
+      fmt(strbuf, 1, CFG_show);
     }
-    case mnuCmdAlarmTune :
-      // fmt(strbuf, 1, (const char *)pgm_read_word(&(Songs[cfg.alarmTune])));
-      fmt(strbuf, 1, Songs[cfg.alarmTune]);
-      break;
-    default:
-      NotImp[0] = 0b01111110; // forward arrow representing input prompt.
-      strcpy(strbuf, NotImp);
-      break;
+    else
+    {
+      fmt(strbuf, 1, CFG_hide);
+    }
+    break;
+  case mnuCmdButtonBeep:
+    if (cfg.buttonBeep)
+    {
+      fmt(strbuf, 1, CFG_on);
+    }
+    else
+    {
+      fmt(strbuf, 1, CFG_off);
+    }
+    break;
+  case mnuCmdOpMode:
+    if (cfg.opMode)
+    {
+      fmt(strbuf, 1, CFG_auto);
+    }
+    else
+    {
+      fmt(strbuf, 1, CFG_manual);
+    }
+    break;
+  case mnuCmdFootMode:
+    if (cfg.footMode)
+    {
+      fmt(strbuf, 1, CFG_single);
+    }
+    else
+    {
+      fmt(strbuf, 1, CFG_continuous);
+    }
+    break;
+  case mnuCmdNavMode:
+    if (cfg.navMode)
+    {
+      fmt(strbuf, 1, CFG_max);
+    }
+    else
+    {
+      fmt(strbuf, 1, CFG_boundary);
+    }
+    break;
+  case mnuCmdYarnMain:
+    if (cfg.yarnsensorMainEnable)
+    {
+      fmt(strbuf, 1, CFG_on);
+    }
+    else
+    {
+      fmt(strbuf, 1, CFG_off);
+    }
+    break;
+  case mnuCmdYarnSec:
+    if (cfg.yarnsensorSecEnable)
+    {
+      fmt(strbuf, 1, CFG_on);
+    }
+    else
+    {
+      fmt(strbuf, 1, CFG_off);
+    }
+    break;
+  case mnuCmdOverloadsensor:
+    if (cfg.overloadsensorEnable)
+    {
+      fmt(strbuf, 1, CFG_on);
+    }
+    else
+    {
+      fmt(strbuf, 1, CFG_off);
+    }
+    break;
+  case mnuCmdDisplayBrightness:
+  {
+    byte brightnessPC = ((unsigned short)cfg.displayBrightness * 100) / 3;
+    inttostr(intbuf, brightnessPC);
+    fmt(strbuf, 2, intbuf, "%");
+    break;
+  }
+  case mnuCmdAlarmTune:
+    // fmt(strbuf, 1, (const char *)pgm_read_word(&(Songs[cfg.alarmTune])));
+    fmt(strbuf, 1, Songs[cfg.alarmTune]);
+    break;
+  default:
+    NotImp[0] = 0b01111110; // forward arrow representing input prompt.
+    strcpy(strbuf, NotImp);
+    break;
   }
   return strbuf;
 }
-
 
 //------------------------------------------------------------------------------
 void Config::save()
@@ -173,7 +172,6 @@ void Config::save()
   // eeprom_write_block(this, (void *)0, sizeof (Config));
   EEPROM.put(0, this->cfg);
 }
-
 
 //------------------------------------------------------------------------------
 void Config::load()
@@ -187,7 +185,6 @@ void Config::load()
     setDefaults();
   }
 }
-
 
 //------------------------------------------------------------------------------
 void Config::setDefaults()
@@ -207,6 +204,12 @@ void Config::setDefaults()
   cfg.opMode = true;
   cfg.navMode = true;
   cfg.arrowMode = true;
+  cfg.buttonValues[0] = BUTTON_RIGHT_ANALOG_VALUE;
+  cfg.buttonValues[1] = BUTTON_UP_ANALOG_VALUE;
+  cfg.buttonValues[2] = BUTTON_DOWN_ANALOG_VALUE;
+  cfg.buttonValues[3] = BUTTON_LEFT_ANALOG_VALUE;
+  cfg.buttonValues[4] = BUTTON_SELECT_ANALOG_VALUE;
+  cfg.buttonsInitialized = false;
 }
 
 /*
