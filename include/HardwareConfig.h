@@ -48,6 +48,7 @@ const byte enaDelay = 200;        // DM542T (v4.0) - enable time at least 200ms 
 const int stepsPerRev = 1600;     // Steps per Revolution ( example with 1/4 microsteps )
 const int rampLen = 200;          // stepper acceleration ramp
 const int homeSpeed = 1600;        // constant homing speed, regardless of user speed setting
+const int operatingSpeed = 1600;    // Speed during normal operation in cnts/s
 const int bndSetupSpeed = 1000;   // fixed speed for setting boundaries
 const int carSpeedMin = 60;       // minimum carriage speed
 const int carSpeedMax = 200;      // maximum carriage speed

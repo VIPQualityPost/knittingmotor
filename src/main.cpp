@@ -90,6 +90,11 @@ enum ErrorStates : byte
   MISS_FOOT
 };
 
+enum limit_t {
+  min_lim, 
+  max_lim,
+};
+
 // app states
 // APP_PGMSTART - program just started, not homed and uninitialized values on LCD screen
 // APP_DISP_UPD - repeated homing done, but display needs update
@@ -123,7 +128,6 @@ int encDir = STEP_STOP;
 long stepperMaxPos = 0; // max endstop
 long stepperMidPos = 0; // mid position after homing
 byte stepperAttached = 0;
-int operationRPM = 0;
 
 long posFromEnc = 0; // calculated stepper position from encoder
 
@@ -216,77 +220,43 @@ void stepperDetach()
 }
 
 // ------------------------------------------------------------------------
-// Move stepper to home position, backup and return
-void toRefPoint()
+void toLimit(limit_t limit)
 {
-  // Run stepper to home endpoint and zero position
   DBG_PRINT(F("Homing"));
 
-  // move fast to endpoint...
-  if (digitalRead(homePin) != signalLevel)
+  uint8_t limit_pin = limit == limit_t::min_lim ? homePin : maxPin;
+  uint8_t limit_direction = limit == limit_t::min_lim ? STEP_CW : STEP_CCW; // hardware dependent
+
+  myStepper.setSpeedSteps(homeSpeed);
+
+  // If we're not on the limit, get to it.
+  if(digitalRead(limit_pin) != signalLevel)
   {
-    // ... but only if stepper is not already there
-    myStepper.setSpeedSteps(fastSpeedSteps, rampLen);
-    myStepper.rotate(STEP_CW);
-    while (digitalRead(homePin) != signalLevel)
-      ;
+    myStepper.rotate(limit_direction);
+    while(digitalRead(limit_pin) != signalLevel) {};
+    myStepper.stop();
+    delay(10);
   }
+  
+  // Back off the limit.
+  while(digitalRead(limit_pin) == signalLevel)
+    myStepper.rotate(limit_direction == STEP_CW ? STEP_CCW : STEP_CW);
 
-  // home endstop reached, stop
+  DBG_PRINTLN(F("End limit hit!"));
+  myStepper.doSteps(limit_direction == STEP_CW ? 160 : -160); // 1600cnt/rev -> 1/10 rev (about 3mm with 18mm pulley)
+  // myStepper.rotate(0);
+  // while(myStepper.moving()) {};
   myStepper.stop();
-  delay(10); // give stepper driver time to reenable - UNO R4 is too fast :-)!
-  // slow backup until endstop releases
-  myStepper.setRampLen(0);
-  myStepper.setSpeedSteps(slowSpeedSteps);
-  myStepper.rotate(STEP_CCW);
-  while (digitalRead(homePin) == signalLevel)
-    ;
 
-  DBG_PRINTLN(F("Home endpoint reached"));
-  myStepper.rotate(0);
-  while (myStepper.moving())
-    ;
-  myStepper.setZero(); // zero stepper pos
-  myStepper.setSpeed(operationRPM);
-  myStepper.setRampLen((uint16_t)rampLen); // acceleration ramp 100 steps at 20rpm
-  DBG_PRINTLN(F("Homeing end"));
-}
+  // Set the reference for the limit hit.
+  if(limit_direction == limit_t::min_lim)
+    myStepper.setZero();
+  else if(limit_direction == limit_t::max_lim)
+    stepperMaxPos = myStepper.currentPosition();
 
-// ------------------------------------------------------------------------
-// Move stepper to max end of pathway
-void toMaxPoint()
-{
-  // Run stepper to home endpoint and zero position
-  DBG_PRINTLN(F("Going to max endstop"));
-  // move fast to endpoint...
-  if (digitalRead(maxPin) != signalLevel)
-  {
-    // ... but only if stepper is not already there
-    myStepper.setSpeedSteps(fastSpeedSteps, rampLen);
-    myStepper.rotate(STEP_CCW);
-    while (digitalRead(maxPin) != signalLevel)
-      ;
-  }
-
-  // home endstop reached, stop
-  myStepper.stop();
-  delay(10); // give stepper driver time to reenable - UNO R4 is too fast :-)!
-  // slow backup until endstop releases
-  myStepper.setRampLen(0);
-  myStepper.setSpeedSteps(slowSpeedSteps);
-  myStepper.rotate(STEP_CW);
-  while (digitalRead(maxPin) == signalLevel)
-    ;
-
-  DBG_PRINT(F("Max endpoint reached at: "));
-  DBG_PRINTLN(myStepper.currentPosition());
-  myStepper.rotate(0);
-  while (myStepper.moving())
-    ;
-  myStepper.setSpeed(operationRPM);
-  myStepper.setRampLen((uint16_t)rampLen);
-  stepperMaxPos = myStepper.currentPosition();
-  DBG_PRINTLN(F("Maxing finished"));
+  myStepper.setRampLen(rampLen);
+  myStepper.setSpeedSteps(operatingSpeed);
+  DBG_PRINTLN(F("Limit registered."));
 }
 
 #ifdef DEBUG_POSITION
@@ -792,8 +762,7 @@ byte processMenuCommand(byte cmdId)
     {
       configChanged = false;
     }
-    operationRPM = currentConfig.cfg.carriageSpeed * 10;
-    myStepper.setSpeed(operationRPM);
+    myStepper.setSpeed(currentConfig.cfg.carriageSpeed * 10);
     lcd.noBlink();
     break;
   case mnuCmdOpMode:
@@ -1050,8 +1019,8 @@ void homing()
   lcd.print(rpad(strbuf, tmpbuf));
   lcd.setCursor(0, 1);
   lcd.print(F(MAIN_home2));
-  toRefPoint();
-  newEncPosition = 0; // zero encoder pos, too
+  toLimit(limit_t::min_lim);
+  newEncPosition = 0; // zero encoder pos, too -> why is that not part of limit finding?
 
   DBG_PRINT(F("Position after homeing: "));
   DBG_PRINTLN(myStepper.currentPosition());
@@ -1061,7 +1030,7 @@ void homing()
   lcd.print(rpad(strbuf, tmpbuf));
   lcd.setCursor(0, 1);
   lcd.print(F(MAIN_home4));
-  toMaxPoint();
+  toLimit(limit_t::max_lim);
 
   DBG_PRINT(F("Max position: "));
   DBG_PRINTLN(stepperMaxPos);
@@ -1303,7 +1272,6 @@ void setup()
   }
   currentRowCount = currentConfig.cfg.rowCount;
   // oldRowCount = currentRowCount;
-  operationRPM = currentConfig.cfg.carriageSpeed * 10;
 
   setBacklightBrightness(currentConfig.cfg.displayBrightness);
 
@@ -1929,7 +1897,6 @@ void loop()
         currentAppMode = APP_DISP_UPD;
         nextAppMode = APP_NORMAL_MODE;
         screenToShow = ROWS_WITH_HEADER;
-        myStepper.setSpeed(operationRPM); // in case we moved the stepper
       }
       else
       {
@@ -1946,7 +1913,6 @@ void loop()
           currentAppMode = APP_DISP_UPD;
           nextAppMode = APP_NORMAL_MODE;
           screenToShow = ROWS_WITH_HEADER;
-          myStepper.setSpeed(operationRPM); // in case we moved the stepper
         }
         else if (menuMode == MENU_INVOKE_ITEM)
         {
